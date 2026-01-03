@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'nutrient_prediction_page.dart';
+import 'corn_yield_page.dart';
 
 class MainDashboardPage extends StatelessWidget {
   const MainDashboardPage({super.key});
@@ -24,6 +25,25 @@ class MainDashboardPage extends StatelessWidget {
                 style: TextStyle(fontSize: 14, color: Colors.black54),
               ),
               const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.auto_graph_rounded),
+                  label: const Text('Corn Yield Prediction'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CornYieldPage(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
