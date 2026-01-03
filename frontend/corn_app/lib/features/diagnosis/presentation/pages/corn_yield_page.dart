@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-const String apiBaseUrl = "http://127.0.0.1:8000"; // Use 10.0.2.2 when running on Android emulator
+const String apiBaseUrl = "http://10.0.2.2:8000"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
 
 class CornYieldPage extends StatefulWidget {
   const CornYieldPage({super.key});
