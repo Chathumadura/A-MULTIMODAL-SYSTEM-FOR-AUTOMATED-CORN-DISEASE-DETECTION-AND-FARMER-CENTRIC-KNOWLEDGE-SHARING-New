@@ -18,13 +18,13 @@ class ApiClient {
       final streamed = await request.send().timeout(
         const Duration(seconds: 120),
         onTimeout: () {
-          throw Exception('Connection timeout - Please check if backend is running');
+          throw Exception(
+            'Connection timeout - Please check if backend is running',
+          );
         },
       );
-      
-      final response = await http.Response.fromStream(
-        streamed,
-      ).timeout(
+
+      final response = await http.Response.fromStream(streamed).timeout(
         const Duration(seconds: 120),
         onTimeout: () {
           throw Exception('Response timeout - Model processing took too long');
@@ -39,7 +39,9 @@ class ApiClient {
         );
       }
     } on SocketException {
-      throw Exception('Network error - Please check your connection and backend URL');
+      throw Exception(
+        'Network error - Please check your connection and backend URL',
+      );
     } catch (e) {
       if (e is Exception) rethrow;
       throw Exception('Unexpected error: $e');
