@@ -12,7 +12,8 @@ class NutrientPredictionPage extends StatefulWidget {
   State<NutrientPredictionPage> createState() => _NutrientPredictionPageState();
 }
 
-class _NutrientPredictionPageState extends State<NutrientPredictionPage> with SingleTickerProviderStateMixin {
+class _NutrientPredictionPageState extends State<NutrientPredictionPage>
+    with SingleTickerProviderStateMixin {
   final ImagePicker _picker = ImagePicker();
   final ApiClient _apiClient = ApiClient();
 
@@ -148,7 +149,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: className == 'Healthy'
                           ? const Color(0xFF00D9A0).withOpacity(0.15)
@@ -175,7 +179,11 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
               const SizedBox(height: 16),
               Text(
                 explanation,
-                style: const TextStyle(color: Colors.white, fontSize: 16, height: 1.4),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  height: 1.4,
+                ),
               ),
               const SizedBox(height: 12),
               Container(
@@ -184,7 +192,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
                 decoration: BoxDecoration(
                   color: const Color(0xFF1D1F33),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.25)),
+                  border: Border.all(
+                    color: const Color(0xFF00D9A0).withOpacity(0.25),
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,7 +204,11 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
                     Expanded(
                       child: Text(
                         advice,
-                        style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          height: 1.4,
+                        ),
                       ),
                     ),
                   ],
@@ -205,10 +219,16 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  icon: const Icon(Icons.check_circle_outline, color: Color(0xFF00D9A0)),
+                  icon: const Icon(
+                    Icons.check_circle_outline,
+                    color: Color(0xFF00D9A0),
+                  ),
                   label: const Text(
                     'Got it',
-                    style: TextStyle(color: Color(0xFF00D9A0), fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Color(0xFF00D9A0),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -358,10 +378,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
                     const SizedBox(height: 16),
                     const Text(
                       'Scanning Tissue Sample...',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ],
                 ),
@@ -381,10 +398,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
-                  side: const BorderSide(
-                    color: Color(0xFF00D9A0),
-                    width: 1.5,
-                  ),
+                  side: const BorderSide(color: Color(0xFF00D9A0), width: 1.5),
                 ),
               ),
               icon: const Icon(Icons.camera_alt),
@@ -471,13 +485,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 10,
-                      ),
-                    ),
+                    Text(status, style: TextStyle(color: color, fontSize: 10)),
                   ],
                 ),
               ),
@@ -487,10 +495,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
         const SizedBox(height: 8),
         Text(
           label,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
-            fontSize: 12,
-          ),
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
         ),
       ],
     );
@@ -581,10 +586,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage> with Si
               children: [
                 const Text(
                   'Action Required:',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 4),
                 Text(
