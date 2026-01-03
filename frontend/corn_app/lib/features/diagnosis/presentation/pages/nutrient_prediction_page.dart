@@ -6,7 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/api/api_client.dart';
 
 class NutrientPredictionPage extends StatefulWidget {
-  const NutrientPredictionPage({super.key});
+  final String? initialImagePath;
+  const NutrientPredictionPage({super.key, this.initialImagePath});
 
   @override
   State<NutrientPredictionPage> createState() => _NutrientPredictionPageState();
@@ -32,6 +33,11 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
+    if (widget.initialImagePath != null) {
+      _selectedImage = File(widget.initialImagePath!);
+      // auto-run analysis when arriving from capture screen
+      _analyzeImage();
+    }
   }
 
   @override
@@ -78,21 +84,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     }
   }
 
-  Future<void> _pickImage() async {
-    setState(() {
-      _errorMsg = null;
-      _predictedClass = null;
-      _confidence = null;
-    });
-
-    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        _selectedImage = File(picked.path);
-      });
-    }
-  }
-
   Future<void> _analyzeImage() async {
     if (_selectedImage == null) return;
 
@@ -128,6 +119,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       });
     }
   }
+
 
   void _showResultSheet(String className, double confidence) {
     final advice = _getActionRequired(className);
@@ -241,171 +233,88 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
 
   @override
   Widget build(BuildContext context) {
+    final hasResult = _predictedClass != null && !_isLoading;
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E21),
+      backgroundColor: const Color(0xFF060912),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Corn Tissue Nutrient Analysis',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _buildImageSection(),
-                const SizedBox(height: 24),
-                if (_predictedClass != null && !_isLoading) ...[
-                  _buildNutrientGauges(),
-                  const SizedBox(height: 24),
-                  _buildConfidenceChart(),
-                  const SizedBox(height: 24),
-                  _buildActionRequired(),
-                ],
-                if (_errorMsg != null)
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.red.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      _errorMsg!,
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: _selectedImage != null && !_isLoading
-          ? FloatingActionButton.extended(
-              onPressed: _analyzeImage,
-              backgroundColor: const Color(0xFF00D9A0),
-              icon: const Icon(Icons.analytics, color: Colors.black),
-              label: const Text(
-                'Analyze',
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Analysis Results',
                 style: TextStyle(
-                  color: Colors.black,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
-            )
-          : null,
-    );
-  }
-
-  Widget _buildImageSection() {
-    return Container(
-      height: 300,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1D1F33),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF00D9A0).withOpacity(0.3),
-          width: 2,
-        ),
-      ),
-      child: Stack(
-        children: [
-          if (_selectedImage != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.file(
-                _selectedImage!,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            )
-          else
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.image_outlined,
-                    size: 64,
-                    color: Colors.white.withOpacity(0.3),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No Image Selected',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 16,
+              const SizedBox(height: 12),
+              if (_isLoading)
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        CircularProgressIndicator(color: Color(0xFF00D9A0)),
+                        SizedBox(height: 12),
+                        Text(
+                          'Analyzing leaf...',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          if (_isLoading)
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xFF00D9A0),
-                          width: 3,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF00D9A0),
-                          strokeWidth: 3,
-                        ),
-                      ),
+                )
+              else if (hasResult)
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildNutrientGauges(),
+                        const SizedBox(height: 18),
+                        _buildConfidenceChart(),
+                        const SizedBox(height: 18),
+                        _buildActionRequired(),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Scanning Tissue Sample...',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                )
+              else
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.info_outline, color: Colors.white54),
+                        SizedBox(height: 8),
+                        Text(
+                          'No image to analyze. Go back and scan a leaf.',
+                          style: TextStyle(color: Colors.white70),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          Positioned(
-            bottom: 16,
-            left: 16,
-            child: ElevatedButton.icon(
-              onPressed: _isLoading ? null : _pickImage,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1D1F33),
-                foregroundColor: const Color(0xFF00D9A0),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
+              if (_errorMsg != null)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.red.withOpacity(0.3)),
+                  ),
+                  child: Text(
+                    _errorMsg!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: const BorderSide(color: Color(0xFF00D9A0), width: 1.5),
-                ),
-              ),
-              icon: const Icon(Icons.camera_alt),
-              label: const Text('Pick Image'),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

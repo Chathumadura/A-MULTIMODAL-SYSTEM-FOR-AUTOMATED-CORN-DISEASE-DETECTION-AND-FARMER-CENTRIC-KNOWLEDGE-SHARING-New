@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'nutrient_prediction_page.dart';
+import 'capture_leaf_page.dart';
 
 class MainDashboardPage extends StatelessWidget {
   const MainDashboardPage({super.key});
@@ -36,7 +36,7 @@ class MainDashboardPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const NutrientPredictionPage(),
+                        builder: (_) => const CaptureLeafPage(),
                       ),
                     );
                   },
