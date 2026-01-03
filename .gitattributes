@@ -1,0 +1,6 @@
+*.h5 filter=lfs diff=lfs merge=lfs -text
+backend/models/corn_final_model.h5 filter=lfs diff=lfs merge=lfs -text
+backend/models/corn_model_best.h5 filter=lfs diff=lfs merge=lfs -text
+backend/models/pest_model_final.keras filter=lfs diff=lfs merge=lfs -text
+backend/models/resnet50_multi_nutrient_best.h5 filter=lfs diff=lfs merge=lfs -text
+backend/corn_yield_model.pkl filter=lfs diff=lfs merge=lfs -text
