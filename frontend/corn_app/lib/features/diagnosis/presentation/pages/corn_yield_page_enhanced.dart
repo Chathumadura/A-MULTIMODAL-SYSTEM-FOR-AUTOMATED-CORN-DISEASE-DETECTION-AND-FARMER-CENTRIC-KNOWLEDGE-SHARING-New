@@ -225,7 +225,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                     children: [
                       _buildHeader(context, loc),
                       const SizedBox(height: 20),
-                      _buildIllustrationCard(context),
+                      _buildIllustrationCard(context, loc),
                       const SizedBox(height: 20),
                       _buildFormCard(context, loc),
                       if (_error != null) ...[
@@ -450,9 +450,11 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Corn Yield",
+                        loc.translate('corn_yield_title'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
-                          fontSize: 24,
+                          fontSize: 20,
                           fontWeight: FontWeight.w800,
                           color: const Color(0xFF1A5D31),
                           letterSpacing: -0.5,
@@ -460,9 +462,11 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                         ),
                       ),
                       Text(
-                        "Prediction",
+                        loc.translate('prediction_title'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
+                          fontSize: 17,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF4FB26C),
                           letterSpacing: -0.3,
@@ -479,7 +483,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "AI-Powered Analysis",
+                            loc.translate('ai_powered_analysis'),
                             style: GoogleFonts.poppins(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
@@ -492,60 +496,6 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                     ],
                   ),
                 ),
-                
-                // Enhanced LIVE badge
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFF1F7B41),
-                        const Color(0xFF2E8D4E),
-                        const Color(0xFF43A047),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.green.shade800.withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.6),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        "LIVE",
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -554,7 +504,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
     );
   }
 
-  Widget _buildIllustrationCard(BuildContext context) {
+  Widget _buildIllustrationCard(BuildContext context, AppLocalizations loc) {
     return Container(
       height: 180,
       decoration: BoxDecoration(
@@ -624,18 +574,22 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '🌽 Smart Farming',
+                            '🌽 ${loc.translate('smart_farming')}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                           Text(
-                            'AI-Powered Yield Predictions',
+                            loc.translate('ai_powered_yield_predictions'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
                               color: Colors.white.withOpacity(0.95),
-                              fontSize: 13,
+                              fontSize: 11,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -652,7 +606,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '✓ Accurate predictions  ✓ Data-driven insights',
+                    '✓ ${loc.translate('accurate_predictions')}  ✓ ${loc.translate('data_driven_insights')}',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 11,
@@ -702,28 +656,12 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                 const SizedBox(width: 12),
                 Text(
                   loc.fieldSnapshot,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF1F2D1F),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.purple.shade100, Colors.purple.shade50],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    "6 ${loc.inputs}",
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.purple.shade700,
-                    ),
                   ),
                 ),
               ],
@@ -752,7 +690,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                   DropdownButtonFormField<String>(
                     value: _district,
                     decoration: _fieldDecoration("", loc.select),
-                    items: _districts.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
+                    items: _districts.map((d) => DropdownMenuItem(value: d, child: Text(loc.translate(d)))).toList(),
                     onChanged: (v) => setState(() => _district = v!),
                   ),
                 ],
@@ -768,7 +706,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                   DropdownButtonFormField<String>(
                     value: _variety,
                     decoration: _fieldDecoration("", loc.select),
-                    items: _varieties.map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
+                    items: _varieties.map((v) => DropdownMenuItem(value: v, child: Text(loc.translate(v)))).toList(),
                     onChanged: (v) => setState(() => _variety = v!),
                   ),
                 ],
@@ -903,12 +841,17 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
                       ),
                     )
                   : const Icon(Icons.analytics_rounded, size: 22),
-              label: Text(
-                _loading ? loc.predicting : loc.predictYield,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700, 
-                  fontSize: 15,
-                  letterSpacing: 0.5,
+              label: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  _loading ? loc.predicting : loc.predictYield,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w700, 
+                    fontSize: loc.locale.languageCode == 'en' ? 13 : 11,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
               style: FilledButton.styleFrom(
@@ -925,9 +868,17 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced> {
           child: OutlinedButton.icon(
             onPressed: _reset,
             icon: const Icon(Icons.refresh_rounded, size: 20),
-            label: Text(
-              loc.reset,
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 14),
+            label: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                loc.reset,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w700, 
+                  fontSize: loc.locale.languageCode == 'en' ? 12 : 10,
+                ),
+              ),
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.orange.shade700,
@@ -1091,15 +1042,27 @@ class _ResultCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      loc.translate(f.displayName),
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                      softWrap: false,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1F2D1F),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
                           child: Text(
-                            f.displayName,
+                            'Impact: ${f.shapValue >= 0 ? '+' : ''}${f.shapValue.toStringAsFixed(2)}',
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF1F2D1F),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade600,
                             ),
                           ),
                         ),
@@ -1122,15 +1085,6 @@ class _ResultCard extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Impact: ${f.shapValue >= 0 ? '+' : ''}${f.shapValue.toStringAsFixed(2)}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade600,
-                      ),
                     ),
                     const SizedBox(height: 12),
                     _ContributionBar(value: f.shapValue, maxAbs: maxAbs),
