@@ -71,18 +71,18 @@ class _CaptureLeafPageState extends State<CaptureLeafPage> {
                     children: [
                       if (_image != null)
                         Positioned.fill(
-                          child: Image.file(
-                            _image!,
-                            fit: BoxFit.cover,
-                          ),
+                          child: Image.file(_image!, fit: BoxFit.cover),
                         )
                       else
                         Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.photo_camera_back_outlined,
-                                  size: 72, color: Colors.white.withOpacity(0.6)),
+                              Icon(
+                                Icons.photo_camera_back_outlined,
+                                size: 72,
+                                color: Colors.white.withOpacity(0.6),
+                              ),
                               const SizedBox(height: 14),
                               Text(
                                 'Capture a leaf photo',
@@ -122,7 +122,9 @@ class _CaptureLeafPageState extends State<CaptureLeafPage> {
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: _isPicking ? null : () => _pick(ImageSource.gallery),
+                    onPressed: _isPicking
+                        ? null
+                        : () => _pick(ImageSource.gallery),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF00D9A0),
                       side: const BorderSide(color: Color(0xFF00D9A0)),
@@ -135,7 +137,9 @@ class _CaptureLeafPageState extends State<CaptureLeafPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: _isPicking ? null : () => _pick(ImageSource.camera),
+                    onPressed: _isPicking
+                        ? null
+                        : () => _pick(ImageSource.camera),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF00D9A0),
                       foregroundColor: Colors.black,
