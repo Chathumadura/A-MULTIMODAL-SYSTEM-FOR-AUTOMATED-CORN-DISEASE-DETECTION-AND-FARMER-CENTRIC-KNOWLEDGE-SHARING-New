@@ -5,7 +5,7 @@ class Env {
   // Override at build time: --dart-define=API_BASE_URL=http://<lan-ip>:8000
   static const String _definedBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.0.101:8000',
+    defaultValue: 'http://192.168.0.102:8000',
   );
 
   static const String _emulatorBaseUrl = 'http://10.0.2.2:8000';
