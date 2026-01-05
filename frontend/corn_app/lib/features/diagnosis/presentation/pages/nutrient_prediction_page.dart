@@ -120,7 +120,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     }
   }
 
-
   void _showResultSheet(String className, double confidence) {
     final advice = _getActionRequired(className);
     final explanation = _getExplanation(className);
