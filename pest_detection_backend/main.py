@@ -57,10 +57,22 @@ async def predict(file: UploadFile = File(...)):
     processed = preprocess_image(image)
 
     preds = model.predict(processed)
-    class_id = int(np.argmax(preds))
     confidence = float(np.max(preds))
+    class_id = int(np.argmax(preds))
+
+    CONFIDENCE_THRESHOLD = 0.5  # 50%
+
+    if confidence < CONFIDENCE_THRESHOLD:
+        return {
+            "prediction": "not_corn_leaf",
+            "confidence": round(confidence * 100, 2),
+            "message": "Uploaded image is not a corn leaf. Please upload a clear corn leaf image."
+        }
 
     return {
         "prediction": CLASS_NAMES[class_id],
-        "confidence": round(confidence * 100, 2)
+        "confidence": round(confidence * 100, 2),
+        "message": "Corn leaf detected successfully"
     }
+
+

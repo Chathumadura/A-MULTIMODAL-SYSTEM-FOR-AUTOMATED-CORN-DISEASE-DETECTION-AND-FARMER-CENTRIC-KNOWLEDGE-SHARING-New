@@ -18,6 +18,7 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  // ---------------- PICK IMAGE ----------------
   Future<void> pickImage() async {
     final XFile? image =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -30,6 +31,7 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
     }
   }
 
+  // ---------------- PREDICT ----------------
   Future<void> predictPest() async {
     if (_image == null) return;
 
@@ -39,10 +41,26 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
       final response = await ApiService.predict(_image!);
       final data = json.decode(response);
 
-      setState(() {
-        _result =
-            "Pest: ${data['prediction']}\nConfidence: ${data['confidence']}%";
-      });
+      if (data["prediction"] == "not_corn_leaf") {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text("Invalid Image"),
+            content: Text(data["message"]),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              )
+            ],
+          ),
+        );
+      } else {
+        setState(() {
+          _result =
+              "Pest: ${data['prediction']}\nConfidence: ${data['confidence']}%";
+        });
+      }
     } catch (e) {
       setState(() {
         _result = "Error: $e";
@@ -52,41 +70,114 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
     setState(() => _loading = false);
   }
 
+  // ---------------- UI ----------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Pest Detection")),
-      body: Padding(
+      backgroundColor: Colors.green.shade50,
+      appBar: AppBar(
+        title: const Text("Corn Pest Detection"),
+        centerTitle: true,
+        backgroundColor: Colors.green.shade700,
+      ),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _image != null
-                ? Image.file(_image!, height: 200)
-                : const Icon(Icons.image, size: 150),
+
+            // -------- IMAGE CARD --------
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Container(
+                height: 220,
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                child: _image != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(_image!, fit: BoxFit.cover),
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.image, size: 80, color: Colors.grey),
+                          SizedBox(height: 10),
+                          Text("No image selected",
+                              style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+              ),
+            ),
 
             const SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: pickImage,
-              child: const Text("Pick Image"),
-            ),
-
-            const SizedBox(height: 10),
-
-            ElevatedButton(
-              onPressed: predictPest,
-              child: const Text("Detect Pest"),
-            ),
-
-            const SizedBox(height: 20),
-
-            _loading
-                ? const CircularProgressIndicator()
-                : Text(
-                    _result,
-                    style: const TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
+            // -------- BUTTONS --------
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.photo),
+                  label: const Text("Pick Image"),
+                  onPressed: pickImage,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
+                ),
+
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.search),
+                  label: const Text("Detect"),
+                  onPressed: predictPest,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+
+            // -------- RESULT CARD --------
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: _loading
+                    ? const CircularProgressIndicator()
+                    : Column(
+                        children: [
+                          const Text(
+                            "Detection Result",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            _result,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: _result.contains("Pest")
+                                  ? Colors.green.shade700
+                                  : Colors.red.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ),
           ],
         ),
       ),
