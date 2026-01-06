@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Class order must match training - alphabetically sorted
-CLASS_NAMES = ['Healthy', 'KAB', 'NAB', 'PAB', 'ZNAB']
+CLASS_NAMES = ['Healthy', 'KAB', 'NAB', 'Not_Corn', 'PAB', 'ZNAB']
 
 # Load model once (when server starts)
 MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "corn_final_model.h5"
@@ -40,7 +40,7 @@ def predict_nutrient_status(file_bytes: bytes):
     model = get_model()
     x = preprocess_image_bytes(file_bytes)
     # Use verbose=0 to suppress prediction output
-    proba = model.predict(x, verbose=0)[0]  # shape: (5,)
+    proba = model.predict(x, verbose=0)[0]  # shape: (6,)
     idx = int(np.argmax(proba))
     label = CLASS_NAMES[idx]
     confidence = float(proba[idx])
