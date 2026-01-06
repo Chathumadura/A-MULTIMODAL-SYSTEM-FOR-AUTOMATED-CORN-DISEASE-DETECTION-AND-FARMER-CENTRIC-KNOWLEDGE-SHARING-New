@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../../../core/localization/app_localizations.dart';
 
 const String apiBaseUrl =
-    "http://10.0.2.2:8000"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
+    "http://10.0.2.2:8080"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
 
 class CornYieldPageEnhanced extends StatefulWidget {
   final Function(Locale)? onLanguageChange;
