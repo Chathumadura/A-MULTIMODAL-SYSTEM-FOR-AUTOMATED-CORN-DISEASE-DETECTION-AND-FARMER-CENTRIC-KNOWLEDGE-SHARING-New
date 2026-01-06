@@ -111,6 +111,31 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
           _fertilizerRecommendations = recs;
         }
       });
+
+      // If the model detected a non-corn image, show bilingual alert and go back
+      if (mounted && _predictedClass == 'Not_Corn') {
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Not a Corn Plant'),
+            content: const Text(
+              'මෙම රූපය බඩ  ඉරිඟු  පත්‍රයක්  නොවේ. කරුණාකර බඩ ඉරිඟු  පත්‍රයක්  අප්ලෝඩ් කරන්න\n\nThis image does not appear to be a corn plant. Please upload a corn leaf image.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
       if (mounted && _predictedClass != null) {
         _showResultSheet(_predictedClass!, _confidence ?? 0);
       }

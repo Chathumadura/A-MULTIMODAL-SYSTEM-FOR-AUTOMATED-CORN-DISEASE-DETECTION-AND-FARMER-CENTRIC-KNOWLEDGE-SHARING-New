@@ -44,6 +44,18 @@ async def predict(file: UploadFile = File(...)):
         label, confidence, probs = predict_nutrient_status(file_bytes)
         logger.info(f"Prediction complete: {label} ({confidence:.2%})")
         
+        # Check if the image is not corn
+        if label == "Not_Corn":
+            return {
+                "predicted_class": label,
+                "confidence": confidence,
+                "probabilities": probs,
+                "is_corn": False,
+                "message": "This image does not appear to be a corn plant. Please upload a corn leaf image.",
+                "message_si": "මෙම රූපය බඩ ඉරු පැලක් නොවේ. කරුණාකර බඩ ඉරු කොළයක් අපලෝඩ් කරන්න.",
+                "fertilizer_recommendations": None,
+            }
+        
         # Get fertilizer recommendations for the predicted class
         fertilizer_recommendations = get_fertilizer_recommendations(label)
         
@@ -51,6 +63,7 @@ async def predict(file: UploadFile = File(...)):
             "predicted_class": label,
             "confidence": confidence,
             "probabilities": probs,
+            "is_corn": True,
             "fertilizer_recommendations": fertilizer_recommendations,
         }
     except ValueError as e:
