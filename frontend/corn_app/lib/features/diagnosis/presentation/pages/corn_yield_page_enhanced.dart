@@ -658,11 +658,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
               color: const Color(0xFF2E8D4E).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: const Color(0xFF2E8D4E),
-              size: 24,
-            ),
+            child: Icon(icon, color: const Color(0xFF2E8D4E), size: 24),
           ),
           const SizedBox(height: 8),
           Text(
