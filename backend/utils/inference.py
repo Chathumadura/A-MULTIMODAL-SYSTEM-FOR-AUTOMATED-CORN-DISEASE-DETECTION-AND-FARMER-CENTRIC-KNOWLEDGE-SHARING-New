@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 CLASS_NAMES = ['Healthy', 'KAB', 'NAB', 'PAB', 'ZNAB']
 
 # Load model once (when server starts)
-MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "resnet50_multi_nutrient_finetuned.h5"
+MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "corn_final_model.h5"
 _model = None
 
 def get_model():
