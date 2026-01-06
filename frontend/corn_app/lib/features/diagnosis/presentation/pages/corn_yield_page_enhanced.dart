@@ -1207,6 +1207,15 @@ class _ResultCard extends StatelessWidget {
           ...result.topFeatures.asMap().entries.map((entry) {
             final index = entry.key;
             final f = entry.value;
+
+            // Calculate percentage for this feature
+            final totalAbsShap = result.topFeatures
+                .map((feature) => feature.shapValue.abs())
+                .fold<double>(0, (sum, val) => sum + val);
+            final percentage = totalAbsShap > 0
+                ? ((f.shapValue.abs() / totalAbsShap) * 100).toStringAsFixed(1)
+                : "0.0";
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: Container(
@@ -1219,24 +1228,33 @@ class _ResultCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      loc.translate(f.displayName),
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                      softWrap: false,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1F2D1F),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
-                          child: _AnimatedImpactValue(
-                            shapValue: f.shapValue,
-                            index: index,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                loc.translate(f.displayName),
+                                maxLines: 1,
+                                overflow: TextOverflow.visible,
+                                softWrap: false,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF1F2D1F),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Impact: $percentage%",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Container(
