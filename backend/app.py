@@ -3,6 +3,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from utils.inference import predict_nutrient_status, get_model
+from utils.fertilizer_recommendations import get_fertilizer_recommendations
 import logging
 
 # Set up logging
@@ -43,10 +44,14 @@ async def predict(file: UploadFile = File(...)):
         label, confidence, probs = predict_nutrient_status(file_bytes)
         logger.info(f"Prediction complete: {label} ({confidence:.2%})")
         
+        # Get fertilizer recommendations for the predicted class
+        fertilizer_recommendations = get_fertilizer_recommendations(label)
+        
         return {
             "predicted_class": label,
             "confidence": confidence,
             "probabilities": probs,
+            "fertilizer_recommendations": fertilizer_recommendations,
         }
     except ValueError as e:
         logger.error(f"Validation error: {e}")
