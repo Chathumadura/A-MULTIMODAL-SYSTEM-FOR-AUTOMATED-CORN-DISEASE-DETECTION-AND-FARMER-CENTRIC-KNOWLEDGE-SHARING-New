@@ -9,7 +9,8 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   static const List<Locale> supportedLocales = [
     Locale('en', ''),
@@ -22,10 +23,12 @@ class AppLocalizations {
       'welcome_back': 'Welcome back',
       'plant_health_cockpit': 'Plant health cockpit',
       'corn_yield_assistant': 'Corn yield assistant',
-      'description': 'Jump into the yield predictor to see SHAP-based explanations and keep inputs aligned with Plantix-style visuals.',
+      'description':
+          'Jump into the yield predictor to see SHAP-based explanations and keep inputs aligned with Plantix-style visuals.',
       'open_predictor': 'Open predictor',
       'whats_inside': "What's inside",
-      'features_list': '• Plantix-inspired palette with rounded cards and bold CTA\n• Yield prediction + SHAP explanations\n• Nutrient analysis with crop health insights\n• Clean navigation bar to hop between features',
+      'features_list':
+          '• Plantix-inspired palette with rounded cards and bold CTA\n• Yield prediction + SHAP explanations\n• Nutrient analysis with crop health insights\n• Clean navigation bar to hop between features',
       'home': 'Home',
       'yield': 'Yield',
       'nutrient': 'Nutrient',
@@ -64,6 +67,21 @@ class AppLocalizations {
       'Average temperature (°C)': 'Average temperature (°C)',
       'Farm size (acres)': 'Farm size (acres)',
       'Previous yield (kg/acre)': 'Previous yield (kg/acre)',
+      'Planting density (plants/acre)': 'Planting density (plants/acre)',
+      'Farmer experience (years)': 'Farmer experience (years)',
+      'Access to credit': 'Access to credit',
+      'Access to extension services': 'Access to extension services',
+      'Use of machinery': 'Use of machinery',
+      'Distance to market (km)': 'Distance to market (km)',
+      'Soil pH': 'Soil pH',
+      'Organic matter (%)': 'Organic matter (%)',
+      'Nitrogen level (index)': 'Nitrogen level (index)',
+      'Phosphorus level (index)': 'Phosphorus level (index)',
+      'Potassium level (index)': 'Potassium level (index)',
+      'District': 'District',
+      'Agro-ecological zone': 'Agro-ecological zone',
+      'Soil type': 'Soil type',
+      'Irrigation type': 'Irrigation type',
       'corn_yield_title': 'Corn Yield',
       'prediction_title': 'Prediction',
       'ai_powered_analysis': 'AI-Powered Analysis',
@@ -84,15 +102,39 @@ class AppLocalizations {
       'Hybrid_A': 'Hybrid A',
       'Hybrid_B': 'Hybrid B',
       'OPV_Local': 'OPV Local',
+      // Soil types
+      'Sandy': 'Sandy',
+      'Loam': 'Loam',
+      'Clay': 'Clay',
+      'Silt': 'Silt',
+      // Irrigation types
+      'Rainfed': 'Rainfed',
+      'Irrigated': 'Irrigated',
+      'Drip': 'Drip',
+      'Tank': 'Tank',
+      'Canal': 'Canal',
+      'Tube well': 'Tube well',
+      // Pest/disease levels
+      'None': 'None',
+      'Low': 'Low',
+      'Medium': 'Medium',
+      'High': 'High',
+      // Agro-ecological zones
+      'IL1': 'IL1',
+      'IL2': 'IL2',
+      'DL1': 'DL1',
+      'DL2': 'DL2',
     },
     'si': {
       'welcome_back': 'නැවත පිළිගනිමු',
       'plant_health_cockpit': 'ශාක සෞඛ්‍ය පාලන මධ්‍යස්ථානය',
       'corn_yield_assistant': 'බඩඉරිඟු අස්වැන්න සහායක',
-      'description': 'SHAP මත පදනම් වූ පැහැදිලි කිරීම් දැකීමට අස්වැන්න පුරෝකථනය වෙත පිවිසෙන්න.',
+      'description':
+          'SHAP මත පදනම් වූ පැහැදිලි කිරීම් දැකීමට අස්වැන්න පුරෝකථනය වෙත පිවිසෙන්න.',
       'open_predictor': 'පුරෝකථනය විවෘත කරන්න',
       'whats_inside': 'ඇතුළත් දේ',
-      'features_list': '• Plantix විලාසය සමග සැලසුම්\n• අස්වැන්න පුරෝකථනය + SHAP පැහැදිලි කිරීම්\n• පෝෂක විශ්ලේෂණය\n• පහසු සංචලනය',
+      'features_list':
+          '• Plantix විලාසය සමග සැලසුම්\n• අස්වැන්න පුරෝකථනය + SHAP පැහැදිලි කිරීම්\n• පෝෂක විශ්ලේෂණය\n• පහසු සංචලනය',
       'home': 'මුල් පිටුව',
       'yield': 'අස්වැන්න',
       'nutrient': 'පෝෂක',
@@ -131,6 +173,21 @@ class AppLocalizations {
       'Average temperature (°C)': 'සාමාන්‍ය උෂ්ණත්වය (°C)',
       'Farm size (acres)': 'ගොවිපල ප්‍රමාණය (අක්කර)',
       'Previous yield (kg/acre)': 'පෙර අස්වැන්න (කි.ග්‍රෑ/අක්කර)',
+      'Planting density (plants/acre)': 'රෝපණ ඝනත්වය (පැල/අක්කර)',
+      'Farmer experience (years)': 'ගොවි අත්දැකීම (වසර)',
+      'Access to credit': 'ණය ලබා ගැනීම',
+      'Access to extension services': 'ව්‍යාප්ති සේවා',
+      'Use of machinery': 'යන්ත්‍ර භාවිතය',
+      'Distance to market (km)': 'වෙළඳපොල දුර (කි.මී)',
+      'Soil pH': 'පස pH',
+      'Organic matter (%)': 'කාබනික ද්‍රව්‍ය (%)',
+      'Nitrogen level (index)': 'නයිට්‍රජන් මට්ටම',
+      'Phosphorus level (index)': 'පොස්පරස් මට්ටම',
+      'Potassium level (index)': 'පොටෑසියම් මට්ටම',
+      'District': 'දිස්ත්‍රික්කය',
+      'Agro-ecological zone': 'කෘෂි පරිසර කලාපය',
+      'Soil type': 'පස් වර්ගය',
+      'Irrigation type': 'වාරි වර්ගය',
       'corn_yield_title': 'බඩඉරිඟු අස්වැන්න',
       'prediction_title': 'පුරෝකතනය',
       'ai_powered_analysis': 'AI ප්‍රටිපාදිත විශ්ලෙෂණය',
@@ -151,20 +208,45 @@ class AppLocalizations {
       'Hybrid_A': 'දෙමුහුන් A',
       'Hybrid_B': 'දෙමුහුන් B',
       'OPV_Local': 'ස්වදෙශීය OPV',
+      // Soil types
+      'Sandy': 'වැලි',
+      'Loam': 'ලෝම්',
+      'Clay': 'මැටි',
+      'Silt': 'රොන්',
+      // Irrigation types
+      'Rainfed': 'වර්ෂාව මත යැපෙන',
+      'Irrigated': 'වාරි සහිත',
+      'Drip': 'බිංදු වාරිය',
+      'Tank': 'වැව',
+      'Canal': 'නැලුම',
+      'Tube well': 'තුබු බොර',
+      // Pest/disease levels
+      'None': 'නැත',
+      'Low': 'පහල',
+      'Medium': 'මට්ටම',
+      'High': 'උගු',
+      // Agro-ecological zones
+      'IL1': 'IL1',
+      'IL2': 'IL2',
+      'DL1': 'DL1',
+      'DL2': 'DL2',
     },
     'ta': {
       'welcome_back': 'மீண்டும் வரவேற்கிறோம்',
       'plant_health_cockpit': 'தாவர சுகாதார மையம்',
       'corn_yield_assistant': 'சோள விளைச்சல் உதவியாளர்',
-      'description': 'SHAP அடிப்படையிலான விளக்கங்களைக் காண விளைச்சல் முன்னறிவிப்பிற்குள் செல்லவும்.',
+      'description':
+          'SHAP அடிப்படையிலான விளக்கங்களைக் காண விளைச்சல் முன்னறிவிப்பிற்குள் செல்லவும்.',
       'open_predictor': 'முன்னறிவிப்பைத் திறக்கவும்',
       'whats_inside': 'உள்ளே என்ன',
-      'features_list': '• Plantix பாணி வடிவமைப்பு\n• விளைச்சல் முன்னறிவிப்பு + SHAP விளக்கங்கள்\n• ஊட்டச்சத்து பகுப்பாய்வு\n• எளிதான வழிசெலுத்தல்',
+      'features_list':
+          '• Plantix பாணி வடிவமைப்பு\n• விளைச்சல் முன்னறிவிப்பு + SHAP விளக்கங்கள்\n• ஊட்டச்சத்து பகுப்பாய்வு\n• எளிதான வழிசெலுத்தல்',
       'home': 'முகப்பு',
       'yield': 'விளைச்சல்',
       'nutrient': 'ஊட்டச்சத்து',
       'corn_yield_prediction': 'சோள விளைச்சல் முன்னறிவிப்பு',
-      'guided_by': 'Plantix பாணி பயிர் சுகாதார குறிப்புகளால் வழிநடத்தப்படுகிறது',
+      'guided_by':
+          'Plantix பாணி பயிர் சுகாதார குறிப்புகளால் வழிநடத்தப்படுகிறது',
       'live': 'நேரலை',
       'field_snapshot': 'வயல் தகவல்',
       'inputs': 'உள்ளீடுகள்',
@@ -198,6 +280,21 @@ class AppLocalizations {
       'Average temperature (°C)': 'சராசரி வெப்பநிலை (°C)',
       'Farm size (acres)': 'பண்ணை அளவு (ஏக்கர்)',
       'Previous yield (kg/acre)': 'முந்தைய விளைச்சல் (கி.கி/ஏக்கர்)',
+      'Planting density (plants/acre)': 'நடவு அடர்த்தி (செடிகள்/ஏக்கர்)',
+      'Farmer experience (years)': 'விவசாயி அனுபவம் (ஆண்டுகள்)',
+      'Access to credit': 'கடன் வசதி',
+      'Access to extension services': 'விரிவாக்க சேவைகள்',
+      'Use of machinery': 'இயந்திர பயன்பாடு',
+      'Distance to market (km)': 'சந்தை தூரம் (கி.மீ)',
+      'Soil pH': 'மண் pH',
+      'Organic matter (%)': 'கரிம பொருட்கள் (%)',
+      'Nitrogen level (index)': 'நைட்ரஜன் அளவு',
+      'Phosphorus level (index)': 'பாஸ்பரஸ் அளவு',
+      'Potassium level (index)': 'பொட்டாசியம் அளவு',
+      'District': 'மாவட்டம்',
+      'Agro-ecological zone': 'வேளாண் சூழல் மண்டலம்',
+      'Soil type': 'மண் வகை',
+      'Irrigation type': 'நீர்ப்பாசன வகை',
       'corn_yield_title': 'சோள விளைச்சல்',
       'prediction_title': 'முன்னறிவிப்பு',
       'ai_powered_analysis': 'AI ஆ஧ாரித பகுப்பாய்வு',
@@ -205,6 +302,34 @@ class AppLocalizations {
       'ai_powered_yield_predictions': 'AI விளைச்சல் முன்னறிவிப்பு',
       'accurate_predictions': 'தீர்மானமான முன்னறிவிப்பு',
       'data_driven_insights': 'தரவு அடிப்படையிலான நுணைவுகள்',
+      // Districts
+      'Anuradhapura': 'அனுராதபுரம்',
+      // Varieties
+      'Hybrid_A': 'கலப்பின A',
+      'Hybrid_B': 'கலப்பின B',
+      'OPV_Local': 'உள்ளூர் OPV',
+      // Soil types
+      'Sandy': 'மணல்',
+      'Loam': 'களிமண்',
+      'Clay': 'களி',
+      'Silt': 'வண்டல்',
+      // Irrigation types
+      'Rainfed': 'மழை சார்ந்த',
+      'Irrigated': 'நீர்ப்பாசன',
+      'Drip': 'சொட்டு நீர்',
+      'Tank': 'நீர்த்தட்டு',
+      'Canal': 'காலுவாய்',
+      'Tube well': 'குழாய் கிணறு',
+      // Pest/disease levels
+      'None': 'இல்லை',
+      'Low': 'குறைவு',
+      'Medium': 'நடுத்தரம்',
+      'High': 'அதிகம்',
+      // Agro-ecological zones
+      'IL1': 'IL1',
+      'IL2': 'IL2',
+      'DL1': 'DL1',
+      'DL2': 'DL2',
     },
   };
 
@@ -252,11 +377,13 @@ class AppLocalizations {
   String get language => translate('language');
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'si', 'ta'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      ['en', 'si', 'ta'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) async {
