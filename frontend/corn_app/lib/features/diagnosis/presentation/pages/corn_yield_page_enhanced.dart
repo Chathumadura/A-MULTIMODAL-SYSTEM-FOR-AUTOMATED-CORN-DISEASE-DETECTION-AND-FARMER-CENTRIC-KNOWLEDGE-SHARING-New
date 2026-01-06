@@ -574,16 +574,112 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
     return Container(
       height: 120,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        image: DecorationImage(
-          image: AssetImage('assets/images/info_banner.png'),
-          fit: BoxFit.cover,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF2E8D4E),
+            const Color(0xFF4FB26C),
+            Colors.lightGreen.shade400,
+          ],
         ),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: Colors.green.withOpacity(0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // Part 1: ML Model
+            Expanded(
+              child: _buildBannerCard(
+                icon: Icons.psychology_rounded,
+                title: 'ML Model',
+                subtitle: 'SHAP',
+                color: Colors.white.withOpacity(0.95),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Part 2: Fast Analysis
+            Expanded(
+              child: _buildBannerCard(
+                icon: Icons.speed_rounded,
+                title: 'Analysis',
+                subtitle: 'Fast',
+                color: Colors.white.withOpacity(0.95),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Part 3: High Precision
+            Expanded(
+              child: _buildBannerCard(
+                icon: Icons.precision_manufacturing_rounded,
+                title: 'Precision',
+                subtitle: 'High',
+                color: Colors.white.withOpacity(0.95),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBannerCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF2E8D4E).withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: const Color(0xFF2E8D4E),
+              size: 24,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF2E8D4E),
+            ),
+          ),
+          Text(
+            subtitle,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: const Color(0xFF1F2D1F),
+            ),
           ),
         ],
       ),
@@ -1285,7 +1381,7 @@ class _ResultCard extends StatelessWidget {
                     const SizedBox(height: 12),
                     _ContributionBar(
                       value: f.shapValue,
-                      maxAbs: maxAbs,
+                      percentage: percentage,
                       index: index,
                     ),
                   ],
@@ -1302,12 +1398,12 @@ class _ResultCard extends StatelessWidget {
 class _ContributionBar extends StatefulWidget {
   const _ContributionBar({
     required this.value,
-    required this.maxAbs,
+    required this.percentage,
     required this.index,
   });
 
   final double value;
-  final double maxAbs;
+  final String percentage;
   final int index;
 
   @override
@@ -1350,7 +1446,8 @@ class _ContributionBarState extends State<_ContributionBar>
   @override
   void didUpdateWidget(_ContributionBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.value != widget.value || oldWidget.maxAbs != widget.maxAbs) {
+    if (oldWidget.value != widget.value ||
+        oldWidget.percentage != widget.percentage) {
       _startAnimation();
     }
   }
@@ -1363,9 +1460,8 @@ class _ContributionBarState extends State<_ContributionBar>
 
   @override
   Widget build(BuildContext context) {
-    final double ratio = widget.maxAbs == 0
-        ? 0
-        : widget.value.abs() / widget.maxAbs;
+    final percentValue = double.tryParse(widget.percentage) ?? 0.0;
+    final ratio = percentValue / 100.0;
     final isPositive = widget.value >= 0;
 
     return AnimatedBuilder(
