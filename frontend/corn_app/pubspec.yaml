@@ -60,6 +60,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - lib/features/diagnosis/presentation/image/Gemini_Generated_Image_crp1pgcrp1pgcrp1.png
+    - lib/features/diagnosis/presentation/image/image 2.png
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
