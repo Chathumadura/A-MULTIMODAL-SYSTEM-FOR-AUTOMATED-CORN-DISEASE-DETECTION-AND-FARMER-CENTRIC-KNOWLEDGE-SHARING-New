@@ -7,11 +7,12 @@ class Env {
   // Or use your Windows PC's actual IP (find with: ipconfig)
   static const String _androidPhysicalDeviceUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.149.35.34:8000', // Windows PC IP address (detected)
+    defaultValue:
+        'http://10.149.35.34:8000', // Windows PC IP address (detected)
   );
 
   static const String _emulatorBaseUrl = 'http://10.0.2.2:8000';
-    static const String _physicalDeviceUrl =
+  static const String _physicalDeviceUrl =
       'http://10.149.35.34:8000'; // Your PC's Wi-Fi IP (detected)
   static const String _localWebBaseUrl = 'http://localhost:8000';
 
