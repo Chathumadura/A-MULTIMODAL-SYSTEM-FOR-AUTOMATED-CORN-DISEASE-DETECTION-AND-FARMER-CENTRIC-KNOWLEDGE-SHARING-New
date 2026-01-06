@@ -74,12 +74,14 @@ def pretty_feature_name(raw_name: str) -> str:
     if raw_name in BASE_LABELS:
         return BASE_LABELS[raw_name]
 
-    parts = raw_name.split("_", 1)
-    if len(parts) == 2:
-        base_col, value = parts
-        if base_col in CAT_LABELS:
+    # Check for categorical features (one-hot encoded)
+    # Format: soil_type_Sandy, district_Anuradhapura, etc.
+    for cat_key, cat_label in CAT_LABELS.items():
+        prefix = cat_key + "_"
+        if raw_name.startswith(prefix):
+            value = raw_name[len(prefix):]
             value_pretty = value.replace("_", " ")
-            return f"{CAT_LABELS[base_col]}: {value_pretty}"
+            return f"{cat_label}: {value_pretty}"
 
     fallback = raw_name.replace("_", " ")
     return fallback.capitalize()
@@ -90,9 +92,12 @@ class SimpleYieldRequest(BaseModel):
     district: str
     farm_size_acres: float
     variety: str
+    soil_type: str
+    irrigation_type: str
     seasonal_rainfall_mm: float
     fertilizer_kg_per_acre: float
     previous_yield_kg_per_acre: float
+    pest_disease_incidence: int
 
 class FeatureContribution(BaseModel):
     raw_name: str
@@ -110,7 +115,7 @@ def build_full_row_from_simple(req: SimpleYieldRequest) -> pd.DataFrame:
         "farm_id": 1,
         "district": req.district,
         "agro_ecological_zone": "IL2",
-        "soil_type": "Loam",
+        "soil_type": req.soil_type,
         "farm_size_acres": req.farm_size_acres,
         "farmer_experience_years": 10,
         "access_to_credit": 1,
@@ -127,9 +132,9 @@ def build_full_row_from_simple(req: SimpleYieldRequest) -> pd.DataFrame:
         "avg_temp_c": 27.0,
         "fertilizer_kg_per_acre": req.fertilizer_kg_per_acre,
         "planting_density_plants_per_acre": 18000,
-        "irrigation_type": "Rainfed",
+        "irrigation_type": req.irrigation_type,
         "previous_yield_kg_per_acre": req.previous_yield_kg_per_acre,
-        "pest_disease_incidence": 1,
+        "pest_disease_incidence": req.pest_disease_incidence,
     }
     return pd.DataFrame([row])
 

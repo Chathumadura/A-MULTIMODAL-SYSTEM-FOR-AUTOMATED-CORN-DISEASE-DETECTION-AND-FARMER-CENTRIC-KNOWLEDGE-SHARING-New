@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-const String apiBaseUrl = "http://10.0.2.2:8000"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
+import '../../../../core/localization/app_localizations.dart';
+
+const String apiBaseUrl =
+    "http://10.0.2.2:8000"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
 
 class CornYieldPage extends StatefulWidget {
   const CornYieldPage({super.key});
@@ -17,30 +20,31 @@ class CornYieldPage extends StatefulWidget {
 class _CornYieldPageState extends State<CornYieldPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final _farmSizeController = TextEditingController(text: "0");
-  final _rainfallController = TextEditingController(text: "0");
-  final _fertilizerController = TextEditingController(text: "0");
-  final _prevYieldController = TextEditingController(text: "0");
+  final _farmSizeController = TextEditingController(text: "");
+  final _rainfallController = TextEditingController(text: "");
+  final _fertilizerController = TextEditingController(text: "");
+  final _prevYieldController = TextEditingController(text: "");
 
-  final List<String> _districts = [
-    "Monaragala",
-    "Badulla",
-    "Anuradhapura",
-    "Kurunegala",
-    "Gampaha",
-    "Polonnaruwa",
-    "Hambantota",
-    "Matale",
+  final List<String> _districts = ["Anuradhapura"];
+
+  final List<String> _varieties = ["Hybrid_A", "Hybrid_B", "OPV_Local"];
+
+  final List<String> _soilTypes = ["Sandy", "Loam", "Clay"];
+
+  final List<String> _irrigationTypes = [
+    "Rainfed",
+    "Tank",
+    "Canal",
+    "Tube well",
   ];
 
-  final List<String> _varieties = [
-    "Hybrid_A",
-    "Hybrid_B",
-    "OPV_Local",
-  ];
+  final List<String> _pestDiseaseLevels = ["None", "Low", "Medium", "High"];
 
-  String _district = "Monaragala";
-  String _variety = "Hybrid_A";
+  String _district = "Anuradhapura";
+  String? _variety;
+  String? _soilType;
+  String? _irrigationType;
+  String? _pestDiseaseLevel;
 
   bool _loading = false;
   YieldResult? _result;
@@ -64,11 +68,18 @@ class _CornYieldPageState extends State<CornYieldPage> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFE0E6DD)),
+        borderSide: const BorderSide(
+          color: Color(0xFFE0E6DD),
+          style: BorderStyle.solid,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF4FB26C), width: 1.4),
+        borderSide: const BorderSide(
+          color: Color(0xFF4FB26C),
+          width: 1.4,
+          style: BorderStyle.solid,
+        ),
       ),
     );
   }
@@ -84,10 +95,15 @@ class _CornYieldPageState extends State<CornYieldPage> {
     final payload = {
       "district": _district,
       "farm_size_acres": double.parse(_farmSizeController.text),
-      "variety": _variety,
+      "variety": _variety!,
+      "soil_type": _soilType!,
+      "irrigation_type": _irrigationType!,
       "seasonal_rainfall_mm": double.parse(_rainfallController.text),
       "fertilizer_kg_per_acre": double.parse(_fertilizerController.text),
-      "previous_yield_kg_per_acre": double.parse(_prevYieldController.text),
+      "previous_yield_kg_per_acre": _prevYieldController.text.trim().isEmpty
+          ? 0.0
+          : double.parse(_prevYieldController.text),
+      "pest_disease_incidence": _pestDiseaseLevelToIndex(_pestDiseaseLevel!),
     };
 
     try {
@@ -101,7 +117,15 @@ class _CornYieldPageState extends State<CornYieldPage> {
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         setState(() {
-          _result = YieldResult.fromJson(data);
+          _result = YieldResult.fromJson(
+            data,
+            selectedCats: {
+              "District": _district,
+              "Soil type": _soilType ?? "",
+              "Irrigation type": _irrigationType ?? "",
+              "Variety": _variety ?? "",
+            },
+          );
         });
       } else {
         setState(() {
@@ -120,10 +144,10 @@ class _CornYieldPageState extends State<CornYieldPage> {
   }
 
   void _reset() {
-    _farmSizeController.text = "0";
-    _rainfallController.text = "0";
-    _fertilizerController.text = "0";
-    _prevYieldController.text = "0";
+    _farmSizeController.text = "";
+    _rainfallController.text = "";
+    _fertilizerController.text = "";
+    _prevYieldController.text = "";
     setState(() {
       _result = null;
       _error = null;
@@ -194,7 +218,11 @@ class _CornYieldPageState extends State<CornYieldPage> {
               color: const Color(0xFFE6F7EC),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.grass_rounded, color: Color(0xFF2E8D4E), size: 28),
+            child: const Icon(
+              Icons.grass_rounded,
+              color: Color(0xFF2E8D4E),
+              size: 28,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -212,7 +240,10 @@ class _CornYieldPageState extends State<CornYieldPage> {
                 const SizedBox(height: 6),
                 Text(
                   "Guided by Plantix-style crop health cues",
-                  style: GoogleFonts.manrope(fontSize: 13, color: const Color(0xFF5D6D5D)),
+                  style: GoogleFonts.manrope(
+                    fontSize: 13,
+                    color: const Color(0xFF5D6D5D),
+                  ),
                 ),
               ],
             ),
@@ -246,7 +277,11 @@ class _CornYieldPageState extends State<CornYieldPage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         boxShadow: const [
-          BoxShadow(color: Color(0x14000000), blurRadius: 14, offset: Offset(0, 8)),
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 14,
+            offset: Offset(0, 8),
+          ),
         ],
       ),
       child: Form(
@@ -259,13 +294,16 @@ class _CornYieldPageState extends State<CornYieldPage> {
                 Text(
                   "Field snapshot",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF1F2D1F),
-                      ),
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF1F2D1F),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFE6F7EC),
                     borderRadius: BorderRadius.circular(8),
@@ -288,11 +326,27 @@ class _CornYieldPageState extends State<CornYieldPage> {
               children: [
                 SizedBox(
                   width: (MediaQuery.of(context).size.width - 68) / 2,
-                  child: DropdownButtonFormField<String>(
-                    value: _district,
-                    decoration: _fieldDecoration("District", "Select"),
-                    items: _districts.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
-                    onChanged: (v) => setState(() => _district = v!),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFE0E6DD),
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    child: Text(
+                      _district,
+                      style: GoogleFonts.manrope(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF344034),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -300,8 +354,11 @@ class _CornYieldPageState extends State<CornYieldPage> {
                   child: DropdownButtonFormField<String>(
                     value: _variety,
                     decoration: _fieldDecoration("Variety", "Select"),
-                    items: _varieties.map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
-                    onChanged: (v) => setState(() => _variety = v!),
+                    items: _varieties
+                        .map((v) => DropdownMenuItem(value: v, child: Text(v)))
+                        .toList(),
+                    validator: (v) => v == null ? "Required" : null,
+                    onChanged: (v) => setState(() => _variety = v),
                   ),
                 ),
                 SizedBox(
@@ -337,7 +394,6 @@ class _CornYieldPageState extends State<CornYieldPage> {
                     controller: _prevYieldController,
                     decoration: _fieldDecoration("Prev Yield", "kg/acre"),
                     keyboardType: TextInputType.number,
-                    validator: _numberValidator,
                   ),
                 ),
               ],
@@ -352,7 +408,10 @@ class _CornYieldPageState extends State<CornYieldPage> {
                         ? const SizedBox(
                             width: 18,
                             height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
                           )
                         : const Icon(Icons.auto_graph_rounded),
                     label: Text(
@@ -362,7 +421,9 @@ class _CornYieldPageState extends State<CornYieldPage> {
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFF2E8D4E),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ),
@@ -378,8 +439,13 @@ class _CornYieldPageState extends State<CornYieldPage> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF2E8D4E),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      side: const BorderSide(color: Color(0xFFE0E6DD)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      side: const BorderSide(
+                        color: Color(0xFFE0E6DD),
+                        style: BorderStyle.solid,
+                      ),
                     ),
                   ),
                 ),
@@ -393,10 +459,22 @@ class _CornYieldPageState extends State<CornYieldPage> {
 
   String? _numberValidator(String? value) {
     if (value == null || value.trim().isEmpty) return "Required";
-    final v = double.tryParse(value);
-    if (v == null) return "Enter a number";
-    if (v < 0) return "Cannot be negative";
     return null;
+  }
+
+  int _pestDiseaseLevelToIndex(String level) {
+    switch (level) {
+      case "None":
+        return 0;
+      case "Low":
+        return 1;
+      case "Medium":
+        return 2;
+      case "High":
+        return 3;
+      default:
+        return 1;
+    }
   }
 }
 
@@ -425,14 +503,22 @@ class _ResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxAbs = result.topFeatures.map((f) => f.shapValue.abs()).fold<double>(0, max);
+    final maxAbs = result.topFeatures
+        .map((f) => f.shapValue.abs())
+        .fold<double>(0, max);
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 14, offset: Offset(0, 10))],
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 14,
+            offset: Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,22 +529,30 @@ class _ResultCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 "Result",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w800, color: const Color(0xFF1F2D1F)),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF1F2D1F),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 10),
           Text(
             "Predicted yield: ${result.predictedYield.toStringAsFixed(0)} kg/acre",
-            style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w900, color: const Color(0xFF1F2D1F)),
+            style: GoogleFonts.manrope(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              color: const Color(0xFF1F2D1F),
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             "Main contributing factors",
-            style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w800, color: const Color(0xFF344034)),
+            style: GoogleFonts.manrope(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: const Color(0xFF344034),
+            ),
           ),
           const SizedBox(height: 12),
           ...result.topFeatures.map((f) {
@@ -471,12 +565,19 @@ class _ResultCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          f.displayName,
-                          style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w700, color: const Color(0xFF1F2D1F)),
+                          AppLocalizations.of(context).translate(f.displayName),
+                          style: GoogleFonts.manrope(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1F2D1F),
+                          ),
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
                           color: _pillColor(f.shapValue),
                           borderRadius: BorderRadius.circular(8),
@@ -528,12 +629,16 @@ class _ContributionBar extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: isPositive ? constraints.maxWidth / 2 : (constraints.maxWidth / 2 - width),
+              left: isPositive
+                  ? constraints.maxWidth / 2
+                  : (constraints.maxWidth / 2 - width),
               child: Container(
                 height: 12,
                 width: width,
                 decoration: BoxDecoration(
-                  color: isPositive ? const Color(0xFF4FB26C) : const Color(0xFFE85D4F),
+                  color: isPositive
+                      ? const Color(0xFF4FB26C)
+                      : const Color(0xFFE85D4F),
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
@@ -566,7 +671,10 @@ class _ErrorCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFFFF2F0),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8C6C3)),
+        border: Border.all(
+          color: const Color(0xFFE8C6C3),
+          style: BorderStyle.solid,
+        ),
       ),
       child: Row(
         children: [
@@ -575,7 +683,10 @@ class _ErrorCard extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.manrope(color: const Color(0xFF7A2C2C), fontWeight: FontWeight.w700),
+              style: GoogleFonts.manrope(
+                color: const Color(0xFF7A2C2C),
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -590,14 +701,84 @@ class YieldResult {
   final double predictedYield;
   final List<FeatureContribution> topFeatures;
 
-  factory YieldResult.fromJson(Map<String, dynamic> json) {
-    final featuresJson = json["top_contributing_features"] as List<dynamic>? ?? [];
+  factory YieldResult.fromJson(
+    Map<String, dynamic> json, {
+    required Map<String, String> selectedCats,
+  }) {
+    final featuresJson =
+        json["top_contributing_features"] as List<dynamic>? ?? [];
+    final rawFeatures = featuresJson
+        .map((e) => FeatureContribution.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    final grouped = _groupCategoricalFeatures(rawFeatures, selectedCats);
+
     return YieldResult(
       predictedYield: (json["predicted_yield_kg_per_acre"] as num).toDouble(),
-      topFeatures: featuresJson
-          .map((e) => FeatureContribution.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      topFeatures: grouped,
     );
+  }
+
+  static String _norm(String s) =>
+      s.toLowerCase().replaceAll('_', '').replaceAll(' ', '');
+
+  static List<FeatureContribution> _groupCategoricalFeatures(
+    List<FeatureContribution> features,
+    Map<String, String> selectedCats,
+  ) {
+    final Map<String, List<FeatureContribution>> groups = {};
+    final List<FeatureContribution> numeric = [];
+
+    final prefixes = [
+      'District:',
+      'Soil type:',
+      'Agro-ecological zone:',
+      'Irrigation type:',
+      'Variety:',
+    ];
+
+    for (final f in features) {
+      bool grouped = false;
+      for (final p in prefixes) {
+        if (f.displayName.startsWith(p)) {
+          final base = p.replaceAll(':', '');
+          (groups[base] ??= []).add(f);
+          grouped = true;
+          break;
+        }
+      }
+      if (!grouped) numeric.add(f);
+    }
+
+    final List<FeatureContribution> result = [];
+
+    for (final entry in groups.entries) {
+      final baseName = entry.key;
+      final group = entry.value;
+
+      if (group.isEmpty) continue;
+
+      final selectedValue = selectedCats[baseName];
+
+      // Total impact for the whole categorical feature
+      final totalShap = group.fold<double>(0, (sum, f) => sum + f.shapValue);
+
+      // ALWAYS show the user's selected value in the UI
+      final labelValue = (selectedValue != null && selectedValue.isNotEmpty)
+          ? selectedValue
+          : group.first.displayName.split(': ').last; // fallback
+
+      result.add(
+        FeatureContribution(
+          displayName: '$baseName: $labelValue',
+          shapValue: totalShap,
+        ),
+      );
+    }
+
+    result.addAll(numeric);
+    result.sort((a, b) => b.shapValue.abs().compareTo(a.shapValue.abs()));
+    return result;
   }
 }
 
