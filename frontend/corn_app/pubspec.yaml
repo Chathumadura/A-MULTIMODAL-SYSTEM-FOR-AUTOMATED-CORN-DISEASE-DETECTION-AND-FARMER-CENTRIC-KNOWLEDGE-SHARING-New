@@ -37,6 +37,7 @@ dependencies:
   http: ^0.13.6
   image_picker: ^1.0.7
   camera: ^0.10.5+9
+  google_fonts: ^4.0.4
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,9 @@ flutter:
   assets:
     - lib/features/diagnosis/presentation/image/Gemini_Generated_Image_crp1pgcrp1pgcrp1.png
     - lib/features/diagnosis/presentation/image/image 2.png
+
+  # If you prefer local fonts, add .ttf files under assets/fonts/ and add
+  # a fonts: section here. We currently use the google_fonts package instead.
 
   # To add assets to your application, add an assets section, like this:
   # assets:
