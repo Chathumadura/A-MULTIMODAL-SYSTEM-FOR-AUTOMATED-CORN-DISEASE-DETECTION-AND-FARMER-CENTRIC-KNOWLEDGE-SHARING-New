@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'features/diagnosis/presentation/pages/main_dashboard_page.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class CornNutrientApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
+        textTheme: GoogleFonts.notoSansSinhalaTextTheme(),
       ),
       home: const MainDashboardPage(),
     );

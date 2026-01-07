@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/api/api_client.dart';
 
@@ -437,7 +438,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   children: [
                     Text(
                       option['name'] ?? 'Unknown',
-                      style: const TextStyle(
+                      style: GoogleFonts.notoSansSinhala(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -446,8 +447,8 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                     const SizedBox(height: 4),
                     Text(
                       option['concentration'] ?? '',
-                      style: const TextStyle(
-                        color: Color(0xFF00D9A0),
+                      style: GoogleFonts.notoSansSinhala(
+                        color: const Color(0xFF00D9A0),
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -459,7 +460,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
           ),
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: const Color(0xFF0F1224),
               borderRadius: BorderRadius.circular(8),
@@ -468,12 +469,12 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildFertilizerDetail('Application', option['application']),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 _buildFertilizerDetail('Dosage (English)', option['dosage_en']),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 _buildFertilizerDetail('Dosage (Sinhala)', option['dosage_si']),
                 if (option['notes'] != null) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   _buildFertilizerDetail('Notes', option['notes']),
                 ],
               ],
@@ -485,6 +486,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
   }
 
   Widget _buildFertilizerDetail(String label, String? value) {
+    final isSinhala = label.contains('Sinhala');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -496,13 +498,16 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           value ?? 'N/A',
-          style: const TextStyle(
+          softWrap: true,
+          textAlign: TextAlign.left,
+          style: GoogleFonts.notoSansSinhala(
             color: Colors.white,
-            fontSize: 13,
-            height: 1.4,
+            fontSize: isSinhala ? 14 : 13,
+            height: 1.5,
+            letterSpacing: isSinhala ? 0.3 : 0,
           ),
         ),
       ],
