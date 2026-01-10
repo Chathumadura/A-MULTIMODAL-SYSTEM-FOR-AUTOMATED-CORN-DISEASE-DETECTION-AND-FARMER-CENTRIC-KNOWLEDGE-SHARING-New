@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../../../core/localization/app_localizations.dart';
 
 const String apiBaseUrl =
-    "http://10.0.2.2:8000"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
+    "http://10.0.2.2:8080"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
 
 class CornYieldPageEnhanced extends StatefulWidget {
   final Function(Locale)? onLanguageChange;
@@ -27,10 +27,10 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
-  final _farmSizeController = TextEditingController(text: "");
-  final _rainfallController = TextEditingController(text: "");
-  final _fertilizerController = TextEditingController(text: "");
-  final _prevYieldController = TextEditingController(text: "");
+  final _farmSizeController = TextEditingController(text: "10");
+  final _rainfallController = TextEditingController(text: "852");
+  final _fertilizerController = TextEditingController(text: "85");
+  final _prevYieldController = TextEditingController(text: "2589");
 
   final List<String> _districts = ["Anuradhapura"];
 
@@ -48,10 +48,10 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
   final List<String> _pestDiseaseLevels = ["None", "Low", "Medium", "High"];
 
   String _district = "Anuradhapura";
-  String? _variety;
-  String? _soilType;
-  String? _irrigationType;
-  String? _pestDiseaseLevel;
+  String? _variety = "Hybrid_B";
+  String? _soilType = "Loam";
+  String? _irrigationType = "Tank";
+  String? _pestDiseaseLevel = "None";
 
   bool _loading = false;
   YieldResult? _result;
@@ -578,15 +578,15 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF2E8D4E),
-            const Color(0xFF4FB26C),
-            Colors.lightGreen.shade400,
+            const Color(0xFFFFF9C4), // Light yellow
+            const Color(0xFFFFEB3B).withOpacity(0.4), // Medium yellow-green
+            const Color(0xFFC5E1A5), // Light green
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.3),
+            color: Colors.amber.withOpacity(0.2),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -1321,34 +1321,21 @@ class _ResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                loc.translate(f.displayName),
-                                maxLines: 1,
-                                overflow: TextOverflow.visible,
-                                softWrap: false,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: const Color(0xFF1F2D1F),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Impact: $percentage%",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
+                          child: Text(
+                            loc.translate(f.displayName),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF1F2D1F),
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -1373,6 +1360,15 @@ class _ResultCard extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Impact: $percentage%",
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     _ContributionBar(
