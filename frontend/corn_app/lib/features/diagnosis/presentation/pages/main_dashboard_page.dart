@@ -50,7 +50,12 @@ class MainDashboardPage extends StatelessWidget {
             color: const Color(0xFFF9A825),
             shadows: [
               Shadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.orange.withOpacity(0.5),
+                offset: const Offset(0, 0),
+                blurRadius: 8,
+              ),
+              Shadow(
+                color: Colors.black.withOpacity(0.3),
                 offset: const Offset(0, 2),
                 blurRadius: 4,
               ),
@@ -83,7 +88,10 @@ class MainDashboardPage extends StatelessWidget {
                 height: 28,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image_not_supported_outlined, size: 24);
+                  return const Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 24,
+                  );
                 },
               ),
             ),
@@ -242,8 +250,11 @@ class MainDashboardPage extends StatelessWidget {
                           height: 64,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.image_not_supported_outlined,
-                                color: Colors.white, size: 48);
+                            return const Icon(
+                              Icons.image_not_supported_outlined,
+                              color: Colors.white,
+                              size: 48,
+                            );
                           },
                         ),
                       ),
@@ -282,9 +293,9 @@ class MainDashboardPage extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 14,
-                  mainAxisSpacing: 14,
-                  childAspectRatio: 0.72,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.80,
                 ),
                 children: [
                   _FeatureCard(
@@ -419,10 +430,7 @@ class _FeatureCard extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.7),
-          width: 2.5,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.7), width: 2.5),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF1B5E20).withOpacity(0.2),
@@ -444,7 +452,7 @@ class _FeatureCard extends StatelessWidget {
           children: [
             // image (top)
             Expanded(
-              flex: 6,
+              flex: 5,
               child: Container(
                 color: Colors.white,
                 child: Image.asset(
@@ -463,23 +471,23 @@ class _FeatureCard extends StatelessWidget {
             Expanded(
               flex: 5,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
                       style: GoogleFonts.poppins(
-                        fontSize: 15.5,
+                        fontSize: 14.5,
                         fontWeight: FontWeight.w700,
-                        height: 1.2,
+                        height: 1.15,
                         letterSpacing: 0.2,
                       ),
                     ),
                     const Spacer(),
                     SizedBox(
                       width: double.infinity,
-                      height: 40,
+                      height: 38,
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
