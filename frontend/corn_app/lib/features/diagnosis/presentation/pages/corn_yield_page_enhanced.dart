@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 const String apiBaseUrl =
@@ -395,9 +396,9 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFFFFFFFF),
-            const Color(0xFFF0FFF4),
-            const Color(0xFFE8F5E9),
+            const Color(0xFFFFFDE7),
+            const Color(0xFFFFF59D),
+            const Color(0xFFFFF9C4),
           ],
         ),
         borderRadius: BorderRadius.circular(28),
@@ -500,7 +501,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
                         ),
                       ),
                       const Icon(
-                        Icons.eco_rounded,
+                        Icons.insights_rounded,
                         color: Colors.white,
                         size: 36,
                       ),
@@ -1233,8 +1234,8 @@ class _ResultCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.lightGreen.shade400,
-                  Colors.lightGreen.shade500,
+                  Colors.lightGreen.shade600,
+                  Colors.lightGreen.shade700,
                 ],
               ),
               borderRadius: BorderRadius.circular(20),
@@ -1381,6 +1382,228 @@ class _ResultCard extends StatelessWidget {
               ),
             );
           }).toList(),
+          const SizedBox(height: 24),
+          _buildFactorsChart(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFactorsChart(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.bar_chart_rounded,
+                size: 20,
+                color: Color(0xFF2E8D4E),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                loc.translate('Impact Analysis'),
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF344034),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 300,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: 100,
+                minY: -100,
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (group) => Colors.grey.shade800,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final feature = result.topFeatures[group.x.toInt()];
+                      final totalAbsShap = result.topFeatures
+                          .map((f) => f.shapValue.abs())
+                          .fold<double>(0, (sum, val) => sum + val);
+                      final percentage = totalAbsShap > 0
+                          ? ((feature.shapValue.abs() / totalAbsShap) * 100)
+                                .toStringAsFixed(1)
+                          : "0.0";
+                      return BarTooltipItem(
+                        '${loc.translate(feature.displayName)}\n$percentage%',
+                        GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < result.topFeatures.length) {
+                          final name = result
+                              .topFeatures[value.toInt()]
+                              .displayName
+                              .split(':')[0];
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Transform.rotate(
+                              angle: -0.5,
+                              child: Text(
+                                name.length > 8
+                                    ? '${name.substring(0, 8)}...'
+                                    : name,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade700,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          );
+                        }
+                        return const SizedBox();
+                      },
+                      reservedSize: 50,
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 50,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          value.toStringAsFixed(0),
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade600,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: 25,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(color: Colors.grey.shade300, strokeWidth: 1);
+                  },
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border(
+                    left: BorderSide(color: Colors.grey.shade400, width: 1),
+                    bottom: BorderSide(color: Colors.grey.shade400, width: 1),
+                  ),
+                ),
+                barGroups: result.topFeatures.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final feature = entry.value;
+                  final totalAbsShap = result.topFeatures
+                      .map((f) => f.shapValue.abs())
+                      .fold<double>(0, (sum, val) => sum + val);
+                  final percentage = totalAbsShap > 0
+                      ? (feature.shapValue.abs() / totalAbsShap) * 100
+                      : 0.0;
+                  final normalizedValue = feature.shapValue >= 0
+                      ? percentage
+                      : -percentage;
+
+                  return BarChartGroupData(
+                    x: index,
+                    barRods: [
+                      BarChartRodData(
+                        toY: normalizedValue,
+                        gradient: LinearGradient(
+                          colors: feature.shapValue >= 0
+                              ? [Colors.green.shade400, Colors.green.shade600]
+                              : [Colors.red.shade400, Colors.red.shade600],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                        width: 30,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(6),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 16,
+                height: 16,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.green.shade400, Colors.green.shade600],
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                loc.translate('Positive Impact'),
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+              const SizedBox(width: 20),
+              Container(
+                width: 16,
+                height: 16,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.red.shade400, Colors.red.shade600],
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                loc.translate('Negative Impact'),
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
