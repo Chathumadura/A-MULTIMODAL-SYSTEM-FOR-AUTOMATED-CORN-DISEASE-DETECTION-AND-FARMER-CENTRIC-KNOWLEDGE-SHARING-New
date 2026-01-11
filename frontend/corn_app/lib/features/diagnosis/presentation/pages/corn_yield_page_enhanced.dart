@@ -245,9 +245,10 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              const Color(0xFF2E8D4E),
-              const Color(0xFF4FB26C),
-              Colors.lightGreen.shade200,
+              const Color.fromARGB(255, 19, 124, 54),
+              const Color.fromARGB(255, 27, 128, 57),
+              const Color.fromARGB(255, 85, 172, 74),
+              const Color.fromARGB(255, 217, 227, 103).withOpacity(0.8),
             ],
           ),
         ),
@@ -396,9 +397,9 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFFFFFDE7),
-            const Color(0xFFFFF59D),
-            const Color(0xFFFFF9C4),
+            const Color.fromARGB(255, 222, 217, 110),
+            const Color.fromARGB(255, 230, 221, 135),
+            const Color.fromARGB(255, 244, 236, 164),
           ],
         ),
         borderRadius: BorderRadius.circular(28),
@@ -430,7 +431,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    Colors.green.shade200.withOpacity(0.2),
+                    const Color.fromARGB(255, 99, 232, 104).withOpacity(0.2),
                     Colors.green.shade100.withOpacity(0.1),
                   ],
                 ),
@@ -1076,12 +1077,20 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.orange.shade400, Colors.orange.shade600],
+                colors: [
+                  const Color.fromARGB(255, 239, 136, 52),
+                  const Color.fromARGB(255, 234, 142, 29),
+                ],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.orange.withOpacity(0.4),
+                  color: const Color.fromARGB(
+                    255,
+                    234,
+                    159,
+                    46,
+                  ).withOpacity(0.4),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),
@@ -1142,11 +1151,21 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
   }
 }
 
-class _ResultCard extends StatelessWidget {
+class _ResultCard extends StatefulWidget {
   const _ResultCard({super.key, required this.result, required this.loc});
 
   final YieldResult result;
   final AppLocalizations loc;
+
+  @override
+  State<_ResultCard> createState() => _ResultCardState();
+}
+
+class _ResultCardState extends State<_ResultCard>
+    with SingleTickerProviderStateMixin {
+  bool _showExplanation = false;
+  String _typedText = "";
+  bool _isTyping = false;
 
   Color _pillColor(double shap) {
     if (shap > 0) return Colors.green.shade50;
@@ -1155,20 +1174,312 @@ class _ResultCard extends StatelessWidget {
   }
 
   Color _pillTextColor(double shap) {
-    if (shap > 0) return Colors.green.shade700;
+    if (shap > 0) return const Color.fromARGB(255, 47, 157, 53);
     if (shap < 0) return Colors.red.shade700;
     return Colors.grey.shade700;
   }
 
   String _effectText(double shap) {
-    if (shap > 0) return loc.increasesYield;
-    if (shap < 0) return loc.reducesYield;
-    return loc.noChange;
+    if (shap > 0) return widget.loc.increasesYield;
+    if (shap < 0) return widget.loc.reducesYield;
+    return widget.loc.noChange;
+  }
+
+  Future<void> _startTypingAnimation(String fullText) async {
+    if (_isTyping) return;
+
+    setState(() {
+      _isTyping = true;
+      _typedText = "";
+    });
+
+    // Show dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            // Start typing animation
+            if (_typedText.isEmpty) {
+              _animateTextInDialog(fullText, setDialogState);
+            }
+
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 500),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [const Color(0xFFFFF9C4), const Color(0xFFFFFDE7)],
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.amber.shade200, width: 2),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Header
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFFFFA000),
+                            const Color(0xFFFFC107),
+                          ],
+                        ),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(22),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.psychology,
+                              color: Color(0xFFFFA000),
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              widget.loc.locale.languageCode == 'en'
+                                  ? 'AI Explanation'
+                                  : 'AI විස්තරය',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          if (!_isTyping)
+                            IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop();
+                                setState(() {
+                                  _typedText = "";
+                                });
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                    // Content
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.amber.withOpacity(0.3),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.lightbulb,
+                                  color: Color(0xFFFFA000),
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _typedText,
+                                  style: GoogleFonts.poppins(
+                                    fontSize:
+                                        widget.loc.locale.languageCode == 'en'
+                                        ? 14
+                                        : 12.5,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF1F2D1F),
+                                    height: 1.6,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_isTyping)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16, left: 52),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.amber.shade700,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    widget.loc.locale.languageCode == 'en'
+                                        ? 'Analyzing...'
+                                        : 'විශ්ලේෂණය කරමින්...',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey.shade600,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _animateTextInDialog(
+    String fullText,
+    StateSetter setDialogState,
+  ) async {
+    const typingSpeed = Duration(milliseconds: 20);
+
+    for (int i = 0; i <= fullText.length; i++) {
+      if (!mounted) break;
+      await Future.delayed(typingSpeed);
+      if (mounted) {
+        setState(() {
+          _typedText = fullText.substring(0, i);
+        });
+        setDialogState(() {});
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _isTyping = false;
+      });
+    }
+  }
+
+  String _generateExplanation() {
+    final isEn = widget.loc.locale.languageCode == 'en';
+    final predictedValue = widget.result.predictedYield.toStringAsFixed(0);
+
+    if (widget.result.topFeatures.isEmpty) {
+      return isEn
+          ? "Your predicted corn yield is $predictedValue kg per acre based on the provided farming conditions."
+          : "ඔබගේ පුරෝකථිත බඩඉරිගු අස්වැන්න අක්කර එකකට කිලෝග්‍රෑම් $predictedValue කි.";
+    }
+
+    final topFeature = widget.result.topFeatures.first;
+    final featureName = topFeature.displayName;
+    final impact = topFeature.shapValue;
+    final isPositive = impact > 0;
+
+    // Calculate total impact percentage
+    final totalAbsShap = widget.result.topFeatures
+        .map((f) => f.shapValue.abs())
+        .fold<double>(0, (sum, val) => sum + val);
+    final percentage = totalAbsShap > 0
+        ? ((impact.abs() / totalAbsShap) * 100).round()
+        : 0;
+
+    String explanation;
+    if (isEn) {
+      explanation =
+          "Your predicted corn yield is $predictedValue kg per acre. ";
+
+      if (isPositive) {
+        explanation +=
+            "The main positive factor is $featureName, which contributes $percentage% to increasing your yield. ";
+      } else {
+        explanation +=
+            "The main limiting factor is $featureName, which reduces your potential yield by $percentage%. ";
+      }
+
+      // Add second factor if exists
+      if (widget.result.topFeatures.length > 1) {
+        final secondFeature = widget.result.topFeatures[1];
+        final secondImpact = secondFeature.shapValue;
+        final secondPercentage = totalAbsShap > 0
+            ? ((secondImpact.abs() / totalAbsShap) * 100).round()
+            : 0;
+
+        if (secondImpact > 0) {
+          explanation +=
+              "${secondFeature.displayName} also helps, contributing $secondPercentage%. ";
+        } else {
+          explanation +=
+              "${secondFeature.displayName} also has a negative impact of $secondPercentage%. ";
+        }
+      }
+
+      // Add recommendation
+      if (!isPositive &&
+          widget.result.topFeatures.any((f) => f.shapValue < 0)) {
+        explanation +=
+            "Consider improving the limiting factors to increase your yield.";
+      } else {
+        explanation +=
+            "Your current practices are supporting good yield potential.";
+      }
+    } else {
+      // Sinhala explanation
+      explanation =
+          "ඔබගේ පුරෝකථිත බඩඉරිගු අස්වැන්න අක්කර එකකට කිලෝග්‍රෑම් $predictedValue කි. ";
+
+      if (isPositive) {
+        explanation +=
+            "ප්‍රධාන ධනාත්මක සාධකය $featureName වන අතර, එය ඔබේ අස්වැන්න වැඩි කිරීමට $percentage% දායක වේ. ";
+      } else {
+        explanation +=
+            "ප්‍රධාන සීමා සාධකය $featureName වන අතර, එය ඔබේ අස්වැන්න $percentage% අඩු කරයි. ";
+      }
+
+      if (!isPositive) {
+        explanation +=
+            "වැඩි අස්වැන්නක් ලබා ගැනීමට සීමා සාධක වැඩිදියුණු කිරීම සලකා බලන්න.";
+      } else {
+        explanation += "ඔබේ වර්තමාන ක්‍රම හොඳ අස්වැන්නක් සඳහා සහාය වේ.";
+      }
+    }
+
+    return explanation;
   }
 
   @override
   Widget build(BuildContext context) {
-    final maxAbs = result.topFeatures
+    final maxAbs = widget.result.topFeatures
         .map((f) => f.shapValue.abs())
         .fold<double>(0, max);
 
@@ -1215,11 +1526,11 @@ class _ResultCard extends StatelessWidget {
                 const Icon(Icons.eco, color: Colors.white, size: 24),
                 const SizedBox(width: 12),
                 Text(
-                  loc.result,
+                  widget.loc.result,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    fontSize: loc.locale.languageCode == 'en' ? 18 : 15,
+                    fontSize: widget.loc.locale.languageCode == 'en' ? 18 : 15,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
                     letterSpacing: 0.5,
@@ -1260,21 +1571,25 @@ class _ResultCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        loc.predictedYield,
+                        widget.loc.predictedYield,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
-                          fontSize: loc.locale.languageCode == 'en' ? 14 : 12,
+                          fontSize: widget.loc.locale.languageCode == 'en'
+                              ? 14
+                              : 12,
                           fontWeight: FontWeight.w600,
                           color: Colors.white.withOpacity(0.9),
                         ),
                       ),
                       Text(
-                        "${result.predictedYield.toStringAsFixed(0)} ${loc.kgPerAcre}",
+                        "${widget.result.predictedYield.toStringAsFixed(0)} ${widget.loc.kgPerAcre}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
-                          fontSize: loc.locale.languageCode == 'en' ? 28 : 22,
+                          fontSize: widget.loc.locale.languageCode == 'en'
+                              ? 28
+                              : 22,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                         ),
@@ -1287,22 +1602,22 @@ class _ResultCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            loc.mainContributingFactors,
+            widget.loc.mainContributingFactors,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.poppins(
-              fontSize: loc.locale.languageCode == 'en' ? 16 : 14,
+              fontSize: widget.loc.locale.languageCode == 'en' ? 16 : 14,
               fontWeight: FontWeight.w800,
               color: const Color(0xFF344034),
             ),
           ),
           const SizedBox(height: 16),
-          ...result.topFeatures.asMap().entries.map((entry) {
+          ...widget.result.topFeatures.asMap().entries.map((entry) {
             final index = entry.key;
             final f = entry.value;
 
             // Calculate percentage for this feature
-            final totalAbsShap = result.topFeatures
+            final totalAbsShap = widget.result.topFeatures
                 .map((feature) => feature.shapValue.abs())
                 .fold<double>(0, (sum, val) => sum + val);
             final percentage = totalAbsShap > 0
@@ -1326,7 +1641,7 @@ class _ResultCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            loc.translate(f.displayName),
+                            widget.loc.translate(f.displayName),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
@@ -1382,8 +1697,65 @@ class _ResultCard extends StatelessWidget {
               ),
             );
           }).toList(),
-          const SizedBox(height: 24),
-          _buildFactorsChart(context),
+          const SizedBox(height: 20),
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [const Color(0xFFFFA000), const Color(0xFFFFC107)],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.amber.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _startTypingAnimation(_generateExplanation()),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.psychology,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          widget.loc.locale.languageCode == 'en'
+                              ? 'Explain with AI'
+                              : 'AI විස්තරය',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.auto_awesome,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1409,7 +1781,7 @@ class _ResultCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                loc.translate('Impact Analysis'),
+                widget.loc.translate('Impact Analysis'),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
@@ -1431,8 +1803,9 @@ class _ResultCard extends StatelessWidget {
                   touchTooltipData: BarTouchTooltipData(
                     getTooltipColor: (group) => Colors.grey.shade800,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      final feature = result.topFeatures[group.x.toInt()];
-                      final totalAbsShap = result.topFeatures
+                      final feature =
+                          widget.result.topFeatures[group.x.toInt()];
+                      final totalAbsShap = widget.result.topFeatures
                           .map((f) => f.shapValue.abs())
                           .fold<double>(0, (sum, val) => sum + val);
                       final percentage = totalAbsShap > 0
@@ -1440,7 +1813,7 @@ class _ResultCard extends StatelessWidget {
                                 .toStringAsFixed(1)
                           : "0.0";
                       return BarTooltipItem(
-                        '${loc.translate(feature.displayName)}\n$percentage%',
+                        '${widget.loc.translate(feature.displayName)}\n$percentage%',
                         GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -1457,8 +1830,9 @@ class _ResultCard extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() >= 0 &&
-                            value.toInt() < result.topFeatures.length) {
-                          final name = result
+                            value.toInt() < widget.result.topFeatures.length) {
+                          final name = widget
+                              .result
                               .topFeatures[value.toInt()]
                               .displayName
                               .split(':')[0];
@@ -1523,10 +1897,12 @@ class _ResultCard extends StatelessWidget {
                     bottom: BorderSide(color: Colors.grey.shade400, width: 1),
                   ),
                 ),
-                barGroups: result.topFeatures.asMap().entries.map((entry) {
+                barGroups: widget.result.topFeatures.asMap().entries.map((
+                  entry,
+                ) {
                   final index = entry.key;
                   final feature = entry.value;
-                  final totalAbsShap = result.topFeatures
+                  final totalAbsShap = widget.result.topFeatures
                       .map((f) => f.shapValue.abs())
                       .fold<double>(0, (sum, val) => sum + val);
                   final percentage = totalAbsShap > 0
@@ -1575,7 +1951,7 @@ class _ResultCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                loc.translate('Positive Impact'),
+                widget.loc.translate('Positive Impact'),
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -1595,7 +1971,7 @@ class _ResultCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                loc.translate('Negative Impact'),
+                widget.loc.translate('Negative Impact'),
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
