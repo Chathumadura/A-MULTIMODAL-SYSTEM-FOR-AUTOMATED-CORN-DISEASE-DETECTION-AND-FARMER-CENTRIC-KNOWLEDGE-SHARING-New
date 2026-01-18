@@ -15,8 +15,6 @@ class Env {
   );
 
   static const String _emulatorBaseUrl = 'http://10.0.2.2:8000';
-  static const String _physicalDeviceUrl =
-      'http://10.161.164.34:8000'; // Your PC's Wi-Fi IP (detected)
   static const String _localWebBaseUrl = 'http://localhost:8000';
 
   static String get baseUrl {

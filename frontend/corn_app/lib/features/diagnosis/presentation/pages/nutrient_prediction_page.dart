@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../../core/api/api_client.dart';
 
 class NutrientPredictionPage extends StatefulWidget {
@@ -16,7 +15,6 @@ class NutrientPredictionPage extends StatefulWidget {
 
 class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     with SingleTickerProviderStateMixin {
-  final ImagePicker _picker = ImagePicker();
   final ApiClient _apiClient = ApiClient();
 
   File? _selectedImage;
