@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../../core/api/api_client.dart';
 
 class NutrientPredictionPage extends StatefulWidget {
@@ -16,7 +15,6 @@ class NutrientPredictionPage extends StatefulWidget {
 
 class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     with SingleTickerProviderStateMixin {
-  final ImagePicker _picker = ImagePicker();
   final ApiClient _apiClient = ApiClient();
 
   File? _selectedImage;
@@ -24,9 +22,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
   String? _predictedClass;
   double? _confidence;
   String? _errorMsg;
-  List<double>? _probabilities;
   Map<String, dynamic>? _fertilizerRecommendations;
-  List<Map<String, dynamic>>? _top3;
   Map<String, double>? _allProbabilities;
   late AnimationController _animationController;
 
@@ -104,21 +100,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
         if (conf is num) {
           _confidence = conf.toDouble();
         }
-        final probs = data['probabilities'];
-        if (probs is List) {
-          _probabilities = probs.map((e) => (e as num).toDouble()).toList();
-        }
         // Store fertilizer recommendations from API response
         final recs = data['fertilizer_recommendations'];
         if (recs is Map<String, dynamic>) {
           _fertilizerRecommendations = recs;
-        }
-        // Parse top_3 multi-condition results
-        final top3Raw = data['top_3'];
-        if (top3Raw is List) {
-          _top3 = top3Raw
-              .map((e) => Map<String, dynamic>.from(e as Map))
-              .toList();
         }
         // Parse all_probabilities for nutrient distribution panel
         final allProbs = data['all_probabilities'];
@@ -579,10 +564,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                         const SizedBox(height: 18),
                         _buildConfidenceChart(),
                         const SizedBox(height: 18),
-                        if (_top3 != null && _top3!.length >= 3)
-                          _buildMultiConditionSection(),
-                        if (_top3 != null && _top3!.length >= 3)
-                          const SizedBox(height: 18),
                         _buildActionRequired(),
                       ],
                     ),
@@ -922,151 +903,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
         ],
       ),
     );
-  }
-
-  // ── Multi-Condition Section ──────────────────────────────────────────────
-  Widget _buildMultiConditionSection() {
-    final secondaries = _top3!.skip(1).toList(); // indices 1 & 2
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1D1F33),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blueAccent.withOpacity(0.25)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.biotech_rounded,
-                color: Colors.blueAccent,
-                size: 18,
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'Other Possible Nutrient Conditions',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          const Text(
-            'Secondary candidates identified by the model:',
-            style: TextStyle(color: Colors.white54, fontSize: 12),
-          ),
-          const SizedBox(height: 16),
-          ...secondaries.map((item) {
-            final cls = item['class'] as String? ?? '';
-            final prob = ((item['probability'] as num?)?.toDouble() ?? 0.0);
-            return _buildSecondaryConditionRow(cls, prob);
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSecondaryConditionRow(String className, double probability) {
-    final pct = (probability * 100).toStringAsFixed(1);
-    final Color barColor = _secondaryColor(className);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: barColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: barColor.withOpacity(0.4)),
-                    ),
-                    child: Text(
-                      className,
-                      style: TextStyle(
-                        color: barColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _deficiencyLabel(className),
-                    style: const TextStyle(color: Colors.white54, fontSize: 11),
-                  ),
-                ],
-              ),
-              Text(
-                '$pct%',
-                style: TextStyle(
-                  color: barColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: probability.clamp(0.0, 1.0),
-              minHeight: 7,
-              backgroundColor: Colors.white.withOpacity(0.08),
-              valueColor: AlwaysStoppedAnimation<Color>(barColor),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _secondaryColor(String className) {
-    switch (className) {
-      case 'NAB':
-        return Colors.lightBlueAccent;
-      case 'KAB':
-        return Colors.purpleAccent;
-      case 'PAB':
-        return Colors.orangeAccent;
-      case 'ZNAB':
-        return Colors.tealAccent;
-      case 'Healthy':
-        return const Color(0xFF00D9A0);
-      default:
-        return Colors.blueAccent;
-    }
-  }
-
-  String _deficiencyLabel(String className) {
-    switch (className) {
-      case 'NAB':
-        return 'Nitrogen Deficiency';
-      case 'KAB':
-        return 'Potassium Deficiency';
-      case 'PAB':
-        return 'Phosphorus Deficiency';
-      case 'ZNAB':
-        return 'Zinc Deficiency';
-      case 'Healthy':
-        return 'No Deficiency';
-      default:
-        return 'Unknown';
-    }
   }
 
   Widget _buildNutrientGauges() {
