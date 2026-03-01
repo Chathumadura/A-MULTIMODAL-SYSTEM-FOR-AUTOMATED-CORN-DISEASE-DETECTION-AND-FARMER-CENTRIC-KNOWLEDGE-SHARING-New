@@ -577,10 +577,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                         const SizedBox(height: 18),
                         _buildConfidenceBanner(),
                         const SizedBox(height: 18),
-                        if (_allProbabilities != null)
-                          _buildNutrientProbabilityDistribution(),
-                        if (_allProbabilities != null)
-                          const SizedBox(height: 18),
                         _buildConfidenceChart(),
                         const SizedBox(height: 18),
                         if (_top3 != null && _top3!.length >= 3)
@@ -630,8 +626,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     );
   }
 
-  // ── Nutrient Probability Distribution ────────────────────────────────────
-  Widget _buildNutrientProbabilityDistribution() {
+  // ── [Removed] Nutrient Probability Distribution (now shown in gauges) ──
+  // ignore: unused_element
+  Widget _buildNutrientProbabilityDistribution_REMOVED() {
     final Map<String, Map<String, dynamic>> nutrientMeta = {
       'NAB': {
         'label': 'Nitrogen',
@@ -671,9 +668,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       decoration: BoxDecoration(
         color: const Color(0xFF1D1F33),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF00D9A0).withOpacity(0.22),
-        ),
+        border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -734,8 +729,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
           const SizedBox(height: 4),
           Row(
             children: [
-              const Icon(Icons.info_outline,
-                  color: Colors.white24, size: 13),
+              const Icon(Icons.info_outline, color: Colors.white24, size: 13),
               const SizedBox(width: 6),
               const Text(
                 'Values from model softmax output',
@@ -748,6 +742,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     );
   }
 
+  // ignore: unused_element
   Widget _buildNutrientRow({
     required String symbol,
     required String label,
@@ -759,8 +754,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, _) {
-        final animatedValue =
-            (probability * _animationController.value).clamp(0.0, 1.0);
+        final animatedValue = (probability * _animationController.value).clamp(
+          0.0,
+          1.0,
+        );
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: Container(
@@ -771,8 +768,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                 ? BoxDecoration(
                     color: color.withOpacity(0.09),
                     borderRadius: BorderRadius.circular(10),
-                    border:
-                        Border.all(color: color.withOpacity(0.40), width: 1.2),
+                    border: Border.all(
+                      color: color.withOpacity(0.40),
+                      width: 1.2,
+                    ),
                   )
                 : null,
             child: Row(
@@ -808,35 +807,35 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                           Text(
                             '$label Deficiency',
                             style: TextStyle(
-                              color:
-                                  isHighest ? color : Colors.white60,
+                              color: isHighest ? color : Colors.white60,
                               fontSize: 12.5,
                               fontWeight: isHighest
                                   ? FontWeight.w700
                                   : FontWeight.normal,
                             ),
                           ),
-                          if (isHighest) ...
-                            [
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: color.withOpacity(0.22),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  'PRIMARY',
-                                  style: TextStyle(
-                                    color: color,
-                                    fontSize: 8.5,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.9,
-                                  ),
+                          if (isHighest) ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.withOpacity(0.22),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'PRIMARY',
+                                style: TextStyle(
+                                  color: color,
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.9,
                                 ),
                               ),
-                            ],
+                            ),
+                          ],
                         ],
                       ),
                       const SizedBox(height: 6),
@@ -845,10 +844,8 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                         child: LinearProgressIndicator(
                           value: animatedValue,
                           minHeight: 7,
-                          backgroundColor:
-                              Colors.white.withOpacity(0.07),
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(color),
+                          backgroundColor: Colors.white.withOpacity(0.07),
+                          valueColor: AlwaysStoppedAnimation<Color>(color),
                         ),
                       ),
                     ],
@@ -892,10 +889,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     final Color borderColor = isHigh
         ? const Color(0xFF00D9A0).withOpacity(0.4)
         : Colors.amber.withOpacity(0.4);
-    final Color iconColor =
-        isHigh ? const Color(0xFF00D9A0) : Colors.amber;
-    final IconData icon =
-        isHigh ? Icons.verified_rounded : Icons.warning_amber_rounded;
+    final Color iconColor = isHigh ? const Color(0xFF00D9A0) : Colors.amber;
+    final IconData icon = isHigh
+        ? Icons.verified_rounded
+        : Icons.warning_amber_rounded;
     final String label = isHigh
         ? 'High Confidence Prediction'
         : 'Moderate Confidence – Secondary nutrient deficiencies possible.';
@@ -935,9 +932,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       decoration: BoxDecoration(
         color: const Color(0xFF1D1F33),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.blueAccent.withOpacity(0.25),
-        ),
+        border: Border.all(color: Colors.blueAccent.withOpacity(0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -963,16 +958,12 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
           const SizedBox(height: 6),
           const Text(
             'Secondary candidates identified by the model:',
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.white54, fontSize: 12),
           ),
           const SizedBox(height: 16),
           ...secondaries.map((item) {
             final cls = item['class'] as String? ?? '';
-            final prob =
-                ((item['probability'] as num?)?.toDouble() ?? 0.0);
+            final prob = ((item['probability'] as num?)?.toDouble() ?? 0.0);
             return _buildSecondaryConditionRow(cls, prob);
           }),
         ],
@@ -995,7 +986,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: barColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(6),
@@ -1013,10 +1006,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   const SizedBox(width: 8),
                   Text(
                     _deficiencyLabel(className),
-                    style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: 11,
-                    ),
+                    style: const TextStyle(color: Colors.white54, fontSize: 11),
                   ),
                 ],
               ),
@@ -1080,31 +1070,91 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
   }
 
   Widget _buildNutrientGauges() {
+    const Map<String, Map<String, dynamic>> nutrientConfig = {
+      'NAB': {'label': 'Nitrogen', 'symbol': 'N', 'color': Color(0xFF64B5F6)},
+      'PAB': {'label': 'Phosphorus', 'symbol': 'P', 'color': Color(0xFFFFB74D)},
+      'KAB': {'label': 'Potassium', 'symbol': 'K', 'color': Color(0xFFCE93D8)},
+      'ZNAB': {'label': 'Zinc', 'symbol': 'ZN', 'color': Color(0xFF4DB6AC)},
+    };
+
+    final Map<String, double> probs = {
+      for (final k in nutrientConfig.keys) k: _allProbabilities?[k] ?? 0.0,
+    };
+
+    final highestKey = probs.entries
+        .reduce((a, b) => a.value > b.value ? a : b)
+        .key;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFF1D1F33),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.15)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildCircularGauge(
-                'Nitrogen (N)',
-                _predictedClass == 'NAB' ? 2.4 : 3.5,
-                _predictedClass == 'NAB',
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00D9A0).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.donut_large_rounded,
+                  color: Color(0xFF00D9A0),
+                  size: 18,
+                ),
               ),
-              _buildCircularGauge(
-                'Phosphorus (P)',
-                _predictedClass == 'PAB' ? 0.5 : 3.2,
-                _predictedClass == 'PAB',
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Nutrient Deficiency Probability',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.2,
+                  ),
+                ),
               ),
-              _buildCircularGauge(
-                'Potassium (K)',
-                _predictedClass == 'KAB' ? 1.9 : 3.0,
-                _predictedClass == 'KAB',
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Model softmax output per nutrient class',
+            style: TextStyle(color: Colors.white38, fontSize: 11.5),
+          ),
+          const SizedBox(height: 18),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 14,
+            childAspectRatio: 1.05,
+            children: [
+              for (final key in ['NAB', 'PAB', 'KAB', 'ZNAB'])
+                _buildProbCircle(
+                  label: nutrientConfig[key]!['label'] as String,
+                  symbol: nutrientConfig[key]!['symbol'] as String,
+                  probability: probs[key]!,
+                  color: nutrientConfig[key]!['color'] as Color,
+                  isPrimary: key == highestKey,
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: const [
+              Icon(Icons.info_outline, color: Colors.white24, size: 13),
+              SizedBox(width: 6),
+              Text(
+                'Values from model softmax output',
+                style: TextStyle(color: Colors.white24, fontSize: 10.5),
               ),
             ],
           ),
@@ -1113,60 +1163,132 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     );
   }
 
-  Widget _buildCircularGauge(String label, double value, bool isDeficient) {
-    final percentage = (value / 4.0).clamp(0.0, 1.0);
-    final color = isDeficient ? Colors.orange : const Color(0xFF00D9A0);
-    final status = isDeficient ? '[Low]' : '[Optimal]';
+  Widget _buildProbCircle({
+    required String label,
+    required String symbol,
+    required double probability,
+    required Color color,
+    required bool isPrimary,
+  }) {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, _) {
+        final animatedVal = (probability * _animationController.value).clamp(
+          0.0,
+          1.0,
+        );
+        final pctText = '${(probability * 100).toStringAsFixed(1)}%';
 
-    return Column(
-      children: [
-        SizedBox(
-          width: 90,
-          height: 90,
-          child: Stack(
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isPrimary
+                ? color.withOpacity(0.10)
+                : const Color(0xFF0F1224),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isPrimary
+                  ? color.withOpacity(0.60)
+                  : color.withOpacity(0.22),
+              width: isPrimary ? 1.8 : 1.0,
+            ),
+            boxShadow: isPrimary
+                ? [
+                    BoxShadow(
+                      color: color.withOpacity(0.22),
+                      blurRadius: 14,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : null,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Center(
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      return CustomPaint(
-                        painter: CircularGaugePainter(
-                          percentage: percentage * _animationController.value,
-                          color: color,
-                        ),
-                      );
-                    },
+              if (isPrimary)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.22),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    'PRIMARY',
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                    ),
                   ),
                 ),
-              ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              SizedBox(
+                width: 72,
+                height: 72,
+                child: Stack(
                   children: [
-                    Text(
-                      '${value.toStringAsFixed(1)}%',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Center(
+                      child: SizedBox(
+                        width: 68,
+                        height: 68,
+                        child: CustomPaint(
+                          painter: CircularGaugePainter(
+                            percentage: animatedVal,
+                            color: color,
+                          ),
+                        ),
                       ),
                     ),
-                    Text(status, style: TextStyle(color: color, fontSize: 10)),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            symbol,
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          Text(
+                            pctText,
+                            style: TextStyle(
+                              color: isPrimary ? color : Colors.white,
+                              fontSize: 11.5,
+                              fontWeight: isPrimary
+                                  ? FontWeight.bold
+                                  : FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isPrimary ? color : Colors.white60,
+                  fontSize: 11.5,
+                  fontWeight: isPrimary ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Deficiency',
+                style: TextStyle(color: Colors.white38, fontSize: 10),
+              ),
             ],
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
-        ),
-      ],
+        );
+      },
     );
   }
 
