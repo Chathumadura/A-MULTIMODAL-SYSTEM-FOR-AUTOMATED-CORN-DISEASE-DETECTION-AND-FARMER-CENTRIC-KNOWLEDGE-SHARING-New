@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../config/env.dart';
 
 class ApiClient {
@@ -21,8 +22,14 @@ class ApiClient {
     final uri = Uri.parse('$_baseUrl/nutrition/predict');
     var request = http.MultipartRequest('POST', uri);
 
+    final ext = imageFile.path.split('.').last.toLowerCase();
+    final mimeType = ext == 'png' ? 'image/png' : 'image/jpeg';
     request.files.add(
-      await http.MultipartFile.fromPath('file', imageFile.path),
+      await http.MultipartFile.fromPath(
+        'file',
+        imageFile.path,
+        contentType: MediaType.parse(mimeType),
+      ),
     );
 
     final streamedResponse = await request.send();
