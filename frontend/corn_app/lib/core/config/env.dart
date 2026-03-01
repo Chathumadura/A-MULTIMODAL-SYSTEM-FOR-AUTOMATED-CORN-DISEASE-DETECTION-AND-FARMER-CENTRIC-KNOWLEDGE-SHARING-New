@@ -38,4 +38,3 @@ class Env {
   static String get yieldExplainUrl => '$baseUrl/yield/explain';
   static String get healthUrl => '$baseUrl/health';
 }
-
