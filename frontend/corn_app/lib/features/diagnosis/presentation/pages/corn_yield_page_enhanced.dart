@@ -8,7 +8,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 const String apiBaseUrl =
-    "http://10.0.2.2:8080"; // 10.0.2.2 for Android emulator, 127.0.0.1 for web/desktop
+    "http://10.0.2.2:8000"; // Use 10.0.2.2 for emulator, LAN IP for real device
 
 class CornYieldPageEnhanced extends StatefulWidget {
   final Function(Locale)? onLanguageChange;
@@ -143,7 +143,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
     final startTime = DateTime.now();
 
     try {
-      final uri = Uri.parse("$apiBaseUrl/predict_yield");
+      final uri = Uri.parse("$apiBaseUrl/yield/predict");
       final res = await http.post(
         uri,
         headers: {"Content-Type": "application/json"},

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'nutrient_prediction_page.dart';
+import 'capture_leaf_page.dart';
 import 'corn_yield_page_enhanced.dart';
 import '../../../../core/localization/app_localizations.dart';
 
@@ -314,15 +314,15 @@ class MainDashboardPage extends StatelessWidget {
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/nutrient_analysis.png',
-                    title: 'Nutrient Analysis\nTools',
+                    title: 'Nutrient\nPrediction',
                     description:
-                        'Analyze crop nutrient levels from tissue/field data.',
+                        'Analyze crop nutrient levels from leaf images.',
                     buttonText: 'Start Analysis',
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const NutrientPredictionPage(),
+                          builder: (_) => const CaptureLeafPage(),
                         ),
                       );
                     },
@@ -362,39 +362,6 @@ class MainDashboardPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/* ----------------- HERO ----------------- */
-// (unchanged code below)
-
-class _HeroBanner extends StatelessWidget {
-  final VoidCallback onPrimaryTap;
-  final VoidCallback onSecondaryTap;
-
-  const _HeroBanner({required this.onPrimaryTap, required this.onSecondaryTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF2E8D4E), Color(0xFF66BB6A)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.10),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: const SizedBox.shrink(),
     );
   }
 }
