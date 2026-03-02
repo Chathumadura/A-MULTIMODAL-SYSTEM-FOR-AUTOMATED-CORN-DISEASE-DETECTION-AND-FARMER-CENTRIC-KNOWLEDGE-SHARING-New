@@ -37,4 +37,5 @@ class Env {
   static String get yieldPredictUrl => '$baseUrl/yield/predict';
   static String get yieldExplainUrl => '$baseUrl/yield/explain';
   static String get healthUrl => '$baseUrl/health';
+  static String get pestPredictUrl => '$baseUrl/pest/predict';
 }

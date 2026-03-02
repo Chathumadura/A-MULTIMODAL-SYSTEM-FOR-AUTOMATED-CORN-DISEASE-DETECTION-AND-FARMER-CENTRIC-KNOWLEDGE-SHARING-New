@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/api/api_client.dart';
+import '../../../../core/localization/app_localizations.dart';
 
 class NutrientPredictionPage extends StatefulWidget {
   final String? initialImagePath;
@@ -256,9 +257,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Detailed Fertilizer Recommendations:',
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)
+                                .translate('nutrient_fert_recs_title'),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -305,7 +307,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                               _showFertilizerDetailsModal(ctx);
                             },
                             icon: const Icon(Icons.info_outline),
-                            label: const Text('View All Options'),
+                            label: Text(
+                              AppLocalizations.of(context)
+                                  .translate('nutrient_view_all_options'),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               foregroundColor: Colors.white,
@@ -369,9 +374,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Fertilizer Options',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)
+                            .translate('nutrient_fert_options'),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -471,14 +477,26 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFertilizerDetail('Application', option['application']),
+                _buildFertilizerDetail(
+                    AppLocalizations.of(context)
+                        .translate('nutrient_application'),
+                    option['application']),
                 const SizedBox(height: 12),
-                _buildFertilizerDetail('Dosage (English)', option['dosage_en']),
+                _buildFertilizerDetail(
+                    AppLocalizations.of(context)
+                        .translate('nutrient_dosage_en'),
+                    option['dosage_en']),
                 const SizedBox(height: 12),
-                _buildFertilizerDetail('Dosage (Sinhala)', option['dosage_si']),
+                _buildFertilizerDetail(
+                    AppLocalizations.of(context)
+                        .translate('nutrient_dosage_si'),
+                    option['dosage_si']),
                 if (option['notes'] != null) ...[
                   const SizedBox(height: 12),
-                  _buildFertilizerDetail('Notes', option['notes']),
+                  _buildFertilizerDetail(
+                      AppLocalizations.of(context)
+                          .translate('nutrient_notes'),
+                      option['notes']),
                 ],
               ],
             ),
@@ -519,6 +537,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final hasResult = _predictedClass != null && !_isLoading;
     return Scaffold(
       backgroundColor: const Color(0xFF060912),
@@ -528,9 +547,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Analysis Results',
-                style: TextStyle(
+              Text(
+                loc.translate('nutrient_analysis_results'),
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -542,12 +561,13 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        CircularProgressIndicator(color: Color(0xFF00D9A0)),
-                        SizedBox(height: 12),
+                      children: [
+                        const CircularProgressIndicator(
+                            color: Color(0xFF00D9A0)),
+                        const SizedBox(height: 12),
                         Text(
-                          'Analyzing leaf...',
-                          style: TextStyle(color: Colors.white70),
+                          loc.translate('nutrient_analyzing_leaf'),
+                          style: const TextStyle(color: Colors.white70),
                         ),
                       ],
                     ),
@@ -574,12 +594,13 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.info_outline, color: Colors.white54),
-                        SizedBox(height: 8),
+                      children: [
+                        const Icon(Icons.info_outline,
+                            color: Colors.white54),
+                        const SizedBox(height: 8),
                         Text(
-                          'No image to analyze. Go back and scan a leaf.',
-                          style: TextStyle(color: Colors.white70),
+                          loc.translate('nutrient_no_image_message'),
+                          style: const TextStyle(color: Colors.white70),
                           textAlign: TextAlign.center,
                         ),
                       ],

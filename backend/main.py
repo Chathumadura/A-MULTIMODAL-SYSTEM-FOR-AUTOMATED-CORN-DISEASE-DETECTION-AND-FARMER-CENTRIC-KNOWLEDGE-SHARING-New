@@ -21,6 +21,7 @@ from core.config import settings
 from routes.yield_routes import router as yield_router
 from routes.nutrition_routes import router as nutrition_router
 from routes.fertilizer_routes import router as fertilizer_router
+from routes.pest_routes import router as pest_router
 from utils.inference import get_model
 from utils.yield_model import get_yield_state
 
@@ -89,6 +90,7 @@ async def startup_event() -> None:
 app.include_router(yield_router)       # /yield/predict   /yield/explain
 app.include_router(nutrition_router)   # /nutrition/predict
 app.include_router(fertilizer_router)  # /fertilizer/recommendations/{label}  /fertilizer/labels
+app.include_router(pest_router)        # /pest/  /pest/predict
 
 
 # ---------------------------------------------------------------------------

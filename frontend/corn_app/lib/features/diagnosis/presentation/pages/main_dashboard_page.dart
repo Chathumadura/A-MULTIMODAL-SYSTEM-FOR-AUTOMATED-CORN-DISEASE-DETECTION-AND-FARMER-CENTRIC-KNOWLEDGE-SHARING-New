@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'capture_leaf_page.dart';
 import 'corn_yield_page_enhanced.dart';
+import 'pest_screen.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 class MainDashboardPage extends StatelessWidget {
@@ -333,9 +334,10 @@ class MainDashboardPage extends StatelessWidget {
                     description: 'Get real-time alerts to protect your crop.',
                     buttonText: 'Check Alerts',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Pest Detection - Coming Soon'),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PestDetectionScreen(),
                         ),
                       );
                     },

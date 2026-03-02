@@ -89,6 +89,46 @@ class AppLocalizations {
       'ai_powered_yield_predictions': 'AI-Powered Yield Predictions',
       'accurate_predictions': 'Accurate predictions',
       'data_driven_insights': 'Data-driven insights',
+      // Nutrient prediction
+      'nutrient_analysis_results': 'Analysis Results',
+      'nutrient_analyzing_leaf': 'Analyzing leaf...',
+      'nutrient_no_image_message':
+          'No image to analyze. Go back and scan a leaf.',
+      'nutrient_fert_recs_title': 'Detailed Fertilizer Recommendations:',
+      'nutrient_view_all_options': 'View All Options',
+      'nutrient_fert_options': 'Fertilizer Options',
+      'nutrient_application': 'Application',
+      'nutrient_dosage_en': 'Dosage (English)',
+      'nutrient_dosage_si': 'Dosage (Sinhala)',
+      'nutrient_notes': 'Notes',
+      // Capture leaf page
+      'capture_hello_farmer': 'Hello Farmer!',
+      'capture_let_us_analyze': 'Let us analyze your crop health.',
+      'capture_title': 'Capture leaf for analysis',
+      'capture_subtitle':
+          'Use a clear, well-lit photo to predict nutrients',
+      'capture_placeholder':
+          'Tap the buttons below to capture or pick a leaf photo',
+      'capture_ai_ready': 'AI ready',
+      'capture_button_capture': 'Capture',
+      'capture_button_gallery': 'Gallery',
+      'capture_button_analyze': 'Analyze leaf now',
+      'capture_tips':
+          'Tips: capture in daylight, keep the leaf flat, and avoid blur for best results.',
+      // Pest detection
+      'pest_title': 'Pest Detection & Alerts',
+      'pest_header_title': 'Smart Pest Detection',
+      'pest_header_subtitle':
+          'Scan your corn leaves to detect harmful pests early and protect your yield.',
+      'pest_upload_label': 'Upload leaf image',
+      'pest_no_image_selected': 'No image selected',
+      'pest_no_image_hint': 'Choose a clear corn leaf photo for best results.',
+      'pest_pick_image': 'Pick Image',
+      'pest_detect_button': 'Detect Pest',
+      'pest_invalid_image_title': 'Invalid Image',
+      'pest_invalid_image_message':
+          'Uploaded image is not a corn leaf. Please upload a clear corn leaf image.',
+      'pest_result_title': 'Detection Result',
       // Districts
       'Monaragala': 'Monaragala',
       'Badulla': 'Badulla',
@@ -195,6 +235,48 @@ class AppLocalizations {
       'ai_powered_yield_predictions': 'AI අස්වැන්න පුරෝකතන',
       'accurate_predictions': 'සත්‍ය පුරෝකතන',
       'data_driven_insights': 'දත්ත මගින් ඉගි',
+      // Nutrient prediction
+      'nutrient_analysis_results': 'විශ්ලේෂණ ප්‍රතිඵල',
+      'nutrient_analyzing_leaf': 'පත්‍රය විශ්ලේෂණය කරමින්...',
+      'nutrient_no_image_message':
+          'විශ්ලේෂණය කිරීම සඳහා රූපයක් නැත. කරුණාකර පත්‍රය පිරික්සා බලන්න.',
+      'nutrient_fert_recs_title': 'විස්තරාත්මක පොහොර නිර්දේශ:',
+      'nutrient_view_all_options': 'සියලු විකල්ප බලන්න',
+      'nutrient_fert_options': 'පොහොර විකල්ප',
+      'nutrient_application': 'අයදුම් කිරිම',
+      'nutrient_dosage_en': 'මාත්‍රාව (English)',
+      'nutrient_dosage_si': 'මාත්‍රාව (සිංහල)',
+      'nutrient_notes': 'සටහන්',
+      // Capture leaf page
+      'capture_hello_farmer': 'හෙලෝ ගොවියා!',
+      'capture_let_us_analyze':
+          'ඔබගේ බෝග සෞඛ්‍යය අපට විශ්ලේෂණය කිරීමට ඉඩ දෙන්න.',
+      'capture_title': 'විශ්ලේෂණය සඳහා පත්‍රයක් ගහන්',
+      'capture_subtitle':
+          'පෝෂක පුරෝකථනය සඳහා පැහැදිලි, ප්‍රകാശවත් පත්‍ර රූපයක් භාවිත කරන්න.',
+      'capture_placeholder':
+          'පත්‍ර රූපයක් ගත හෝ තෝරාගැනීම සඳහා පහළ ඇති බොත්තම් ඔබන්න.',
+      'capture_ai_ready': 'AI සූදානම්',
+      'capture_button_capture': 'ගත',
+      'capture_button_gallery': 'ගැලරිය',
+      'capture_button_analyze': 'දැන්ම පත්‍රය විශ්ලේෂණය කරන්න',
+      'capture_tips':
+          'උදෑසන හෝ දවල් ආලෝකයේ පත්‍රය ගන්න, පත්‍රය තැනින් තැන තබා සහ අවපැහැ/අඳුරු රූප වලින් වලකින්න.',
+      // Pest detection
+      'pest_title': 'පළිබෝධ හඳුනාගැනීම හා ඇඟවීම්',
+      'pest_header_title': 'සුමට පළිබෝධ හඳුනාගැනීම',
+      'pest_header_subtitle':
+          'ඔබේ බඩඉරිඟු පත්‍රපත්‍රවල පළිබෝධ පූර්ව වශයෙන් හඳුනාගෙන අස්වැන්න ආරක්ෂා කරගන්න.',
+      'pest_upload_label': 'පත්‍ර රූපයක් උඩුගත කරන්න',
+      'pest_no_image_selected': 'රූපයක් තෝරාගෙන නැත',
+      'pest_no_image_hint':
+          'හොඳින් පෙනෙන බඩඉරිඟු පත්‍ර රූපයක් තෝරාගන්න.',
+      'pest_pick_image': 'රූපය තෝරන්න',
+      'pest_detect_button': 'පළිබෝධ හඳුනාගන්න',
+      'pest_invalid_image_title': 'අවලංගු රූපයක්',
+      'pest_invalid_image_message':
+          'ඔබ උඩුගත කළ රූපය බඩඉරිඟු පත්‍රයක් නොවේ. කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍ර රූපයක් උඩුගත කරන්න.',
+      'pest_result_title': 'හඳුනාගත් ප්‍රතිඵලය',
       // Districts
       'Monaragala': 'මොණරාගල',
       'Badulla': 'බදුල්ල',
@@ -302,6 +384,48 @@ class AppLocalizations {
       'ai_powered_yield_predictions': 'AI விளைச்சல் முன்னறிவிப்பு',
       'accurate_predictions': 'தீர்மானமான முன்னறிவிப்பு',
       'data_driven_insights': 'தரவு அடிப்படையிலான நுணைவுகள்',
+      // Nutrient prediction
+      'nutrient_analysis_results': 'பகுப்பாய்வு முடிவுகள்',
+      'nutrient_analyzing_leaf': 'இலை பகுப்பாய்வு செய்கிறது...',
+      'nutrient_no_image_message':
+          'பகுப்பாய்வு செய்ய படம் இல்லை. திரும்பிச் சென்று ஒரு இலையை ஸ்கேன் செய்யவும்.',
+      'nutrient_fert_recs_title': 'விவரமான உர பரிந்துரைகள்:',
+      'nutrient_view_all_options': 'அனைத்து விருப்பங்களையும் காண்க',
+      'nutrient_fert_options': 'உர விருப்பங்கள்',
+      'nutrient_application': 'பயன்பாடு',
+      'nutrient_dosage_en': 'அளவு (ஆங்கிலம்)',
+      'nutrient_dosage_si': 'அளவு (சிங்களம்)',
+      'nutrient_notes': 'குறிப்புகள்',
+      // Capture leaf page
+      'capture_hello_farmer': 'விவசாயி வணக்கம்!',
+      'capture_let_us_analyze':
+          'உங்கள் பயிர் ஆரோக்கியத்தை எங்களுக்கு பகுப்பாய்வு செய்ய அனுமதிக்கவும்.',
+      'capture_title': 'பகுப்பாய்விற்காக இலையைப் பதிவு செய்யவும்',
+      'capture_subtitle':
+          'ஊட்டச்சத்தை கணிக்க தெளிவான, நல்ல வெளிச்சமுள்ள இலையின் படத்தைப் பயன்படுத்தவும்.',
+      'capture_placeholder':
+          'இலைப் புகைப்படத்தை எடுக்க அல்லது தேர்வு செய்ய கீழே உள்ள பொத்தான்களைத் தட்டவும்.',
+      'capture_ai_ready': 'AI தயாராக உள்ளது',
+      'capture_button_capture': 'புகைப்படம் எடு',
+      'capture_button_gallery': 'கேலரி',
+      'capture_button_analyze': 'இலையை இப்போது பகுப்பாய்வு செய்யவும்',
+      'capture_tips':
+          'உதவிக் குறிப்புகள்: பகற்கால ஒளியில் படம் எடுக்கவும், இலையை சமமாக வைத்திருங்கள், மங்கலான படங்களைத் தவிர்க்கவும்.',
+      // Pest detection
+      'pest_title': 'பூச்சி கண்டறிதல் மற்றும் எச்சரிக்கைகள்',
+      'pest_header_title': 'ச마트 பூச்சி கண்டறிதல்',
+      'pest_header_subtitle':
+          'உங்கள் சோள இலைகளை ஸ்கேன் செய்து ஆபத்தான பூச்சிகளை முன்கூட்டியே கண்டறிந்து விளைச்சலை பாதுகாக்கவும்.',
+      'pest_upload_label': 'இலைப் படத்தைப் பதிவேற்றவும்',
+      'pest_no_image_selected': 'படம் தேர்ந்தெடுக்கப்படவில்லை',
+      'pest_no_image_hint':
+          'சுத்தமான, தெளிவான சோள இலைப் படத்தைத் தேர்ந்தெடுக்கவும்.',
+      'pest_pick_image': 'படத்தைத் தேர்ந்தெடுக்கவும்',
+      'pest_detect_button': 'பூச்சியை கண்டறிக',
+      'pest_invalid_image_title': 'தவறான படம்',
+      'pest_invalid_image_message':
+          'பதிவேற்றிய படம் சோள இலை போலத் தெரியவில்லை. தயவுசெய்து தெளிவான சோள இலைப் படத்தை பதிவேற்றவும்.',
+      'pest_result_title': 'கண்டறிதல் முடிவு',
       // Districts
       'Anuradhapura': 'அனுராதபுரம்',
       // Varieties

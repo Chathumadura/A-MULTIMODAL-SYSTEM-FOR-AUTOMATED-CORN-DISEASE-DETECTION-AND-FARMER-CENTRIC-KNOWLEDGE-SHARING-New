@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'nutrient_prediction_page.dart';
+import '../../../../core/localization/app_localizations.dart';
 
 class CaptureLeafPage extends StatefulWidget {
   const CaptureLeafPage({super.key});
@@ -71,6 +72,7 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -151,19 +153,19 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                'Hello Farmer!',
-                                style: TextStyle(
+                                loc.translate('capture_hello_farmer'),
+                                style: const TextStyle(
                                   color: Colors.greenAccent,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Text(
-                                'Let us analyze your crop health.',
-                                style: TextStyle(
+                                loc.translate('capture_let_us_analyze'),
+                                style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 13,
                                 ),
@@ -176,23 +178,23 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                   ),
                   const SizedBox(height: 18),
                   Row(
-                    children: const [
-                      Icon(Icons.eco, color: Colors.white, size: 26),
-                      SizedBox(width: 10),
+                    children: [
+                      const Icon(Icons.eco, color: Colors.white, size: 26),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Capture leaf for analysis',
-                            style: TextStyle(
+                            loc.translate('capture_title'),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'Use a clear, well-lit photo to predict nutrients',
-                            style: TextStyle(
+                            loc.translate('capture_subtitle'),
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
                             ),
@@ -264,11 +266,13 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                                                   color: Colors.black
                                                       .withOpacity(0.35),
                                                 ),
-                                                const Center(
+                                                Center(
                                                   child: Text(
-                                                    'Tap the buttons below to capture or pick a leaf photo',
+                                                    loc.translate(
+                                                      'capture_placeholder',
+                                                    ),
                                                     textAlign: TextAlign.center,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -303,16 +307,18 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                                           ),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
-                                            children: const [
-                                              Icon(
+                                            children: [
+                                              const Icon(
                                                 Icons.bolt,
                                                 color: Colors.white,
                                                 size: 16,
                                               ),
-                                              SizedBox(width: 6),
+                                              const SizedBox(width: 6),
                                               Text(
-                                                'AI ready',
-                                                style: TextStyle(
+                                                loc.translate(
+                                                  'capture_ai_ready',
+                                                ),
+                                                style: const TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -368,9 +374,9 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                                         Icons.camera_alt_outlined,
                                         size: 18,
                                       ),
-                                      label: const Text(
-                                        'Capture',
-                                        style: TextStyle(
+                                      label: Text(
+                                        loc.translate('capture_button_capture'),
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -401,9 +407,9 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                                         Icons.photo_library_outlined,
                                         size: 18,
                                       ),
-                                      label: const Text(
-                                        'Gallery',
-                                        style: TextStyle(
+                                      label: Text(
+                                        loc.translate('capture_button_gallery'),
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -435,9 +441,9 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                                     Icons.analytics_outlined,
                                     size: 18,
                                   ),
-                                  label: const Text(
-                                    'Analyze leaf now',
-                                    style: TextStyle(
+                                  label: Text(
+                                    loc.translate('capture_button_analyze'),
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15,
                                     ),
@@ -451,9 +457,12 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Tips: capture in daylight, keep the leaf flat, and avoid blur for best results.',
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  Text(
+                    loc.translate('capture_tips'),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),

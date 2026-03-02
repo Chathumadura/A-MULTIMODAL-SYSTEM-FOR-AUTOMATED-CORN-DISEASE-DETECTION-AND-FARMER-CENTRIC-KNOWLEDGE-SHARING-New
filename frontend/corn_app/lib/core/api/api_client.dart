@@ -43,4 +43,25 @@ class ApiClient {
       );
     }
   }
+
+  Future<Map<String, dynamic>> uploadImageForPestDetection(
+      File imageFile) async {
+    final uri = Uri.parse(Env.pestPredictUrl);
+    var request = http.MultipartRequest('POST', uri);
+
+    request.files.add(
+      await http.MultipartFile.fromPath('file', imageFile.path),
+    );
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception(
+        'Pest upload failed: ${response.statusCode} - ${response.body}',
+      );
+    }
+  }
 }
