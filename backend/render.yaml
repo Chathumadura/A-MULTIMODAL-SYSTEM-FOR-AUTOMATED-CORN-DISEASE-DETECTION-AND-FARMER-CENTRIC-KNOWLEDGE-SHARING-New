@@ -24,7 +24,9 @@ services:
 
     # ── Start ────────────────────────────────────────────────────────────────
     # $PORT is injected automatically by Render at runtime.
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    # Use "python -m uvicorn" so Python's own module runner is used instead of
+    # the shell-path "uvicorn" binary, which may not be on PATH (exit 127).
+    startCommand: python -m uvicorn main:app --host 0.0.0.0 --port $PORT
 
     # ── Health check ─────────────────────────────────────────────────────────
     # Render polls this after every deploy; a non-200 fails the rollout.
