@@ -1,0 +1,44 @@
+# render.yaml – Render deployment manifest
+# Docs: https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: corn-ai-backend
+    env: python
+    region: oregon          # change to "frankfurt" or "singapore" as needed
+    plan: free              # upgrade to "starter" or higher for production
+
+    # ── Source ──────────────────────────────────────────────────────────────
+    # All build / start commands run with backend/ as the working directory.
+    rootDir: backend
+
+    # ── Build ────────────────────────────────────────────────────────────────
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    # ── Start ────────────────────────────────────────────────────────────────
+    # $PORT is injected automatically by Render at runtime.
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    # ── Health check ─────────────────────────────────────────────────────────
+    healthCheckPath: /health
+
+    # ── Environment variables ────────────────────────────────────────────────
+    envVars:
+      # CORS – comma-separated list of allowed origins, or "*" for open dev.
+      # Override on the Render dashboard with your real frontend URL in prod,
+      # e.g. "https://your-app.vercel.app,https://your-domain.com"
+      - key: ALLOWED_ORIGINS
+        value: "*"
+
+      # TensorFlow model path (relative to backend/; pathlib resolves via
+      # BASE_DIR so this is safe on any OS).
+      # Override on the Render dashboard if you rename / relocate the file.
+      - key: TF_MODEL_PATH
+        value: models/resnet50_multi_nutrient_finetuned.h5
+
+      # Yield model path – set on the Render dashboard once you upload the
+      # .pkl file (e.g. via a persistent disk or object storage pre-download).
+      - key: YIELD_MODEL_PATH
+        value: corn_yield_model.pkl   # relative to backend/; adjust as needed
