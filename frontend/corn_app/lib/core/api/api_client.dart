@@ -6,7 +6,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../config/env.dart';
@@ -39,7 +39,13 @@ class ApiClient {
   /// Builds a [Uri] from [path], always using the runtime base URL.
   /// [Env.baseUrl] honours the `--dart-define=API_BASE_URL=...` flag so
   /// developers can still point at a local server without changing source.
-  Uri _uri(String path) => Uri.parse('${Env.baseUrl}$path');
+  /// A debug-mode log is emitted before every request so the full URL is
+  /// visible in `flutter run` / logcat output.
+  Uri _uri(String path) {
+    final url = '${Env.baseUrl}$path';
+    debugPrint('🌐 [ApiClient] REQUEST → $url');
+    return Uri.parse(url);
+  }
 
   /// Decodes a successful response or throws a descriptive [Exception].
   Map<String, dynamic> _decode(http.Response response, String label) {
@@ -65,6 +71,30 @@ class ApiClient {
   Future<Map<String, dynamic>> get(String path) async {
     final response = await http.get(_uri(path)).timeout(_getTimeout);
     return _decode(response, 'GET $path');
+  }
+
+  /// POST [path] with a JSON [body] — returns the raw [http.Response].
+  ///
+  /// The URL is logged via [debugPrint] before sending (same as all other
+  /// calls through [_uri]).  Use this when the caller needs to inspect the
+  /// status code or body directly.
+  ///
+  /// ```dart
+  /// final res = await ApiClient().postJsonRaw('/yield/predict', payload);
+  /// if (res.statusCode == 200) { ... }
+  /// ```
+  Future<http.Response> postJsonRaw(
+    String path,
+    Map<String, dynamic> body,
+  ) async {
+    final uri = _uri(path);            // debug print happens here
+    return http
+        .post(
+          uri,
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode(body),
+        )
+        .timeout(_uploadTimeout);
   }
 
   /// POST /nutrition/predict

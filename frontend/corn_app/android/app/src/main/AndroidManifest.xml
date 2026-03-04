@@ -36,6 +36,10 @@
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <!-- Required for all network calls (nutrition / pest / yield APIs).
+         Without this, release APKs throw SocketException on real devices. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>

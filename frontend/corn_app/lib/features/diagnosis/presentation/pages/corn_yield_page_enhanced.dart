@@ -3,13 +3,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/config/env.dart';
+import '../../../../core/api/api_client.dart';
 
-// API base URL is managed centrally by [Env.baseUrl].
-// To override locally: flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
+// API base URL is managed centrally in [ApiClient] → [Env.baseUrl].
+// Local dev override: flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
 
 class CornYieldPageEnhanced extends StatefulWidget {
   final Function(Locale)? onLanguageChange;
@@ -144,12 +143,8 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
     final startTime = DateTime.now();
 
     try {
-      final uri = Uri.parse(Env.yieldPredictUrl);
-      final res = await http.post(
-        uri,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(payload),
-      );
+      // URL is resolved and logged inside ApiClient.postJsonRaw → _uri().
+      final res = await ApiClient().postJsonRaw('/yield/predict', payload);
 
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
