@@ -49,7 +49,7 @@ ALLOWED_CONTENT_TYPES: frozenset[str] = frozenset({
 })
 
 MAX_FILE_SIZE_BYTES: int = 5 * 1024 * 1024  # 5 MB
-MODEL_VERSION: str = "resnet50_multi_nutrient_finetuned_v1"
+MODEL_VERSION: str = "corn_final_model_v1"
 
 # Git-LFS pointer files start with this ASCII prefix.  If Render cloned the
 # repo without LFS support the .h5 on disk is a tiny text pointer, not the

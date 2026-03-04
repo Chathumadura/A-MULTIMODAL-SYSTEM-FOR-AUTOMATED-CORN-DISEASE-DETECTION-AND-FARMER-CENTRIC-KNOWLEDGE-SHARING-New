@@ -61,7 +61,7 @@ class _Settings:
     # ------------------------------------------------------------------
     TF_MODEL_PATH: Path = _resolve_path(
         "TF_MODEL_PATH",
-        "models/resnet50_multi_nutrient_finetuned.h5",
+        "models/corn_final_model.h5",
     )
 
     # ------------------------------------------------------------------
