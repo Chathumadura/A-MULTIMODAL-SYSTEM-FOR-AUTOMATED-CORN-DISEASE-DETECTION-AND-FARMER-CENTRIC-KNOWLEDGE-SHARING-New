@@ -26,8 +26,8 @@ class Env {
 
   /// Convenience URL getters for each API group.
   static String get nutritionPredictUrl => '$baseUrl/nutrition/predict';
-  static String get yieldPredictUrl     => '$baseUrl/yield/predict';
-  static String get yieldExplainUrl     => '$baseUrl/yield/explain';
-  static String get healthUrl           => '$baseUrl/health';
-  static String get pestPredictUrl      => '$baseUrl/pest/predict';
+  static String get yieldPredictUrl => '$baseUrl/yield/predict';
+  static String get yieldExplainUrl => '$baseUrl/yield/explain';
+  static String get healthUrl => '$baseUrl/health';
+  static String get pestPredictUrl => '$baseUrl/pest/predict';
 }

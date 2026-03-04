@@ -14,21 +14,25 @@ import '../config/env.dart';
 /// Central API client.
 ///
 /// Every network call in the app goes through this class so that the base URL
-/// is defined in exactly one place ([Env.baseUrl] → [ApiClient.baseUrl]).
+/// is defined in exactly one place: [Env._productionUrl] inside [Env].
+/// [ApiClient.baseUrl] is a transparent delegate to [Env.baseUrl] so that
+/// `--dart-define=API_BASE_URL=...` overrides are always respected.
 ///
 /// Usage:
 /// ```dart
 /// final client = ApiClient();
-/// final result = await client.predictNutrition(imageFile);
+/// final result = await client.uploadImageForPrediction(imageFile);
 /// print(result); // {"predicted_class": "NAB", "confidence": 0.76, ...}
 /// ```
 class ApiClient {
-  // ── Single source of truth for the backend URL ──────────────────────────
-  static const String baseUrl = 'https://corn-ai-backend.onrender.com';
+  // ── Delegate to the single source of truth in Env ────────────────────────
+  /// The resolved backend base URL (production or `--dart-define` override).
+  /// Do NOT hard-code another URL here — change [Env._productionUrl] instead.
+  static String get baseUrl => Env.baseUrl;
 
   // Timeout for multipart uploads (Render free tier cold-starts ≈ 30 s).
   static const Duration _uploadTimeout = Duration(seconds: 60);
-  static const Duration _getTimeout    = Duration(seconds: 30);
+  static const Duration _getTimeout = Duration(seconds: 30);
 
   // ── Internal helpers ─────────────────────────────────────────────────────
 
@@ -42,9 +46,7 @@ class ApiClient {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body) as Map<String, dynamic>;
     }
-    throw Exception(
-      '[$label] HTTP ${response.statusCode}: ${response.body}',
-    );
+    throw Exception('[$label] HTTP ${response.statusCode}: ${response.body}');
   }
 
   /// Sends a [MultipartRequest] and returns the parsed response body.
@@ -85,8 +87,8 @@ class ApiClient {
   Future<Map<String, dynamic>> uploadImageForPrediction(File imageFile) async {
     final request = http.MultipartRequest('POST', _uri('/nutrition/predict'));
 
-    final ext     = imageFile.path.split('.').last.toLowerCase();
-    final mime    = ext == 'png' ? 'image/png' : 'image/jpeg';
+    final ext = imageFile.path.split('.').last.toLowerCase();
+    final mime = ext == 'png' ? 'image/png' : 'image/jpeg';
     request.files.add(
       await http.MultipartFile.fromPath(
         'file',
@@ -130,7 +132,7 @@ class ApiClient {
     String filename,
   ) async {
     final request = http.MultipartRequest('POST', _uri('/nutrition/predict'));
-    final ext  = filename.split('.').last.toLowerCase();
+    final ext = filename.split('.').last.toLowerCase();
     final mime = ext == 'png' ? 'image/png' : 'image/jpeg';
     request.files.add(
       http.MultipartFile.fromBytes(
