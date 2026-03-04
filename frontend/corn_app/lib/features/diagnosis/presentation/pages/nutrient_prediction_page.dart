@@ -258,8 +258,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)
-                                .translate('nutrient_fert_recs_title'),
+                            AppLocalizations.of(
+                              context,
+                            ).translate('nutrient_fert_recs_title'),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -281,7 +282,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _fertilizerRecommendations!['deficiency'] ??
+                                  _fertilizerRecommendations!['summary'] ??
                                       'Nutrient Deficiency',
                                   style: const TextStyle(
                                     color: Colors.blue,
@@ -291,7 +292,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  _fertilizerRecommendations!['timing'] ??
+                                  _fertilizerRecommendations!['application_timing'] ??
                                       'Follow recommended timing',
                                   style: const TextStyle(
                                     color: Colors.white70,
@@ -308,8 +309,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                             },
                             icon: const Icon(Icons.info_outline),
                             label: Text(
-                              AppLocalizations.of(context)
-                                  .translate('nutrient_view_all_options'),
+                              AppLocalizations.of(
+                                context,
+                              ).translate('nutrient_view_all_options'),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
@@ -319,6 +321,8 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                           ),
                         ],
                       ),
+                    const SizedBox(height: 14),
+                    _buildTopKPanel(),
                     const SizedBox(height: 14),
                     Align(
                       alignment: Alignment.centerRight,
@@ -347,10 +351,137 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     );
   }
 
+  // ── Top-K helpers ────────────────────────────────────────────────────
+
+  static const Map<String, String> _classLabels = {
+    'NAB': 'Nitrogen (N)',
+    'PAB': 'Phosphorus (P)',
+    'KAB': 'Potassium (K)',
+    'ZNAB': 'Zinc (Zn)',
+    'Healthy': 'Healthy',
+  };
+
+  List<MapEntry<String, double>> _getTopKProbs(int k) {
+    if (_allProbabilities == null) return [];
+    final filtered =
+        _allProbabilities!.entries.where((e) => e.key != 'Not_Corn').toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+    return filtered.take(k).toList();
+  }
+
+  Widget _buildTopKPanel({int k = 3}) {
+    final topK = _getTopKProbs(k);
+    if (topK.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1D1F33),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.leaderboard_rounded,
+                color: Color(0xFF00D9A0),
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Top Predictions (Multi-candidate)',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Secondary deficiencies the model considered',
+            style: TextStyle(color: Colors.white38, fontSize: 11),
+          ),
+          const SizedBox(height: 12),
+          ...topK.map((entry) {
+            final isPrimary = entry.key == _predictedClass;
+            final label = _classLabels[entry.key] ?? entry.key;
+            final pct = '${(entry.value * 100).toStringAsFixed(1)}%';
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.only(right: 10),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isPrimary
+                          ? const Color(0xFF00D9A0)
+                          : Colors.white24,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: isPrimary
+                            ? const Color(0xFF00D9A0)
+                            : Colors.white70,
+                        fontSize: 13.5,
+                        fontWeight: isPrimary
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isPrimary
+                          ? const Color(0xFF00D9A0).withOpacity(0.15)
+                          : Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isPrimary
+                            ? const Color(0xFF00D9A0).withOpacity(0.5)
+                            : Colors.white12,
+                      ),
+                    ),
+                    child: Text(
+                      pct,
+                      style: TextStyle(
+                        color: isPrimary
+                            ? const Color(0xFF00D9A0)
+                            : Colors.white54,
+                        fontSize: 12.5,
+                        fontWeight: isPrimary
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
   void _showFertilizerDetailsModal(BuildContext context) {
     if (_fertilizerRecommendations == null) return;
-
-    final options = _fertilizerRecommendations!['fertilizer_options'] as List?;
+    final rec = _fertilizerRecommendations!;
 
     showModalBottomSheet(
       context: context,
@@ -366,7 +497,10 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
           minChildSize: 0.5,
           maxChildSize: 0.95,
           builder: (context, scrollController) {
-            return Padding(
+            final tips = rec['additional_tips'];
+            final tipsList = tips is List ? tips.cast<String>() : <String>[];
+            return SingleChildScrollView(
+              controller: scrollController,
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,10 +508,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        AppLocalizations.of(context)
-                            .translate('nutrient_fert_options'),
-                        style: const TextStyle(
+                      const Text(
+                        'Fertilizer Details',
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -390,16 +523,94 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: options?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final option = options![index] as Map<String, dynamic>;
-                        return _buildFertilizerCard(option, index);
-                      },
-                    ),
+                  // Summary
+                  _buildRecDetail(
+                    icon: Icons.info_outline,
+                    label: 'Summary',
+                    value: rec['summary'] as String?,
                   ),
+                  const SizedBox(height: 12),
+                  // Sinhala summary
+                  if (rec['summary_si'] != null)
+                    _buildRecDetail(
+                      icon: Icons.translate,
+                      label: 'සිංහල සාරාංශය',
+                      value: rec['summary_si'] as String?,
+                      isSinhala: true,
+                    ),
+                  if (rec['summary_si'] != null) const SizedBox(height: 12),
+                  // Fertilizer product
+                  _buildRecDetail(
+                    icon: Icons.science_outlined,
+                    label: 'Recommended Fertilizer',
+                    value: rec['fertilizer'] as String?,
+                  ),
+                  const SizedBox(height: 12),
+                  // Application rate
+                  _buildRecDetail(
+                    icon: Icons.scale_outlined,
+                    label: 'Application Rate',
+                    value: rec['application_rate'] as String?,
+                  ),
+                  const SizedBox(height: 12),
+                  // Application timing
+                  _buildRecDetail(
+                    icon: Icons.access_time_outlined,
+                    label: 'Application Timing',
+                    value: rec['application_timing'] as String?,
+                  ),
+                  // Tips
+                  if (tipsList.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.lightbulb_outline,
+                          color: Color(0xFF00D9A0),
+                          size: 16,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Additional Tips',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ...tipsList.map(
+                      (tip) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 5),
+                              child: CircleAvatar(
+                                radius: 3,
+                                backgroundColor: Color(0xFF00D9A0),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                tip,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 13,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
                 ],
               ),
             );
@@ -409,129 +620,52 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     );
   }
 
-  Widget _buildFertilizerCard(Map<String, dynamic> option, int index) {
+  Widget _buildRecDetail({
+    required IconData icon,
+    required String label,
+    String? value,
+    bool isSinhala = false,
+  }) {
+    if (value == null || value.isEmpty) return const SizedBox.shrink();
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: const Color(0xFF1D1F33),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.3)),
+        border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.18)),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF00D9A0).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: const TextStyle(
-                      color: Color(0xFF00D9A0),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      option['name'] ?? 'Unknown',
-                      style: GoogleFonts.notoSansSinhala(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      option['concentration'] ?? '',
-                      style: GoogleFonts.notoSansSinhala(
-                        color: const Color(0xFF00D9A0),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0F1224),
-              borderRadius: BorderRadius.circular(8),
-            ),
+          Icon(icon, color: const Color(0xFF00D9A0), size: 18),
+          const SizedBox(width: 12),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFertilizerDetail(
-                    AppLocalizations.of(context)
-                        .translate('nutrient_application'),
-                    option['application']),
-                const SizedBox(height: 12),
-                _buildFertilizerDetail(
-                    AppLocalizations.of(context)
-                        .translate('nutrient_dosage_en'),
-                    option['dosage_en']),
-                const SizedBox(height: 12),
-                _buildFertilizerDetail(
-                    AppLocalizations.of(context)
-                        .translate('nutrient_dosage_si'),
-                    option['dosage_si']),
-                if (option['notes'] != null) ...[
-                  const SizedBox(height: 12),
-                  _buildFertilizerDetail(
-                      AppLocalizations.of(context)
-                          .translate('nutrient_notes'),
-                      option['notes']),
-                ],
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: GoogleFonts.notoSansSinhala(
+                    color: Colors.white,
+                    fontSize: isSinhala ? 14 : 13,
+                    height: 1.5,
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildFertilizerDetail(String label, String? value) {
-    final isSinhala = label.contains('Sinhala');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          value ?? 'N/A',
-          softWrap: true,
-          textAlign: TextAlign.left,
-          style: GoogleFonts.notoSansSinhala(
-            color: Colors.white,
-            fontSize: isSinhala ? 14 : 13,
-            height: 1.5,
-            letterSpacing: isSinhala ? 0.3 : 0,
-          ),
-        ),
-      ],
     );
   }
 
@@ -563,7 +697,8 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const CircularProgressIndicator(
-                            color: Color(0xFF00D9A0)),
+                          color: Color(0xFF00D9A0),
+                        ),
                         const SizedBox(height: 12),
                         Text(
                           loc.translate('nutrient_analyzing_leaf'),
@@ -595,8 +730,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.info_outline,
-                            color: Colors.white54),
+                        const Icon(Icons.info_outline, color: Colors.white54),
                         const SizedBox(height: 8),
                         Text(
                           loc.translate('nutrient_no_image_message'),
@@ -992,7 +1126,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 14,
             crossAxisSpacing: 14,
-            childAspectRatio: 1.05,
+            childAspectRatio: 0.9,
             children: [
               for (final key in ['NAB', 'PAB', 'KAB', 'ZNAB'])
                 _buildProbCircle(
