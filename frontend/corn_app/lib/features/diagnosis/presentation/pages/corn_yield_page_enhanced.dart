@@ -6,9 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/config/env.dart';
 
-const String apiBaseUrl =
-    "http://10.0.2.2:8000"; // Use 10.0.2.2 for emulator, LAN IP for real device
+// API base URL is managed centrally by [Env.baseUrl].
+// To override locally: flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
 
 class CornYieldPageEnhanced extends StatefulWidget {
   final Function(Locale)? onLanguageChange;
@@ -143,7 +144,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
     final startTime = DateTime.now();
 
     try {
-      final uri = Uri.parse("$apiBaseUrl/yield/predict");
+      final uri = Uri.parse(Env.yieldPredictUrl);
       final res = await http.post(
         uri,
         headers: {"Content-Type": "application/json"},

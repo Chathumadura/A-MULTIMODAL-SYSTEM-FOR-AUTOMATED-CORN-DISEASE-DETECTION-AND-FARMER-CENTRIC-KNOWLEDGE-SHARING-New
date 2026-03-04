@@ -1,67 +1,145 @@
+// lib/core/api/api_client.dart
+//
+// Production-ready API client for the Corn AI backend.
+// Works on: Android APK (real device), Flutter Web, Android Emulator.
+
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../config/env.dart';
 
+/// Central API client.
+///
+/// Every network call in the app goes through this class so that the base URL
+/// is defined in exactly one place ([Env.baseUrl] → [ApiClient.baseUrl]).
+///
+/// Usage:
+/// ```dart
+/// final client = ApiClient();
+/// final result = await client.predictNutrition(imageFile);
+/// print(result); // {"predicted_class": "NAB", "confidence": 0.76, ...}
+/// ```
 class ApiClient {
-  final String _baseUrl = Env.baseUrl;
+  // ── Single source of truth for the backend URL ──────────────────────────
+  static const String baseUrl = 'https://corn-ai-backend.onrender.com';
 
-  Future<Map<String, dynamic>> get(String path) async {
-    final uri = Uri.parse('$_baseUrl$path');
-    final response = await http.get(uri);
+  // Timeout for multipart uploads (Render free tier cold-starts ≈ 30 s).
+  static const Duration _uploadTimeout = Duration(seconds: 60);
+  static const Duration _getTimeout    = Duration(seconds: 30);
 
+  // ── Internal helpers ─────────────────────────────────────────────────────
+
+  /// Builds a [Uri] from [path], always using the runtime base URL.
+  /// [Env.baseUrl] honours the `--dart-define=API_BASE_URL=...` flag so
+  /// developers can still point at a local server without changing source.
+  Uri _uri(String path) => Uri.parse('${Env.baseUrl}$path');
+
+  /// Decodes a successful response or throws a descriptive [Exception].
+  Map<String, dynamic> _decode(http.Response response, String label) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body) as Map<String, dynamic>;
-    } else {
-      throw Exception('GET $path failed: ${response.statusCode}');
     }
+    throw Exception(
+      '[$label] HTTP ${response.statusCode}: ${response.body}',
+    );
   }
 
-  Future<Map<String, dynamic>> uploadImageForPrediction(File imageFile) async {
-    final uri = Uri.parse('$_baseUrl/nutrition/predict');
-    var request = http.MultipartRequest('POST', uri);
+  /// Sends a [MultipartRequest] and returns the parsed response body.
+  Future<Map<String, dynamic>> _sendMultipart(
+    http.MultipartRequest request,
+    String label,
+  ) async {
+    final streamed = await request.send().timeout(_uploadTimeout);
+    final response = await http.Response.fromStream(streamed);
+    return _decode(response, label);
+  }
 
-    final ext = imageFile.path.split('.').last.toLowerCase();
-    final mimeType = ext == 'png' ? 'image/png' : 'image/jpeg';
+  // ── Public API ───────────────────────────────────────────────────────────
+
+  /// GET any [path] and return the parsed JSON body.
+  Future<Map<String, dynamic>> get(String path) async {
+    final response = await http.get(_uri(path)).timeout(_getTimeout);
+    return _decode(response, 'GET $path');
+  }
+
+  /// POST /nutrition/predict
+  ///
+  /// Uploads [imageFile] as a multipart form-data request and returns the
+  /// full JSON response, e.g.:
+  /// ```json
+  /// {
+  ///   "predicted_class": "NAB",
+  ///   "confidence": 0.76,
+  ///   "all_probabilities": { "Healthy": 0.10, "NAB": 0.76, ... },
+  ///   "fertilizer_recommendations": { ... }
+  /// }
+  /// ```
+  ///
+  /// Throws [Exception] on HTTP error or network failure.
+  ///
+  /// Note: on Flutter Web [File] (dart:io) is unavailable.  Pass a
+  /// [Uint8List] + filename by calling [predictNutritionBytes] instead.
+  Future<Map<String, dynamic>> uploadImageForPrediction(File imageFile) async {
+    final request = http.MultipartRequest('POST', _uri('/nutrition/predict'));
+
+    final ext     = imageFile.path.split('.').last.toLowerCase();
+    final mime    = ext == 'png' ? 'image/png' : 'image/jpeg';
     request.files.add(
       await http.MultipartFile.fromPath(
         'file',
         imageFile.path,
-        contentType: MediaType.parse(mimeType),
+        contentType: MediaType.parse(mime),
       ),
     );
 
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
-    } else {
-      throw Exception(
-        'Upload failed: ${response.statusCode} - ${response.body}',
-      );
-    }
+    return _sendMultipart(request, 'POST /nutrition/predict');
   }
 
+  /// POST /pest/predict  — send [imageFile] for pest detection.
   Future<Map<String, dynamic>> uploadImageForPestDetection(
-      File imageFile) async {
-    final uri = Uri.parse(Env.pestPredictUrl);
-    var request = http.MultipartRequest('POST', uri);
-
+    File imageFile,
+  ) async {
+    final request = http.MultipartRequest('POST', _uri('/pest/predict'));
     request.files.add(
-      await http.MultipartFile.fromPath('file', imageFile.path),
+      await http.MultipartFile.fromPath(
+        'file',
+        imageFile.path,
+        contentType: MediaType.parse(
+          imageFile.path.toLowerCase().endsWith('.png')
+              ? 'image/png'
+              : 'image/jpeg',
+        ),
+      ),
     );
+    return _sendMultipart(request, 'POST /pest/predict');
+  }
 
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
-    } else {
-      throw Exception(
-        'Pest upload failed: ${response.statusCode} - ${response.body}',
-      );
-    }
+  /// POST /nutrition/predict — Web-safe variant that accepts raw bytes.
+  ///
+  /// Use this on Flutter Web where `dart:io` is unavailable:
+  /// ```dart
+  /// final bytes = await imageFile.readAsBytes(); // XFile from image_picker
+  /// final result = await ApiClient().predictNutritionBytes(
+  ///   bytes, imageFile.name);
+  /// ```
+  Future<Map<String, dynamic>> predictNutritionBytes(
+    List<int> bytes,
+    String filename,
+  ) async {
+    final request = http.MultipartRequest('POST', _uri('/nutrition/predict'));
+    final ext  = filename.split('.').last.toLowerCase();
+    final mime = ext == 'png' ? 'image/png' : 'image/jpeg';
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: filename,
+        contentType: MediaType.parse(mime),
+      ),
+    );
+    return _sendMultipart(request, 'POST /nutrition/predict (bytes)');
   }
 }
