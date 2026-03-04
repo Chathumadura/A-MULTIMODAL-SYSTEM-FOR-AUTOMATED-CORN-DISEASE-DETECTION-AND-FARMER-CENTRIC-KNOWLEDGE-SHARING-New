@@ -22,7 +22,7 @@ from routes.yield_routes import router as yield_router
 from routes.nutrition_routes import router as nutrition_router
 from routes.fertilizer_routes import router as fertilizer_router
 from routes.pest_routes import router as pest_router
-from utils.inference import get_model
+from utils.inference import get_model, get_tf_diagnostics
 from utils.yield_model import get_yield_state
 
 # ---------------------------------------------------------------------------
@@ -62,26 +62,39 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
 async def startup_event() -> None:
-    # TensorFlow model
-    logger.info("Warming up TF model …")
+    # ── TensorFlow model ────────────────────────────────────────────────────
+    logger.info("=" * 60)
+    logger.info("[startup] Warming up TF nutrition model …")
+    tf_diag = get_tf_diagnostics()  # logs path + exists + LFS check internally
+    logger.info("[startup] TF model path    : %s", tf_diag["model_path"])
+    logger.info("[startup] TF file exists   : %s", tf_diag["file_exists"])
+    logger.info("[startup] TF file size     : %s bytes", tf_diag["file_size_bytes"])
+    logger.info("[startup] TF LFS pointer   : %s", tf_diag["is_lfs_pointer"])
+
     tf_model = get_model()
     if tf_model is None:
-        logger.warning(
-            "TF model not loaded at startup – POST /nutrition/predict will return 503."
+        logger.error(
+            "[startup] ✗ TF model NOT loaded – POST /nutrition/predict will return 503.\n"
+            "          Reason: %s\n"
+            "          Fix   : Set TF_MODEL_URL env var so build script downloads the file,"
+            " OR commit the real .h5 (not an LFS pointer).",
+            tf_diag["load_error"],
         )
     else:
-        logger.info("TF model ready.")
+        logger.info("[startup] ✓ TF model ready (input=%s).", tf_model.input_shape)
 
-    # Sklearn pipeline + SHAP
-    logger.info("Warming up yield model …")
+    # ── Sklearn pipeline + SHAP ─────────────────────────────────────────────
+    logger.info("-" * 60)
+    logger.info("[startup] Warming up yield model …")
     yield_state = get_yield_state()
     if yield_state is None:
-        logger.warning(
-            "Yield model not loaded at startup – "
-            "POST /yield/predict and /yield/explain will return 503."
+        logger.error(
+            "[startup] ✗ Yield model NOT loaded – "
+            "/yield/predict and /yield/explain will return 503."
         )
     else:
-        logger.info("Yield model ready.")
+        logger.info("[startup] ✓ Yield model ready.")
+    logger.info("=" * 60)
 
 
 # ---------------------------------------------------------------------------
@@ -103,8 +116,19 @@ def root() -> dict:
 
 @app.get("/health", tags=["utility"])
 def health() -> dict:
+    """
+    Liveness + readiness probe.
+
+    Returns:
+    - **status** – always "ok" (process is alive)
+    - **tf_model** – True only when the TF model is loaded and ready
+    - **yield_model** – True only when the sklearn pipeline is loaded
+    - **tf_diagnostics** – detailed path / file / LFS / error info for the TF model
+    """
+    tf_diag = get_tf_diagnostics()
     return {
         "status": "ok",
-        "tf_model": get_model() is not None,
+        "tf_model": tf_diag["model_loaded"],
         "yield_model": get_yield_state() is not None,
+        "tf_diagnostics": tf_diag,
     }

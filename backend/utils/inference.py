@@ -13,6 +13,8 @@ If the model was instead trained with tf.keras.applications.resnet50.preprocess_
 import io
 import logging
 import time
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import tensorflow as tf
@@ -47,31 +49,122 @@ ALLOWED_CONTENT_TYPES: frozenset[str] = frozenset({
 })
 
 MAX_FILE_SIZE_BYTES: int = 5 * 1024 * 1024  # 5 MB
-
 MODEL_VERSION: str = "resnet50_multi_nutrient_finetuned_v1"
 
-_model = None
+# Git-LFS pointer files start with this ASCII prefix.  If Render cloned the
+# repo without LFS support the .h5 on disk is a tiny text pointer, not the
+# real binary, so TF would fail with a cryptic HDF5 error instead of a clear
+# "file not found".
+_LFS_SIGNATURE: bytes = b"version https://git-lfs"
+# Real .h5 HDF5 files start with the HDF5 superblock magic bytes.
+_HDF5_MAGIC: bytes = b"\x89HDF\r\n\x1a\n"
+# Minimum realistic size for a real model file (1 MB)
+_MIN_MODEL_BYTES: int = 1 * 1024 * 1024
+
+_model: Any = None
+_load_error: str = ""  # human-readable failure reason, set on first failed load
+
+
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
+def _check_file(path: Path) -> tuple[bool, str]:
+    """
+    Validate that *path* points to a real HDF5 model file.
+
+    Returns:
+        (ok: bool, reason: str)  – reason is empty when ok is True.
+    """
+    if not path.exists():
+        return False, f"File not found: {path}"
+
+    size = path.stat().st_size
+    if size < _MIN_MODEL_BYTES:
+        # Read first bytes to distinguish LFS pointer from other small files
+        header = path.read_bytes()[:128]
+        if header.startswith(_LFS_SIGNATURE):
+            return False, (
+                f"Git LFS pointer detected ({size} bytes). "
+                "The real model binary was not downloaded. "
+                "Run 'git lfs pull' or set TF_MODEL_URL to download it during build."
+            )
+        return False, (
+            f"File is suspiciously small ({size} bytes < {_MIN_MODEL_BYTES} bytes). "
+            "It may be corrupt or an LFS pointer."
+        )
+
+    # Check HDF5 magic bytes.
+    header = path.read_bytes()[:8]
+    if header != _HDF5_MAGIC:
+        return False, (
+            f"File does not start with HDF5 magic bytes (got {header!r}). "
+            "The file may be corrupt or the wrong format."
+        )
+
+    return True, ""
 
 
 # ---------------------------------------------------------------------------
 # Model loading
 # ---------------------------------------------------------------------------
-def get_model():
-    """Return the TF model, loading from disk on first call."""
-    global _model
-    if _model is None:
-        path = settings.TF_MODEL_PATH
-        logger.info("Loading TF model from %s …", path)
-        if not path.exists():
-            logger.error("TF model file not found: %s", path)
-            return None
-        try:
-            _model = tf.keras.models.load_model(str(path), compile=False)
-            logger.info("TF model loaded successfully.")
-        except Exception as exc:
-            logger.error("Failed to load TF model: %s", exc)
-            return None
+def get_model() -> Any:
+    """Return the loaded TF model, or None if loading failed."""
+    global _model, _load_error
+    if _model is not None:
+        return _model
+
+    path: Path = settings.TF_MODEL_PATH.resolve()
+    logger.info("[TF] Resolved model path : %s", path)
+    logger.info("[TF] File exists          : %s", path.exists())
+    if path.exists():
+        logger.info("[TF] File size (bytes)    : %s", path.stat().st_size)
+
+    ok, reason = _check_file(path)
+    if not ok:
+        _load_error = reason
+        logger.error("[TF] Pre-load check FAILED: %s", reason)
+        return None
+
+    logger.info("[TF] Pre-load check passed. Loading with tf.keras …")
+    try:
+        _model = tf.keras.models.load_model(str(path), compile=False)
+        _load_error = ""
+        logger.info("[TF] Model loaded successfully. Input shape: %s", _model.input_shape)
+    except Exception as exc:
+        _load_error = f"tf.keras.models.load_model raised: {exc}"
+        logger.error("[TF] Load FAILED: %s", _load_error)
+        return None
+
     return _model
+
+
+def get_tf_diagnostics() -> dict:
+    """
+    Return a diagnostic snapshot used by /health.
+
+    Always safe to call; never raises.
+    """
+    path: Path = settings.TF_MODEL_PATH.resolve()
+    exists = path.exists()
+    size_bytes = path.stat().st_size if exists else None
+
+    is_lfs = False
+    if exists and size_bytes is not None and size_bytes < _MIN_MODEL_BYTES:
+        try:
+            header = path.read_bytes()[:128]
+            is_lfs = header.startswith(_LFS_SIGNATURE)
+        except OSError:
+            pass
+
+    return {
+        "model_loaded": _model is not None,
+        "model_path": str(path),
+        "file_exists": exists,
+        "file_size_bytes": size_bytes,
+        "is_lfs_pointer": is_lfs,
+        "load_error": _load_error or None,
+        "model_version": MODEL_VERSION,
+    }
 
 
 # ---------------------------------------------------------------------------

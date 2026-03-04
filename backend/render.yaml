@@ -13,32 +13,46 @@ services:
     rootDir: backend
 
     # ── Build ────────────────────────────────────────────────────────────────
+    # Step 1 – install Python dependencies
+    # Step 2 – download the large model binaries from cloud storage.
+    #   Set TF_MODEL_URL and YIELD_MODEL_URL on the Render dashboard.
+    #   The script is idempotent: it skips files that are already valid.
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
+      python scripts/download_models.py
 
     # ── Start ────────────────────────────────────────────────────────────────
     # $PORT is injected automatically by Render at runtime.
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
 
     # ── Health check ─────────────────────────────────────────────────────────
+    # Render polls this after every deploy; a non-200 fails the rollout.
+    # The /health body now includes tf_diagnostics for instant diagnosis.
     healthCheckPath: /health
 
     # ── Environment variables ────────────────────────────────────────────────
     envVars:
       # CORS – comma-separated list of allowed origins, or "*" for open dev.
-      # Override on the Render dashboard with your real frontend URL in prod,
-      # e.g. "https://your-app.vercel.app,https://your-domain.com"
       - key: ALLOWED_ORIGINS
         value: "*"
 
-      # TensorFlow model path (relative to backend/; pathlib resolves via
-      # BASE_DIR so this is safe on any OS).
-      # Override on the Render dashboard if you rename / relocate the file.
+      # ── Model paths (relative to backend/; resolved via BASE_DIR in config.py)
       - key: TF_MODEL_PATH
         value: models/resnet50_multi_nutrient_finetuned.h5
-
-      # Yield model path – set on the Render dashboard once you upload the
-      # .pkl file (e.g. via a persistent disk or object storage pre-download).
       - key: YIELD_MODEL_PATH
-        value: corn_yield_model.pkl   # relative to backend/; adjust as needed
+        value: corn_yield_model.pkl
+
+      # ── Model download URLs (set these on the Render dashboard) ─────────────
+      # Paste a direct-download link to the model binary. Supported sources:
+      #   • Any public HTTPS URL (CDN, S3, Azure Blob, etc.)
+      #   • Google Drive share link  (auto-rewritten to uc?export=download)
+      #   • Dropbox share link       (?dl=0 auto-rewritten to ?dl=1)
+      #   • Hugging Face resolve URL
+      #
+      # Leave the value blank or remove the key to skip the download.
+      # If the file is missing the affected endpoint returns HTTP 503.
+      - key: TF_MODEL_URL
+        value: ""   # ← REPLACE with your hosted .h5 URL on the Render dashboard
+      - key: YIELD_MODEL_URL
+        value: ""   # ← REPLACE with your hosted .pkl URL on the Render dashboard
