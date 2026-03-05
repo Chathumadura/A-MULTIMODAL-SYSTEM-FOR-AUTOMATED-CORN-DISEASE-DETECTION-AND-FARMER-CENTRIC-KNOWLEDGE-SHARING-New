@@ -97,7 +97,7 @@ class ApiClient {
     String path,
     Map<String, dynamic> body,
   ) async {
-    final uri = _uri(path);            // debug print happens here
+    final uri = _uri(path); // debug print happens here
     return http
         .post(
           uri,

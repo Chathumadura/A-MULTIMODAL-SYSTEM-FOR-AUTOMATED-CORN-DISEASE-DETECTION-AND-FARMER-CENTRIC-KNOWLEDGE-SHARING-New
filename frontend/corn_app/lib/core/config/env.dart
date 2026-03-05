@@ -22,8 +22,8 @@ class Env {
 
   // ── Named endpoint helpers (kept for backwards compatibility) ────────────
   static String get nutritionPredictUrl => ApiConfig.nutritionPredictUrl;
-  static String get yieldPredictUrl     => ApiConfig.yieldPredictUrl;
-  static String get yieldExplainUrl     => '${ApiConfig.baseUrl}/yield/explain';
-  static String get healthUrl           => ApiConfig.healthUrl;
-  static String get pestPredictUrl      => ApiConfig.pestPredictUrl;
+  static String get yieldPredictUrl => ApiConfig.yieldPredictUrl;
+  static String get yieldExplainUrl => '${ApiConfig.baseUrl}/yield/explain';
+  static String get healthUrl => ApiConfig.healthUrl;
+  static String get pestPredictUrl => ApiConfig.pestPredictUrl;
 }

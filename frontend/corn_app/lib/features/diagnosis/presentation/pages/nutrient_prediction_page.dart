@@ -737,18 +737,21 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline,
-                            color: Colors.redAccent, size: 48),
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.redAccent,
+                          size: 48,
+                        ),
                         const SizedBox(height: 16),
                         Container(
                           padding: const EdgeInsets.all(16),
-                          margin:
-                              const EdgeInsets.symmetric(horizontal: 8),
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
                             color: Colors.red.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(12),
-                            border:
-                                Border.all(color: Colors.red.withOpacity(0.3)),
+                            border: Border.all(
+                              color: Colors.red.withOpacity(0.3),
+                            ),
                           ),
                           child: Text(
                             _errorMsg!,
@@ -769,7 +772,9 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                               backgroundColor: const Color(0xFF00D9A0),
                               foregroundColor: Colors.black,
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 28, vertical: 12),
+                                horizontal: 28,
+                                vertical: 12,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
