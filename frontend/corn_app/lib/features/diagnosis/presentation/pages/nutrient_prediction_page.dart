@@ -147,7 +147,14 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       _animationController.forward(from: 0.0);
     } catch (e) {
       setState(() {
-        _errorMsg = e.toString();
+        final raw = e.toString();
+        // Friendly message for Render free-tier cold-start timeouts
+        if (raw.contains('TimeoutException') || raw.contains('timeout')) {
+          _errorMsg =
+              'Request timed out — the server may be waking up (cold start).\nPlease wait a moment and tap Retry.';
+        } else {
+          _errorMsg = raw;
+        }
       });
     } finally {
       setState(() {
@@ -724,6 +731,55 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                     ),
                   ),
                 )
+              else if (_errorMsg != null)
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            color: Colors.redAccent, size: 48),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          margin:
+                              const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(12),
+                            border:
+                                Border.all(color: Colors.red.withOpacity(0.3)),
+                          ),
+                          child: Text(
+                            _errorMsg!,
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        if (_selectedImage != null) ...[
+                          const SizedBox(height: 20),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              setState(() => _errorMsg = null);
+                              _analyzeImage();
+                            },
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Retry'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF00D9A0),
+                              foregroundColor: Colors.black,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 28, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                )
               else
                 Expanded(
                   child: Center(
@@ -739,20 +795,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                         ),
                       ],
                     ),
-                  ),
-                ),
-              if (_errorMsg != null)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
-                  ),
-                  child: Text(
-                    _errorMsg!,
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
                   ),
                 ),
             ],

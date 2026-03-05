@@ -1,15 +1,18 @@
 // lib/core/api/api_client.dart
 //
 // Production-ready API client for the Corn AI backend.
-// Works on: Android APK (real device), Flutter Web, Android Emulator.
+// Works on: Android Emulator, physical Android/iOS device, Flutter Web.
+//
+// URL routing is handled entirely by ApiConfig (lib/core/api/api_config.dart).
+// To change which server is targeted, see ApiConfig.runMode docs.
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import '../config/env.dart';
+import 'api_config.dart';
 
 /// Central API client.
 ///
@@ -25,13 +28,20 @@ import '../config/env.dart';
 /// print(result); // {"predicted_class": "NAB", "confidence": 0.76, ...}
 /// ```
 class ApiClient {
-  // ── Delegate to the single source of truth in Env ────────────────────────
-  /// The resolved backend base URL (production or `--dart-define` override).
-  /// Do NOT hard-code another URL here — change [Env._productionUrl] instead.
-  static String get baseUrl => Env.baseUrl;
+  // ── URL resolution ────────────────────────────────────────────────────────
+  /// The resolved backend base URL for the current environment.
+  ///
+  /// Delegates to [ApiConfig] → [Env] chain:
+  ///   • emulator   → http://10.0.2.2:8000
+  ///   • device     → http://<_physicalDeviceIp>:8000  (set in api_config.dart)
+  ///   • production → https://corn-ai-backend.onrender.com
+  ///
+  /// Do NOT hard-code a URL here. Edit [ApiConfig] in api_config.dart instead.
+  static String get baseUrl => ApiConfig.baseUrl;
 
-  // Timeout for multipart uploads (Render free tier cold-starts ≈ 30 s).
-  static const Duration _uploadTimeout = Duration(seconds: 60);
+  // Timeout for multipart uploads.
+  // Render free tier cold-starts can take 50–80 s; 90 s gives a safe margin.
+  static const Duration _uploadTimeout = Duration(seconds: 90);
   static const Duration _getTimeout = Duration(seconds: 30);
 
   // ── Internal helpers ─────────────────────────────────────────────────────
@@ -42,7 +52,7 @@ class ApiClient {
   /// A debug-mode log is emitted before every request so the full URL is
   /// visible in `flutter run` / logcat output.
   Uri _uri(String path) {
-    final url = '${Env.baseUrl}$path';
+    final url = '${ApiConfig.baseUrl}$path';
     debugPrint('🌐 [ApiClient] REQUEST → $url');
     return Uri.parse(url);
   }

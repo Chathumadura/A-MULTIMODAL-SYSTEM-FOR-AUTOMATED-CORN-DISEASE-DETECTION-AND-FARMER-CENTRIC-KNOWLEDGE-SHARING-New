@@ -1,33 +1,29 @@
-import 'package:flutter/foundation.dart';
+// lib/core/config/env.dart
+//
+// Thin facade over ApiConfig.  All URL logic now lives in ApiConfig so that
+// the emulator / device / production routing is in one place.
+//
+// Existing call-sites that use Env.baseUrl or Env.nutritionPredictUrl
+// continue to work without any changes.
+
+import '../api/api_config.dart';
 
 class Env {
-  // ─────────────────────────────────────────────────────────────────────────
-  // Production backend deployed on Render.
-  // ─────────────────────────────────────────────────────────────────────────
-  static const _productionUrl = 'https://corn-ai-backend.onrender.com';
-
-  /// Backend base URL.
+  /// The resolved backend base URL for the current environment.
   ///
-  /// Defaults to the Render production URL on every platform.
-  /// Override at build/run time with --dart-define for local development:
+  /// Delegates to [ApiConfig.baseUrl], which automatically selects:
+  ///   • `http://10.0.2.2:8000`             – Android Emulator (debug)
+  ///   • `http://<physicalDeviceIp>:8000`   – real device on LAN (debug)
+  ///   • `https://corn-ai-backend.onrender.com` – production / release
   ///
-  ///   Emulator   : flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
-  ///   Real device: flutter run --dart-define=API_BASE_URL=http://<LAN-IP>:8000
-  ///   Production : (no flag needed – uses Render URL)
-  static String get baseUrl {
-    const override = String.fromEnvironment('API_BASE_URL');
-    if (override.isNotEmpty) return override;
+  /// To override, pass `--dart-define=RUN_MODE=emulator|device|production`
+  /// to `flutter run`, or set `_physicalDeviceIp` in api_config.dart.
+  static String get baseUrl => ApiConfig.baseUrl;
 
-    // All platforms (Android APK, Web, iOS, Desktop) use the production URL
-    // by default.  This eliminates the 10.0.2.2 / localhost confusion on real
-    // devices and production builds.
-    return _productionUrl;
-  }
-
-  /// Convenience URL getters for each API group.
-  static String get nutritionPredictUrl => '$baseUrl/nutrition/predict';
-  static String get yieldPredictUrl => '$baseUrl/yield/predict';
-  static String get yieldExplainUrl => '$baseUrl/yield/explain';
-  static String get healthUrl => '$baseUrl/health';
-  static String get pestPredictUrl => '$baseUrl/pest/predict';
+  // ── Named endpoint helpers (kept for backwards compatibility) ────────────
+  static String get nutritionPredictUrl => ApiConfig.nutritionPredictUrl;
+  static String get yieldPredictUrl     => ApiConfig.yieldPredictUrl;
+  static String get yieldExplainUrl     => '${ApiConfig.baseUrl}/yield/explain';
+  static String get healthUrl           => ApiConfig.healthUrl;
+  static String get pestPredictUrl      => ApiConfig.pestPredictUrl;
 }
