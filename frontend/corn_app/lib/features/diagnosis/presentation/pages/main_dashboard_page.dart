@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'capture_leaf_page.dart';
 import 'corn_yield_page_enhanced.dart';
 import 'pest_screen.dart';
+import '../../../disease_detection/corn_disease_detection_screen.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 class MainDashboardPage extends StatelessWidget {
@@ -301,21 +302,22 @@ class MainDashboardPage extends StatelessWidget {
                 children: [
                   _FeatureCard(
                     imagePath: 'assets/dashboard/corn_disease.png',
-                    title: 'Corn Disease\nDetection',
+                    title: 'Corn Disease Detection',
                     description:
                         'Identify leaf diseases early with AI image analysis.',
                     buttonText: 'Scan Crop',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Disease Detection - Coming Soon'),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CornDiseaseDetectionScreen(),
                         ),
                       );
                     },
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/nutrient_analysis.png',
-                    title: 'Nutrient\nPrediction',
+                    title: 'Nutrient Prediction',
                     description:
                         'Analyze crop nutrient levels from leaf images.',
                     buttonText: 'Start Analysis',
@@ -330,7 +332,7 @@ class MainDashboardPage extends StatelessWidget {
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/pest_alert.png',
-                    title: 'Pest Detection\n& Alerts',
+                    title: 'Pest Detection & Alerts',
                     description: 'Get real-time alerts to protect your crop.',
                     buttonText: 'Check Alerts',
                     onTap: () {
@@ -344,7 +346,7 @@ class MainDashboardPage extends StatelessWidget {
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/yield_prediction.png',
-                    title: 'Yield\nPrediction',
+                    title: 'Yield Prediction',
                     description: 'Estimate future yield using ML predictions.',
                     buttonText: 'Predict Yield',
                     onTap: () {

@@ -105,8 +105,7 @@ class AppLocalizations {
       'capture_hello_farmer': 'Hello Farmer!',
       'capture_let_us_analyze': 'Let us analyze your crop health.',
       'capture_title': 'Capture leaf for analysis',
-      'capture_subtitle':
-          'Use a clear, well-lit photo to predict nutrients',
+      'capture_subtitle': 'Use a clear, well-lit photo to predict nutrients',
       'capture_placeholder':
           'Tap the buttons below to capture or pick a leaf photo',
       'capture_ai_ready': 'AI ready',
@@ -269,8 +268,7 @@ class AppLocalizations {
           'ඔබේ බඩඉරිඟු පත්‍රපත්‍රවල පළිබෝධ පූර්ව වශයෙන් හඳුනාගෙන අස්වැන්න ආරක්ෂා කරගන්න.',
       'pest_upload_label': 'පත්‍ර රූපයක් උඩුගත කරන්න',
       'pest_no_image_selected': 'රූපයක් තෝරාගෙන නැත',
-      'pest_no_image_hint':
-          'හොඳින් පෙනෙන බඩඉරිඟු පත්‍ර රූපයක් තෝරාගන්න.',
+      'pest_no_image_hint': 'හොඳින් පෙනෙන බඩඉරිඟු පත්‍ර රූපයක් තෝරාගන්න.',
       'pest_pick_image': 'රූපය තෝරන්න',
       'pest_detect_button': 'පළිබෝධ හඳුනාගන්න',
       'pest_invalid_image_title': 'අවලංගු රූපයක්',
