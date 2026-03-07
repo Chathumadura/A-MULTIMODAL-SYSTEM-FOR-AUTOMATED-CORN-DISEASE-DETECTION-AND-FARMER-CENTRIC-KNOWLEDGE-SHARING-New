@@ -18,8 +18,9 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
     with TickerProviderStateMixin {
   final ImagePicker _picker = ImagePicker();
   static const String _backgroundAssetPath =
-      'assets/images/Gemini_Generated_Image_crp1pgcrp1pgcrp1.png';
-  static const String _captureBoxImagePath = 'assets/images/image 2.png';
+      'lib/features/diagnosis/presentation/image/Gemini_Generated_Image_crp1pgcrp1pgcrp1.png';
+  static const String _captureBoxImagePath =
+      'lib/features/diagnosis/presentation/image/image 2.png';
   File? _image;
   bool _isPicking = false;
   late AnimationController _pulseController;
@@ -458,7 +459,10 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                   const SizedBox(height: 10),
                   Text(
                     loc.translate('capture_tips'),
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),

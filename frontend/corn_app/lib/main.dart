@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/localization/app_localizations.dart';
+import 'core/api/api_config.dart';
 import 'features/diagnosis/presentation/pages/main_dashboard_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Print resolved API URL to debug console on every start.
+  ApiConfig.printConfig();
   runApp(const CornNutrientApp());
 }
 

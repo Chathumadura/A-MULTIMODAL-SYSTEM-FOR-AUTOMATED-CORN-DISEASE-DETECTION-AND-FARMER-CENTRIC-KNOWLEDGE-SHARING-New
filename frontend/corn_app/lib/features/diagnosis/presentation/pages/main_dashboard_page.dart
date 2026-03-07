@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'nutrient_prediction_page.dart';
+import 'capture_leaf_page.dart';
 import 'corn_yield_page_enhanced.dart';
+import 'pest_screen.dart';
+import '../../../disease_detection/corn_disease_detection_screen.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 class MainDashboardPage extends StatelessWidget {
@@ -300,49 +302,51 @@ class MainDashboardPage extends StatelessWidget {
                 children: [
                   _FeatureCard(
                     imagePath: 'assets/dashboard/corn_disease.png',
-                    title: 'Corn Disease\nDetection',
+                    title: 'Corn Disease Detection',
                     description:
                         'Identify leaf diseases early with AI image analysis.',
                     buttonText: 'Scan Crop',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Disease Detection - Coming Soon'),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CornDiseaseDetectionScreen(),
                         ),
                       );
                     },
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/nutrient_analysis.png',
-                    title: 'Nutrient Analysis\nTools',
+                    title: 'Nutrient Prediction',
                     description:
-                        'Analyze crop nutrient levels from tissue/field data.',
+                        'Analyze crop nutrient levels from leaf images.',
                     buttonText: 'Start Analysis',
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const NutrientPredictionPage(),
+                          builder: (_) => const CaptureLeafPage(),
                         ),
                       );
                     },
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/pest_alert.png',
-                    title: 'Pest Detection\n& Alerts',
+                    title: 'Pest Detection & Alerts',
                     description: 'Get real-time alerts to protect your crop.',
                     buttonText: 'Check Alerts',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Pest Detection - Coming Soon'),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PestDetectionScreen(),
                         ),
                       );
                     },
                   ),
                   _FeatureCard(
                     imagePath: 'assets/dashboard/yield_prediction.png',
-                    title: 'Yield\nPrediction',
+                    title: 'Yield Prediction',
                     description: 'Estimate future yield using ML predictions.',
                     buttonText: 'Predict Yield',
                     onTap: () {
@@ -362,39 +366,6 @@ class MainDashboardPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/* ----------------- HERO ----------------- */
-// (unchanged code below)
-
-class _HeroBanner extends StatelessWidget {
-  final VoidCallback onPrimaryTap;
-  final VoidCallback onSecondaryTap;
-
-  const _HeroBanner({required this.onPrimaryTap, required this.onSecondaryTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF2E8D4E), Color(0xFF66BB6A)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.10),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: const SizedBox.shrink(),
     );
   }
 }

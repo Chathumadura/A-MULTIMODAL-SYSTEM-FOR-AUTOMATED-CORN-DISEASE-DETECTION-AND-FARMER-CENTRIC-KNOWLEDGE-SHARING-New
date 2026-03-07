@@ -1,0 +1,51 @@
+# render.yaml – Render deployment manifest (MUST live at the repo root)
+# Docs: https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: corn-ai-backend
+    env: python
+    region: oregon          # alternatives: "frankfurt" | "singapore" | "ohio"
+    plan: free              # 512 MB RAM; upgrade to "starter" for production
+
+    # ── Source ──────────────────────────────────────────────────────────────
+    # rootDir tells Render to treat backend/ as the working directory for
+    # BOTH the build and start commands, so paths like "main:app" and
+    # "requirements.txt" resolve correctly without any path prefixes.
+    rootDir: backend
+
+    # ── Build ────────────────────────────────────────────────────────────────
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python scripts/download_models.py
+
+    # ── Start ────────────────────────────────────────────────────────────────
+    # "python -m uvicorn" invokes uvicorn via Python's module runner, which
+    # does NOT rely on the shell finding the "uvicorn" binary on $PATH.
+    # This is the correct fix for "exit 127 / command not found" errors that
+    # occur when gunicorn or a bare "uvicorn" call is used instead.
+    startCommand: python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    # ── Health check ─────────────────────────────────────────────────────────
+    healthCheckPath: /health
+
+    # ── Environment variables ────────────────────────────────────────────────
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: "*"
+
+      # Model paths are relative to backend/ (rootDir)
+      - key: TF_MODEL_PATH
+        value: backend/models/corn_final_model.h5
+      - key: YIELD_MODEL_PATH
+        value: backend/corn_yield_model.pkl
+
+      # Paste hosted model URLs on the Render dashboard or below.
+      # Supported: any public HTTPS URL, Google Drive share links,
+      # Dropbox share links, Hugging Face resolve URLs.
+      # Leave blank to skip download (affected endpoint returns HTTP 503).
+      - key: TF_MODEL_URL
+        value: ""   # ← set on Render dashboard
+      - key: YIELD_MODEL_URL
+        value: ""   # ← set on Render dashboard

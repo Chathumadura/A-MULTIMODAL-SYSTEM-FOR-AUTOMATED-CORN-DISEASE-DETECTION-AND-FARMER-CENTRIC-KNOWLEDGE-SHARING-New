@@ -8,6 +8,8 @@ __pycache__/
 venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
 # Environment variables
 .env
@@ -19,6 +21,7 @@ build/
 dist/
 *.egg-info/
 *.egg
+wheels/
 
 # Test and coverage artifacts
 .pytest_cache/
@@ -38,11 +41,22 @@ dmypy.json
 
 # Logs
 *.log
-logs/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Database
-*.db
-*.sqlite3
+# OS/editor files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -51,23 +65,38 @@ logs/
 profile_default/
 ipython_config.py
 
-# PEP 582
-__pypackages__/
+# PyCharm
+.idea/
 
 # Celery
 celerybeat-schedule
 celerybeat.pid
 
-# OS/editor files
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# SageMath parsed files
+*.sage.py
 
-# Model files (optional - uncomment if models shouldn't be tracked)
-# models/*.h5
-# models/*.keras
-# models/*.pkl
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# profiling data
+.prof
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Model files (if they should not be in repo)
+# Uncomment if models should be downloaded separately
+# *.h5
+# *.keras
+# *.pkl
+# *.pt
+# *.pth
