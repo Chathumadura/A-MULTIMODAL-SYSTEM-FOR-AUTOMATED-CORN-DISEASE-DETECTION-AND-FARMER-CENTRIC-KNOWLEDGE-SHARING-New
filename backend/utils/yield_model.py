@@ -36,9 +36,11 @@ _state: YieldModelState | None = None
 
 
 def _load() -> YieldModelState | None:
-    """Load the sklearn pipeline and build the SHAP explainer."""
+    """Load the sklearn pipeline and build the SHAP explainer (lazy, first call only)."""
     path = settings.YIELD_MODEL_PATH
-    logger.info("Loading yield pipeline from %s …", path)
+    logger.info("[yield] Lazy loading yield pipeline (first request) …")
+    logger.info("[yield] Resolved model path : %s", path.resolve())
+    logger.info("[yield] File exists         : %s", path.exists())
 
     if not path.exists():
         logger.error("Yield model file not found: %s", path)
@@ -60,21 +62,23 @@ def _load() -> YieldModelState | None:
 
         explainer = shap.TreeExplainer(model)
         logger.info(
-            "Yield pipeline loaded successfully. Total features: %d",
+            "[yield] ✓ Yield pipeline loaded. Total features: %d",
             len(all_feature_names),
         )
         return YieldModelState(pipeline, preprocessor, model, explainer, all_feature_names)
 
     except Exception as exc:
-        logger.error("Failed to load yield pipeline: %s", exc)
+        logger.error("[yield] ✗ Failed to load yield pipeline: %s", exc)
         return None
 
 
 def get_yield_state() -> YieldModelState | None:
-    """Return the loaded model state, initialising on first call."""
+    """Return the loaded model state (lazy, cached after first call)."""
     global _state
-    if _state is None:
-        _state = _load()
+    if _state is not None:
+        logger.debug("[yield] Cache hit – returning already-loaded yield model.")
+        return _state
+    _state = _load()
     return _state
 
 

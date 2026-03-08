@@ -108,11 +108,13 @@ def _check_file(path: Path) -> tuple[bool, str]:
 # Model loading
 # ---------------------------------------------------------------------------
 def get_model() -> Any:
-    """Return the loaded TF model, or None if loading failed."""
+    """Return the loaded TF nutrition model (lazy, cached after first load)."""
     global _model, _load_error
     if _model is not None:
+        logger.debug("[TF] Cache hit – returning already-loaded nutrition model.")
         return _model
 
+    logger.info("[TF] Lazy loading nutrition model (first request) …")
     path: Path = settings.TF_MODEL_PATH.resolve()
     logger.info("[TF] Resolved model path : %s", path)
     logger.info("[TF] File exists          : %s", path.exists())
@@ -129,10 +131,10 @@ def get_model() -> Any:
     try:
         _model = tf.keras.models.load_model(str(path), compile=False)
         _load_error = ""
-        logger.info("[TF] Model loaded successfully. Input shape: %s", _model.input_shape)
+        logger.info("[TF] ✓ Nutrition model loaded. Input shape: %s", _model.input_shape)
     except Exception as exc:
         _load_error = f"tf.keras.models.load_model raised: {exc}"
-        logger.error("[TF] Load FAILED: %s", _load_error)
+        logger.error("[TF] ✗ Load FAILED: %s", _load_error)
         return None
 
     return _model

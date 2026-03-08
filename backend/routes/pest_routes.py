@@ -21,11 +21,13 @@ _pest_load_error: str = ""
 
 
 def get_pest_model() -> Any:
-    """Return the loaded pest TF model, or None if loading failed."""
+    """Return the loaded pest TF model (lazy, cached after first load)."""
     global _pest_model, _pest_load_error
     if _pest_model is not None:
+        logger.debug("[pest] Cache hit – returning already-loaded pest model.")
         return _pest_model
 
+    logger.info("[pest] Lazy loading pest model (first request) …")
     path = settings.PEST_MODEL_PATH.resolve()
     logger.info("[pest] Resolved model path : %s", path)
     logger.info("[pest] File exists         : %s", path.exists())

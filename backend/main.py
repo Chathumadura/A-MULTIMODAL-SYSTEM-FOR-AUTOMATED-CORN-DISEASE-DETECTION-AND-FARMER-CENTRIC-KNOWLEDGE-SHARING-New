@@ -21,8 +21,8 @@ from core.config import settings
 from routes.yield_routes import router as yield_router
 from routes.nutrition_routes import router as nutrition_router
 from routes.fertilizer_routes import router as fertilizer_router
-from routes.pest_routes import router as pest_router, get_pest_model
-from utils.inference import get_model, get_tf_diagnostics
+from routes.pest_routes import router as pest_router
+from utils.inference import get_tf_diagnostics
 from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
 
@@ -59,70 +59,28 @@ app.add_middleware(
 )
 
 # ---------------------------------------------------------------------------
-# Startup – eagerly warm both models so first requests are fast
+# Startup – download model files only; intentionally NO model loading here.
+#
+# Memory budget on Render free tier is 512 MB.  Loading all three models
+# at startup (two TF graphs + sklearn + SHAP) easily exceeds that limit.
+# Models are loaded lazily on first request and cached in their respective
+# modules (utils/inference.py, routes/pest_routes.py, utils/yield_model.py).
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
 async def startup_event() -> None:
     logger.info("=" * 60)
-    logger.info("[startup] ── Phase 1: Downloading models if needed ──")
+    logger.info("[startup] Downloading model files (no loading into RAM yet) …")
 
-    # ── Download all three model files before any loading attempt ────────────
     # Environment variables that must be set on Render (or locally in .env):
     #   TF_MODEL_URL    → URL for corn_final_model.h5
     #   PEST_MODEL_URL  → URL for pest_model_final.keras
     #   YIELD_MODEL_URL → URL for corn_yield_model.pkl
-    download_model_if_needed("TF_MODEL_URL",   settings.TF_MODEL_PATH)
+    download_model_if_needed("TF_MODEL_URL",    settings.TF_MODEL_PATH)
     download_model_if_needed("PEST_MODEL_URL",  settings.PEST_MODEL_PATH)
     download_model_if_needed("YIELD_MODEL_URL", settings.YIELD_MODEL_PATH)
 
-    logger.info("-" * 60)
-    logger.info("[startup] ── Phase 2: Loading models into memory ──")
-
-    # ── TensorFlow nutrition model ───────────────────────────────────────────
-    logger.info("[startup] Warming up TF nutrition model …")
-    tf_diag = get_tf_diagnostics()  # logs path + exists + LFS check internally
-    logger.info("[startup] TF model path    : %s", tf_diag["model_path"])
-    logger.info("[startup] TF file exists   : %s", tf_diag["file_exists"])
-    logger.info("[startup] TF file size     : %s bytes", tf_diag["file_size_bytes"])
-    logger.info("[startup] TF LFS pointer   : %s", tf_diag["is_lfs_pointer"])
-
-    tf_model = get_model()
-    if tf_model is None:
-        logger.error(
-            "[startup] ✗ TF nutrition model NOT loaded – "
-            "POST /nutrition/predict will return 503.\n"
-            "          Reason: %s\n"
-            "          Fix   : Set TF_MODEL_URL env var on Render.",
-            tf_diag["load_error"],
-        )
-    else:
-        logger.info("[startup] ✓ TF nutrition model ready (input=%s).", tf_model.input_shape)
-
-    # ── TensorFlow pest model ────────────────────────────────────────────────
-    logger.info("-" * 60)
-    logger.info("[startup] Warming up pest detection model …")
-    pest_model = get_pest_model()
-    if pest_model is None:
-        logger.error(
-            "[startup] ✗ Pest model NOT loaded – "
-            "POST /pest/predict will return 503.\n"
-            "          Fix   : Set PEST_MODEL_URL env var on Render."
-        )
-    else:
-        logger.info("[startup] ✓ Pest model ready (input=%s).", pest_model.input_shape)
-
-    # ── Sklearn pipeline + SHAP ─────────────────────────────────────────────
-    logger.info("-" * 60)
-    logger.info("[startup] Warming up yield model …")
-    yield_state = get_yield_state()
-    if yield_state is None:
-        logger.error(
-            "[startup] ✗ Yield model NOT loaded – "
-            "/yield/predict and /yield/explain will return 503.\n"
-            "          Fix   : Set YIELD_MODEL_URL env var on Render."
-        )
-    else:
-        logger.info("[startup] ✓ Yield model ready.")
+    logger.info("[startup] ✓ Download phase complete.")
+    logger.info("[startup] Models will be loaded lazily on first request.")
     logger.info("=" * 60)
 
 
