@@ -5,7 +5,7 @@ Purpose: help AI coding agents be productive quickly in this repo: frontend Flut
 Quick architecture
 
 - Frontend: `frontend/corn_app/` — Flutter (feature pages under `lib/features/diagnosis/presentation/pages/`). UI-heavy; logic lives in pages.
-- Yield ML backend: `yield-prediction-backend/` — FastAPI service that loads `corn_yield_model.pkl`, predicts and returns SHAP explanations.
+- Yield ML backend: `yield-prediction-backend/` — FastAPI service that loads `corn_yield_model.tflite`, predicts and returns SHAP explanations.
 - Disease backend stub: `backend/` — placeholder FastAPI service for future work.
 
 Essential run commands
@@ -24,7 +24,7 @@ Essential run commands
 Critical backend details to preserve
 
 - Endpoint: `POST /predict_yield` in `yield-prediction-backend/main.py` — accepts `SimpleYieldRequest` and returns `YieldResponse` with `top_contributing_features` (SHAP).
-- Model expectations: pipeline expects ~23 features. The helper `build_full_row_from_simple()` (in `yield-prediction-backend/main.py`) fills many defaults — changing these defaults will change predictions. Keep defaults in sync with training data and `corn_yield_model.pkl`.
+- Model expectations: pipeline expects ~23 features. The helper `build_full_row_from_simple()` (in `yield-prediction-backend/main.py`) fills many defaults — changing these defaults will change predictions. Keep defaults in sync with training data and `corn_yield_model.tflite`.
 - SHAP: `TreeExplainer(model)` is used; feature names come from the preprocessor OHE. Human-friendly names are in `BASE_LABELS` and `CAT_LABELS`.
 
 Frontend conventions & patterns
@@ -37,7 +37,7 @@ Frontend conventions & patterns
 Integration notes
 
 - The frontend calls the yield backend `POST /predict_yield` with the small `SimpleYieldRequest` form; backend expands it via `build_full_row_from_simple()` before prediction.
-- Ensure `corn_yield_model.pkl` is present in `yield-prediction-backend/` and built with a compatible sklearn version.
+- Ensure `corn_yield_model.tflite` is present in `yield-prediction-backend/` and built with a compatible sklearn version.
 - CORS is wide-open in dev (`allow_origins=["*"]`) — tighten this for production.
 
 Where to look first (examples)

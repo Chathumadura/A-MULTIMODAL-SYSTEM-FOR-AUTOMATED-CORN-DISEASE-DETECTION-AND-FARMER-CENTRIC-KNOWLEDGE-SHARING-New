@@ -2,7 +2,7 @@
 Yield prediction model utilities.
 
 The sklearn pipeline is loaded lazily so the full app can start (and serve
-disease-detection requests) even when corn_yield_model.pkl is absent.
+disease-detection requests) even when corn_yield_model.tflite is absent.
 When the model file is missing, yield endpoints return HTTP 503.
 """
 

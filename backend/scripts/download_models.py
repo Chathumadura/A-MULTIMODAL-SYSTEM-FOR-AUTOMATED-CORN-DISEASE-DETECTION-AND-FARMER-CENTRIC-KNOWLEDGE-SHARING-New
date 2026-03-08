@@ -146,7 +146,7 @@ def main() -> int:
         ),
         (
             "YIELD_MODEL_URL",
-            _resolve_path("YIELD_MODEL_PATH", "corn_yield_model.pkl"),
+            _resolve_path("YIELD_MODEL_PATH", "corn_yield_model.tflite"),
             "Yield model (.pkl)",
         ),
         (

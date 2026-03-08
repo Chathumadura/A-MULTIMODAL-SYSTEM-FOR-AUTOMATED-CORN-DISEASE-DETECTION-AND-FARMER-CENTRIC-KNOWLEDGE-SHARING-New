@@ -71,7 +71,7 @@ app.add_middleware(
 # (do NOT put blank value: "" in render.yaml – that overwrites dashboard values):
 #   TF_MODEL_URL      → direct download URL for corn_final_model.tflite
 #   PEST_MODEL_URL    → direct download URL for pest_model.tflite
-#   YIELD_MODEL_URL   → direct download URL for corn_yield_model.pkl
+#   YIELD_MODEL_URL   → direct download URL for corn_yield_model.tflite
 #   DISEASE_MODEL_URL → direct download URL for disease_model.keras
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
@@ -83,7 +83,7 @@ async def startup_event() -> None:
     _models = [
         ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite"),
         ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model.tflite"),
-        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.pkl"),
+        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.tflite"),
         ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.keras"),
     ]
 
