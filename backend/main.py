@@ -80,20 +80,24 @@ async def startup_event() -> None:
     logger.info("[startup] === MODEL DOWNLOAD PHASE ===")
     logger.info("[startup] Downloads run before any model is loaded into RAM.")
 
+    # min_valid_bytes: TFLite image models are 5-30 MB (threshold 1 MB).
+    # The yield model is a small sklearn joblib pipeline (~70 KB); use 32 KB threshold.
+    _MB = 1_048_576
+    _32KB = 32 * 1024
     _models = [
-        ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite"),
-        ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model.tflite"),
-        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.tflite"),
-        ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.keras"),
+        ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite", _MB),
+        ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model.tflite",        _MB),
+        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.tflite", _32KB),
+        ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.tflite",    _MB),
     ]
 
     results: list[tuple[str, bool]] = []
-    for env_var, local_path, label in _models:
-        download_model_if_needed(env_var, local_path)
+    for env_var, local_path, label, min_bytes in _models:
+        download_model_if_needed(env_var, local_path, min_valid_bytes=min_bytes)
         # Post-download confirmation: re-check disk regardless of return value
         exists_now = local_path.exists()
         size_now   = local_path.stat().st_size if exists_now else 0
-        if exists_now and size_now >= 1_048_576:
+        if exists_now and size_now >= min_bytes:
             logger.info(
                 "[startup] ✓ %-28s ready at %s  (%d bytes)",
                 label, local_path, size_now,
@@ -110,7 +114,7 @@ async def startup_event() -> None:
                     "– dependent endpoints will return HTTP 503",
                     label, local_path,
                 )
-        results.append((label, exists_now and size_now >= 1_048_576))
+        results.append((label, exists_now and size_now >= min_bytes))
 
     logger.info("[startup] === DOWNLOAD SUMMARY ===")
     for label, ready in results:

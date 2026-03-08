@@ -24,14 +24,20 @@ logger = logging.getLogger(__name__)
 _MIN_VALID_BYTES: int = 1 * 1024 * 1024  # 1 MB
 
 
-def download_model_if_needed(env_var: str, local_path: Path) -> bool:
+def download_model_if_needed(
+    env_var: str,
+    local_path: Path,
+    min_valid_bytes: int = _MIN_VALID_BYTES,
+) -> bool:
     """
     Ensure *local_path* holds a real model file, downloading from *env_var* URL
     if needed.
 
     Args:
-        env_var:    Name of the environment variable that holds the download URL.
-        local_path: Absolute Path where the file should be stored locally.
+        env_var:         Name of the environment variable that holds the download URL.
+        local_path:      Absolute Path where the file should be stored locally.
+        min_valid_bytes: Minimum byte size to consider the file valid (default 1 MB).
+                         Use a smaller value for non-TFLite models (e.g. sklearn pipelines).
 
     Returns:
         True  – file is present and appears valid after this call.
@@ -44,7 +50,7 @@ def download_model_if_needed(env_var: str, local_path: Path) -> bool:
     if local_path.exists():
         size = local_path.stat().st_size
         logger.info("[downloader] File exists         : True  (%d bytes)", size)
-        if size >= _MIN_VALID_BYTES:
+        if size >= min_valid_bytes:
             logger.info("[downloader] File appears valid – skipping download.")
             return True
         logger.warning(
