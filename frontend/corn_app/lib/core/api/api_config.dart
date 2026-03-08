@@ -32,7 +32,8 @@ const String _physicalDeviceIp = '192.168.1.100'; // e.g. 192.168.1.42
 // ─────────────────────────────────────────────────────────────────────────
 
 const int _localPort = 8000;
-const String _productionUrl = 'https://a-multimodal-system-for-automated-corn.onrender.com';
+const String _productionUrl =
+    'https://a-multimodal-system-for-automated-corn.onrender.com';
 
 /// The three environments the app can target.
 enum RunMode {
