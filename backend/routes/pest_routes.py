@@ -4,20 +4,52 @@ import numpy as np
 import tensorflow as tf
 import io
 import logging
+from typing import Any
 
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/pest", tags=["pest detection"])
 
-MODEL_PATH = "models/pest_model_final.keras"
+# ---------------------------------------------------------------------------
+# Lazy model loader – model is NOT loaded at import time so that
+# main.py can run the download step (startup event) before any load attempt.
+# ---------------------------------------------------------------------------
+_pest_model: Any = None
+_pest_load_error: str = ""
 
-try:
-    pest_model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-    logger.info("Pest detection model loaded from %s", MODEL_PATH)
-except Exception as exc:  # pragma: no cover - startup diagnostics
-    pest_model = None
-    logger.error("Failed to load pest detection model from %s: %s", MODEL_PATH, exc)
+
+def get_pest_model() -> Any:
+    """Return the loaded pest TF model, or None if loading failed."""
+    global _pest_model, _pest_load_error
+    if _pest_model is not None:
+        return _pest_model
+
+    path = settings.PEST_MODEL_PATH.resolve()
+    logger.info("[pest] Resolved model path : %s", path)
+    logger.info("[pest] File exists         : %s", path.exists())
+    if path.exists():
+        logger.info("[pest] File size (bytes)   : %d", path.stat().st_size)
+
+    if not path.exists():
+        _pest_load_error = f"File not found: {path}"
+        logger.error("[pest] ✗ Model file missing at %s", path)
+        return None
+
+    try:
+        _pest_model = tf.keras.models.load_model(str(path), compile=False)
+        _pest_load_error = ""
+        logger.info(
+            "[pest] ✓ Pest model loaded successfully (input=%s)",
+            _pest_model.input_shape,
+        )
+    except Exception as exc:
+        _pest_load_error = str(exc)
+        logger.error("[pest] ✗ Failed to load pest model from %s: %s", path, exc)
+        return None
+
+    return _pest_model
 
 
 CLASS_NAMES = [
@@ -45,6 +77,7 @@ def pest_root() -> dict:
 
 @router.post("/predict")
 async def pest_predict(file: UploadFile = File(...)) -> dict:
+    pest_model = get_pest_model()
     if pest_model is None:
         raise HTTPException(status_code=503, detail="Pest detection model not loaded.")
 

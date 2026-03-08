@@ -21,8 +21,9 @@ from core.config import settings
 from routes.yield_routes import router as yield_router
 from routes.nutrition_routes import router as nutrition_router
 from routes.fertilizer_routes import router as fertilizer_router
-from routes.pest_routes import router as pest_router
+from routes.pest_routes import router as pest_router, get_pest_model
 from utils.inference import get_model, get_tf_diagnostics
+from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
 
 # ---------------------------------------------------------------------------
@@ -62,8 +63,22 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
 async def startup_event() -> None:
-    # ── TensorFlow model ────────────────────────────────────────────────────
     logger.info("=" * 60)
+    logger.info("[startup] ── Phase 1: Downloading models if needed ──")
+
+    # ── Download all three model files before any loading attempt ────────────
+    # Environment variables that must be set on Render (or locally in .env):
+    #   TF_MODEL_URL    → URL for corn_final_model.h5
+    #   PEST_MODEL_URL  → URL for pest_model_final.keras
+    #   YIELD_MODEL_URL → URL for corn_yield_model.pkl
+    download_model_if_needed("TF_MODEL_URL",   settings.TF_MODEL_PATH)
+    download_model_if_needed("PEST_MODEL_URL",  settings.PEST_MODEL_PATH)
+    download_model_if_needed("YIELD_MODEL_URL", settings.YIELD_MODEL_PATH)
+
+    logger.info("-" * 60)
+    logger.info("[startup] ── Phase 2: Loading models into memory ──")
+
+    # ── TensorFlow nutrition model ───────────────────────────────────────────
     logger.info("[startup] Warming up TF nutrition model …")
     tf_diag = get_tf_diagnostics()  # logs path + exists + LFS check internally
     logger.info("[startup] TF model path    : %s", tf_diag["model_path"])
@@ -74,14 +89,27 @@ async def startup_event() -> None:
     tf_model = get_model()
     if tf_model is None:
         logger.error(
-            "[startup] ✗ TF model NOT loaded – POST /nutrition/predict will return 503.\n"
+            "[startup] ✗ TF nutrition model NOT loaded – "
+            "POST /nutrition/predict will return 503.\n"
             "          Reason: %s\n"
-            "          Fix   : Set TF_MODEL_URL env var so build script downloads the file,"
-            " OR commit the real .h5 (not an LFS pointer).",
+            "          Fix   : Set TF_MODEL_URL env var on Render.",
             tf_diag["load_error"],
         )
     else:
-        logger.info("[startup] ✓ TF model ready (input=%s).", tf_model.input_shape)
+        logger.info("[startup] ✓ TF nutrition model ready (input=%s).", tf_model.input_shape)
+
+    # ── TensorFlow pest model ────────────────────────────────────────────────
+    logger.info("-" * 60)
+    logger.info("[startup] Warming up pest detection model …")
+    pest_model = get_pest_model()
+    if pest_model is None:
+        logger.error(
+            "[startup] ✗ Pest model NOT loaded – "
+            "POST /pest/predict will return 503.\n"
+            "          Fix   : Set PEST_MODEL_URL env var on Render."
+        )
+    else:
+        logger.info("[startup] ✓ Pest model ready (input=%s).", pest_model.input_shape)
 
     # ── Sklearn pipeline + SHAP ─────────────────────────────────────────────
     logger.info("-" * 60)
@@ -90,7 +118,8 @@ async def startup_event() -> None:
     if yield_state is None:
         logger.error(
             "[startup] ✗ Yield model NOT loaded – "
-            "/yield/predict and /yield/explain will return 503."
+            "/yield/predict and /yield/explain will return 503.\n"
+            "          Fix   : Set YIELD_MODEL_URL env var on Render."
         )
     else:
         logger.info("[startup] ✓ Yield model ready.")

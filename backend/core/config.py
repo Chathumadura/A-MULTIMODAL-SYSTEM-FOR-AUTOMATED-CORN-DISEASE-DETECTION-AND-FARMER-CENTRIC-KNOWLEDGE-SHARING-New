@@ -65,6 +65,15 @@ class _Settings:
     )
 
     # ------------------------------------------------------------------
+    # TensorFlow model – pest detection
+    # Set PEST_MODEL_PATH in your .env or on the Render dashboard.
+    # ------------------------------------------------------------------
+    PEST_MODEL_PATH: Path = _resolve_path(
+        "PEST_MODEL_PATH",
+        "models/pest_model_final.keras",
+    )
+
+    # ------------------------------------------------------------------
     # Sklearn pipeline – yield prediction + SHAP
     # Set YIELD_MODEL_PATH in your .env or on the Render dashboard.
     # ------------------------------------------------------------------
