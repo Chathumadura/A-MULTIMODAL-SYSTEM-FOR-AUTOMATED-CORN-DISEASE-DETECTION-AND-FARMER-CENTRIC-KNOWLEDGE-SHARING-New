@@ -65,21 +65,55 @@ app.add_middleware(
 # at startup (two TF graphs + sklearn + SHAP) easily exceeds that limit.
 # Models are loaded lazily on first request and cached in their respective
 # modules (utils/inference.py, routes/pest_routes.py, utils/yield_model.py).
+#
+# Environment variables that MUST be set in the Render dashboard
+# (do NOT put blank value: "" in render.yaml – that overwrites dashboard values):
+#   TF_MODEL_URL    → direct download URL for corn_final_model.h5
+#   PEST_MODEL_URL  → direct download URL for pest_model_final.keras
+#   YIELD_MODEL_URL → direct download URL for corn_yield_model.pkl
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
 async def startup_event() -> None:
     logger.info("=" * 60)
-    logger.info("[startup] Downloading model files (no loading into RAM yet) …")
+    logger.info("[startup] === MODEL DOWNLOAD PHASE ===")
+    logger.info("[startup] Downloads run before any model is loaded into RAM.")
 
-    # Environment variables that must be set on Render (or locally in .env):
-    #   TF_MODEL_URL    → URL for corn_final_model.h5
-    #   PEST_MODEL_URL  → URL for pest_model_final.keras
-    #   YIELD_MODEL_URL → URL for corn_yield_model.pkl
-    download_model_if_needed("TF_MODEL_URL",    settings.TF_MODEL_PATH)
-    download_model_if_needed("PEST_MODEL_URL",  settings.PEST_MODEL_PATH)
-    download_model_if_needed("YIELD_MODEL_URL", settings.YIELD_MODEL_PATH)
+    _models = [
+        ("TF_MODEL_URL",    settings.TF_MODEL_PATH,   "corn_final_model.h5"),
+        ("PEST_MODEL_URL",  settings.PEST_MODEL_PATH,  "pest_model_final.keras"),
+        ("YIELD_MODEL_URL", settings.YIELD_MODEL_PATH, "corn_yield_model.pkl"),
+    ]
 
-    logger.info("[startup] ✓ Download phase complete.")
+    results: list[tuple[str, bool]] = []
+    for env_var, local_path, label in _models:
+        download_model_if_needed(env_var, local_path)
+        # Post-download confirmation: re-check disk regardless of return value
+        exists_now = local_path.exists()
+        size_now   = local_path.stat().st_size if exists_now else 0
+        if exists_now and size_now >= 1_048_576:
+            logger.info(
+                "[startup] ✓ %-28s ready at %s  (%d bytes)",
+                label, local_path, size_now,
+            )
+        else:
+            if exists_now:
+                logger.warning(
+                    "[startup] ⚠ %-28s found but suspiciously small (%d bytes) at %s",
+                    label, size_now, local_path,
+                )
+            else:
+                logger.warning(
+                    "[startup] ✗ %-28s NOT found at %s  "
+                    "– dependent endpoints will return HTTP 503",
+                    label, local_path,
+                )
+        results.append((label, exists_now and size_now >= 1_048_576))
+
+    logger.info("[startup] === DOWNLOAD SUMMARY ===")
+    for label, ready in results:
+        status = "READY   ✓" if ready else "MISSING ✗"
+        logger.info("[startup]   %-28s %s", label, status)
+
     logger.info("[startup] Models will be loaded lazily on first request.")
     logger.info("=" * 60)
 

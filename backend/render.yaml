@@ -42,19 +42,29 @@ services:
       # ── Model paths (relative to backend/; resolved via BASE_DIR in config.py)
       - key: TF_MODEL_PATH
         value: models/corn_final_model.h5
+      - key: PEST_MODEL_PATH
+        value: models/pest_model_final.keras
       - key: YIELD_MODEL_PATH
         value: corn_yield_model.pkl
 
-      # ── Model download URLs (set these on the Render dashboard) ─────────────
-      # Paste a direct-download link to the model binary. Supported sources:
-      #   • Any public HTTPS URL (CDN, S3, Azure Blob, etc.)
-      #   • Google Drive share link  (auto-rewritten to uc?export=download)
-      #   • Dropbox share link       (?dl=0 auto-rewritten to ?dl=1)
-      #   • Hugging Face resolve URL
+      # ── Model download URLs ──────────────────────────────────────────────────
+      # IMPORTANT: do NOT use value: "" here – Render would push that empty
+      # string to the service on every deploy, overwriting any URL you set on
+      # the dashboard.  Use sync: false so that the URL lives only on the
+      # dashboard (Environment tab) and is never clobbered by this file.
       #
-      # Leave the value blank or remove the key to skip the download.
-      # If the file is missing the affected endpoint returns HTTP 503.
+      # On the Render dashboard go to Environment and set:
+      #   TF_MODEL_URL    → direct download URL for corn_final_model.h5
+      #   PEST_MODEL_URL  → direct download URL for pest_model_final.keras
+      #   YIELD_MODEL_URL → direct download URL for corn_yield_model.pkl
+      #
+      # Supported sources: any public HTTPS URL, Google Drive share link
+      # (auto-rewritten to direct download), Dropbox (?dl=0 → ?dl=1),
+      # Hugging Face resolve URL.  Leave unset to skip download (affected
+      # endpoints will return HTTP 503).
       - key: TF_MODEL_URL
-        value: ""   # ← REPLACE with your hosted .h5 URL on the Render dashboard
+        sync: false   # real URL must be set in Render dashboard → Environment tab
+      - key: PEST_MODEL_URL
+        sync: false   # real URL must be set in Render dashboard → Environment tab
       - key: YIELD_MODEL_URL
-        value: ""   # ← REPLACE with your hosted .pkl URL on the Render dashboard
+        sync: false   # real URL must be set in Render dashboard → Environment tab

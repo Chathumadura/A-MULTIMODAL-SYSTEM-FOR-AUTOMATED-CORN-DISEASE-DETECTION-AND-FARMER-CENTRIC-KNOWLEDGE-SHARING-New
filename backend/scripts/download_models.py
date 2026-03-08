@@ -130,8 +130,13 @@ def main() -> int:
     targets = [
         (
             "TF_MODEL_URL",
-            _resolve_path("TF_MODEL_PATH", "models/resnet50_multi_nutrient_finetuned.h5"),
+            _resolve_path("TF_MODEL_PATH", "models/corn_final_model.h5"),
             "TF nutrition model (.h5)",
+        ),
+        (
+            "PEST_MODEL_URL",
+            _resolve_path("PEST_MODEL_PATH", "models/pest_model_final.keras"),
+            "Pest detection model (.keras)",
         ),
         (
             "YIELD_MODEL_URL",
