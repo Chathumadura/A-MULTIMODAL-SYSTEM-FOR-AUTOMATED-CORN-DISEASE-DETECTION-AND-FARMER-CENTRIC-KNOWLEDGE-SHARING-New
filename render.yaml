@@ -37,7 +37,7 @@ services:
 
       # Model paths are relative to backend/ (rootDir)
       - key: TF_MODEL_PATH
-        value: models/corn_final_model.h5
+        value: models/corn_final_model old .h5
       - key: YIELD_MODEL_PATH
         value: corn_yield_model.pkl
 
@@ -49,3 +49,34 @@ services:
         value: ""   # ← set on Render dashboard
       - key: YIELD_MODEL_URL
         value: ""   # ← set on Render dashboard
+
+# ── Flutter Web Frontend ──────────────────────────────────────────────────────
+  - type: web
+    name: corn-ai-frontend
+    env: static
+    region: oregon
+
+    # ── Build ────────────────────────────────────────────────────────────────
+    # 1. Install the Flutter stable SDK (git clone gives us the latest stable)
+    # 2. Build the Flutter web app in release mode, wiring it to the Render
+    #    backend via --dart-define=RUN_MODE=production
+    buildCommand: |
+      git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
+      export PATH="$HOME/flutter/bin:$PATH"
+      flutter config --no-analytics --no-cli-animations
+      flutter precache --web
+      cd frontend/corn_app
+      flutter pub get
+      flutter build web --release --dart-define=RUN_MODE=production
+
+    # ── Publish dir ──────────────────────────────────────────────────────────
+    # This is relative to the repo root (not rootDir, since we set none).
+    staticPublishPath: frontend/corn_app/build/web
+
+    # ── SPA routing ──────────────────────────────────────────────────────────
+    # Flutter web uses a single index.html; rewrite all routes to it so that
+    # deep-links (e.g. /yield, /diagnosis) don't return 404 on refresh.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

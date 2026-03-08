@@ -4,7 +4,7 @@
 //
 //   RunMode.emulator    → http://10.0.2.2:8000          (Android AVD  → host)
 //   RunMode.device      → http://<_physicalDeviceIp>:8000 (real phone on LAN)
-//   RunMode.production  → https://corn-ai-backend.onrender.com
+//   RunMode.production  → https://a-multimodal-system-for-automated-corn.onrender.com
 //
 // ── Developer quick-start ─────────────────────────────────────────────────
 //
@@ -32,7 +32,7 @@ const String _physicalDeviceIp = '192.168.1.100'; // e.g. 192.168.1.42
 // ─────────────────────────────────────────────────────────────────────────
 
 const int _localPort = 8000;
-const String _productionUrl = 'https://corn-ai-backend.onrender.com';
+const String _productionUrl = 'https://a-multimodal-system-for-automated-corn.onrender.com';
 
 /// The three environments the app can target.
 enum RunMode {

@@ -14,7 +14,7 @@ class Env {
   /// Delegates to [ApiConfig.baseUrl], which automatically selects:
   ///   • `http://10.0.2.2:8000`             – Android Emulator (debug)
   ///   • `http://<physicalDeviceIp>:8000`   – real device on LAN (debug)
-  ///   • `https://corn-ai-backend.onrender.com` – production / release
+  ///   • `https://a-multimodal-system-for-automated-corn.onrender.com` – production / release
   ///
   /// To override, pass `--dart-define=RUN_MODE=emulator|device|production`
   /// to `flutter run`, or set `_physicalDeviceIp` in api_config.dart.
