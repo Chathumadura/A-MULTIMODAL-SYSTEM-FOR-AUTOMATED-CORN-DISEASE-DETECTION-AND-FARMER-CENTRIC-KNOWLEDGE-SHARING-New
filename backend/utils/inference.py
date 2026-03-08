@@ -174,11 +174,18 @@ def get_model() -> "tf.lite.Interpreter | None":
         )
     except Exception as exc:
         _load_error = f"tf.lite.Interpreter raised: {exc}"
-        logger.error("[TFLite] ✗ Load FAILED: %s", _load_error)
+        # logger.exception logs the full traceback, not just the string – this
+        # is critical for diagnosing mismatched TF ops, corrupt flatbuffers, etc.
+        logger.exception("[TFLite] ✗ Load FAILED (full traceback follows): %s", _load_error)
         _interpreter = None
         return None
 
     return _interpreter
+
+
+def get_load_error() -> str:
+    """Return the human-readable load-failure reason, or empty string."""
+    return _load_error
 
 
 def get_tf_diagnostics() -> dict:
@@ -247,10 +254,15 @@ def predict_nutrient_status(file_bytes: bytes) -> dict:
         RuntimeError: model not loaded (caller should return HTTP 503).
         ValueError:   image could not be decoded (caller should return HTTP 422).
     """
+    logger.info("[nutrition] predict_nutrient_status called (%d bytes)", len(file_bytes))
+
     interpreter = get_model()
     if interpreter is None:
-        raise RuntimeError("TF model is not available – file may be missing or failed to load.")
+        reason = _load_error or "model file may be missing or failed to load"
+        logger.error("[nutrition] ✗ Model not available. Reason: %s", reason)
+        raise RuntimeError(f"TF model is not available. Reason: {reason}")
 
+    logger.info("[nutrition] Model cache hit. Preprocessing image …")
     x = preprocess_image_bytes(file_bytes)
 
     # TFLite inference: write input → invoke → read output.
@@ -259,10 +271,29 @@ def predict_nutrient_status(file_bytes: bytes) -> dict:
     input_details  = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
 
+    logger.info(
+        "[nutrition] Input tensor  : index=%d  shape=%s  dtype=%s",
+        input_details[0]["index"], input_details[0]["shape"],
+        input_details[0]["dtype"].__name__,
+    )
+    logger.info(
+        "[nutrition] Output tensor : index=%d  shape=%s  dtype=%s",
+        output_details[0]["index"], output_details[0]["shape"],
+        output_details[0]["dtype"].__name__,
+    )
+    logger.info(
+        "[nutrition] Preprocessed array: shape=%s  dtype=%s  min=%.4f  max=%.4f",
+        x.shape, x.dtype, float(x.min()), float(x.max()),
+    )
+
     t0 = time.perf_counter()
-    interpreter.set_tensor(input_details[0]["index"], x)
-    interpreter.invoke()
-    proba = interpreter.get_tensor(output_details[0]["index"])[0]
+    try:
+        interpreter.set_tensor(input_details[0]["index"], x)
+        interpreter.invoke()
+        proba = interpreter.get_tensor(output_details[0]["index"])[0]
+    except Exception as exc:
+        logger.exception("[nutrition] ✗ TFLite inference op failed: %s", exc)
+        raise RuntimeError(f"TFLite inference failed: {exc}") from exc
     inference_time_ms = round((time.perf_counter() - t0) * 1000, 2)
 
     # Primary prediction
