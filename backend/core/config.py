@@ -61,7 +61,7 @@ class _Settings:
     # ------------------------------------------------------------------
     TF_MODEL_PATH: Path = _resolve_path(
         "TF_MODEL_PATH",
-        "models/corn_final_model old .h5",
+        "models/corn_final_model.h5",
     )
 
     # ------------------------------------------------------------------

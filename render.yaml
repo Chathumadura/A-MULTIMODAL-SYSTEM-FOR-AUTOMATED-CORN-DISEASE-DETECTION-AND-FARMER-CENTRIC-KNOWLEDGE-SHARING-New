@@ -37,7 +37,7 @@ services:
 
       # Model paths are relative to backend/ (rootDir)
       - key: TF_MODEL_PATH
-        value: models/corn_final_model old .h5
+        value: models/corn_final_model.h5
       - key: YIELD_MODEL_PATH
         value: corn_yield_model.pkl
 
