@@ -135,7 +135,7 @@ def main() -> int:
         ),
         (
             "PEST_MODEL_URL",
-            _resolve_path("PEST_MODEL_PATH", "models/pest_model_final.keras"),
+            _resolve_path("PEST_MODEL_PATH", "models/pest_model.tflite"),
             "Pest detection model (.keras)",
         ),
         (

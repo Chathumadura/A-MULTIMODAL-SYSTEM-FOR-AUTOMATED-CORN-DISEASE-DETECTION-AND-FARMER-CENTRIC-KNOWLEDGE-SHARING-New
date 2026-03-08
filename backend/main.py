@@ -70,7 +70,7 @@ app.add_middleware(
 # Environment variables that MUST be set in the Render dashboard
 # (do NOT put blank value: "" in render.yaml – that overwrites dashboard values):
 #   TF_MODEL_URL      → direct download URL for corn_final_model.tflite
-#   PEST_MODEL_URL    → direct download URL for pest_model_final.keras
+#   PEST_MODEL_URL    → direct download URL for pest_model.tflite
 #   YIELD_MODEL_URL   → direct download URL for corn_yield_model.pkl
 #   DISEASE_MODEL_URL → direct download URL for disease_model.keras
 # ---------------------------------------------------------------------------
@@ -82,7 +82,7 @@ async def startup_event() -> None:
 
     _models = [
         ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite"),
-        ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model_final.keras"),
+        ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model.tflite"),
         ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.pkl"),
         ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.keras"),
     ]

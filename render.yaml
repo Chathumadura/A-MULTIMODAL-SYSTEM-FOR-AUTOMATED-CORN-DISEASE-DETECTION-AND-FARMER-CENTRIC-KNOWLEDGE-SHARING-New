@@ -40,7 +40,7 @@ services:
       - key: TF_MODEL_PATH
         value: models/corn_final_model.tflite
       - key: PEST_MODEL_PATH
-        value: models/pest_model_final.keras
+        value: models/pest_model.tflite
       - key: YIELD_MODEL_PATH
         value: corn_yield_model.pkl
       - key: DISEASE_MODEL_PATH
@@ -54,7 +54,7 @@ services:
       #
       # On the Render dashboard set each key to a direct-download URL:
       #   TF_MODEL_URL      → corn_final_model.tflite
-      #   PEST_MODEL_URL    → pest_model_final.keras
+      #   PEST_MODEL_URL    → pest_model.tflite
       #   YIELD_MODEL_URL   → corn_yield_model.pkl
       #   DISEASE_MODEL_URL → disease_model.keras
       #

@@ -70,7 +70,7 @@ class _Settings:
     # ------------------------------------------------------------------
     PEST_MODEL_PATH: Path = _resolve_path(
         "PEST_MODEL_PATH",
-        "models/pest_model_final.keras",
+        "models/pest_model.tflite",
     )
 
     # ------------------------------------------------------------------
