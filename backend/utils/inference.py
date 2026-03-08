@@ -1,13 +1,24 @@
 """
-TensorFlow nutrient/disease inference utilities.
+TensorFlow Lite nutrient/disease inference utilities.
 
-The model is loaded lazily on first use so the app starts even if the
-.h5 file is absent – missing-model requests return HTTP 503.
+The TFLite interpreter is loaded lazily on the very first request to
+/nutrition/predict and then cached for all subsequent requests.  The app
+starts even if the .tflite file is absent – missing-model requests return
+HTTP 503 gracefully.
 
-Normalisation choice: pixel values are scaled to [0, 1] (divided by 255).
-This matches the normalisation confirmed in the existing project codebase.
-If the model was instead trained with tf.keras.applications.resnet50.preprocess_input
-(channel-wise mean subtraction), replace the /255.0 block with that call.
+Why tf.lite.Interpreter instead of tf.keras.models.load_model?
+──────────────────────────────────────────────────────────────
+• .tflite files are FlatBuffer binaries, not HDF5/SavedModel archives.
+  tf.keras.models.load_model() cannot read them.
+• tf.lite.Interpreter is the correct runtime for TFLite models:  it maps
+  the FlatBuffer directly into RAM, allocates fixed input/output tensor
+  buffers, and runs inference via set_tensor → invoke → get_tensor.
+• TFLite has a dramatically smaller RAM footprint than the full Keras graph
+  runtime, which is critical for Render's free-tier 512 MB limit.
+
+Normalisation: pixel values are scaled to [0, 1] (÷ 255) to match the
+training pipeline.  Update preprocess_image_bytes() if a different
+normalisation was used during training.
 """
 
 import io
@@ -49,19 +60,21 @@ ALLOWED_CONTENT_TYPES: frozenset[str] = frozenset({
 })
 
 MAX_FILE_SIZE_BYTES: int = 5 * 1024 * 1024  # 5 MB
-MODEL_VERSION: str = "corn_final_model_v1"
+MODEL_VERSION: str = "corn_final_model_v1_tflite"
 
 # Git-LFS pointer files start with this ASCII prefix.  If Render cloned the
-# repo without LFS support the .h5 on disk is a tiny text pointer, not the
-# real binary, so TF would fail with a cryptic HDF5 error instead of a clear
-# "file not found".
+# repo without LFS support the .tflite on disk is a tiny text pointer, not
+# the real FlatBuffer binary, so TFLite would raise an opaque error instead
+# of a clear "file not found".
 _LFS_SIGNATURE: bytes = b"version https://git-lfs"
-# Real .h5 HDF5 files start with the HDF5 superblock magic bytes.
-_HDF5_MAGIC: bytes = b"\x89HDF\r\n\x1a\n"
-# Minimum realistic size for a real model file (1 MB)
+# Minimum realistic size for a real TFLite model file (1 MB).
+# TFLite files are FlatBuffers – no universal magic-byte header to check.
 _MIN_MODEL_BYTES: int = 1 * 1024 * 1024
 
-_model: Any = None
+# TFLite interpreter singleton – None until first call to get_model().
+# Using tf.lite.Interpreter (not tf.keras.models.load_model) because
+# .tflite files are FlatBuffer binaries that Keras cannot read.
+_interpreter: "tf.lite.Interpreter | None" = None
 _load_error: str = ""  # human-readable failure reason, set on first failed load
 
 
@@ -70,7 +83,11 @@ _load_error: str = ""  # human-readable failure reason, set on first failed load
 # ---------------------------------------------------------------------------
 def _check_file(path: Path) -> tuple[bool, str]:
     """
-    Validate that *path* points to a real HDF5 model file.
+    Validate that *path* holds a real .tflite binary (not an LFS pointer).
+
+    TFLite files use the FlatBuffers format – there is no universal magic-byte
+    header to validate, so we check only for the LFS pointer signature and a
+    minimum size threshold.
 
     Returns:
         (ok: bool, reason: str)  – reason is empty when ok is True.
@@ -80,64 +97,88 @@ def _check_file(path: Path) -> tuple[bool, str]:
 
     size = path.stat().st_size
     if size < _MIN_MODEL_BYTES:
-        # Read first bytes to distinguish LFS pointer from other small files
+        # Read the first bytes to distinguish an LFS pointer from other small files.
         header = path.read_bytes()[:128]
         if header.startswith(_LFS_SIGNATURE):
             return False, (
                 f"Git LFS pointer detected ({size} bytes). "
-                "The real model binary was not downloaded. "
-                "Run 'git lfs pull' or set TF_MODEL_URL to download it during build."
+                "The real .tflite binary was not downloaded. "
+                "Set TF_MODEL_URL on the Render dashboard to download it at startup."
             )
         return False, (
             f"File is suspiciously small ({size} bytes < {_MIN_MODEL_BYTES} bytes). "
             "It may be corrupt or an LFS pointer."
         )
 
-    # Check HDF5 magic bytes.
-    header = path.read_bytes()[:8]
-    if header != _HDF5_MAGIC:
-        return False, (
-            f"File does not start with HDF5 magic bytes (got {header!r}). "
-            "The file may be corrupt or the wrong format."
-        )
-
     return True, ""
 
 
 # ---------------------------------------------------------------------------
-# Model loading
+# Model loading (lazy, cached)
 # ---------------------------------------------------------------------------
-def get_model() -> Any:
-    """Return the loaded TF nutrition model (lazy, cached after first load)."""
-    global _model, _load_error
-    if _model is not None:
-        logger.debug("[TF] Cache hit – returning already-loaded nutrition model.")
-        return _model
+def get_model() -> "tf.lite.Interpreter | None":
+    """
+    Return the loaded TFLite interpreter (lazy, cached after first load).
 
-    logger.info("[TF] Lazy loading nutrition model (first request) …")
+    First call:
+      1. Validates the .tflite file exists and is not an LFS pointer.
+      2. Creates a tf.lite.Interpreter from the file path.
+      3. Calls allocate_tensors() to pre-allocate input/output buffers.
+      4. Caches the interpreter in the module-level _interpreter variable.
+
+    Subsequent calls:
+      Return the cached interpreter immediately (no file I/O, no allocation).
+
+    Returns None on any failure; the caller should respond with HTTP 503.
+    """
+    global _interpreter, _load_error
+
+    # ── Cache hit: interpreter already loaded ─────────────────────────────────
+    if _interpreter is not None:
+        logger.debug("[TFLite] Cache hit – returning cached nutrition interpreter.")
+        return _interpreter
+
+    # ── First call: load the TFLite model ────────────────────────────────────
+    logger.info("[TFLite] Lazy loading nutrition model (first request) …")
     path: Path = settings.TF_MODEL_PATH.resolve()
-    logger.info("[TF] Resolved model path : %s", path)
-    logger.info("[TF] File exists          : %s", path.exists())
+    logger.info("[TFLite] Resolved model path : %s", path)
+    logger.info("[TFLite] File exists          : %s", path.exists())
     if path.exists():
-        logger.info("[TF] File size (bytes)    : %s", path.stat().st_size)
+        logger.info("[TFLite] File size (bytes)    : %d", path.stat().st_size)
 
     ok, reason = _check_file(path)
     if not ok:
         _load_error = reason
-        logger.error("[TF] Pre-load check FAILED: %s", reason)
+        logger.error("[TFLite] Pre-load check FAILED: %s", reason)
         return None
 
-    logger.info("[TF] Pre-load check passed. Loading with tf.keras …")
+    logger.info("[TFLite] Pre-load check passed. Creating tf.lite.Interpreter …")
     try:
-        _model = tf.keras.models.load_model(str(path), compile=False)
+        # tf.lite.Interpreter reads the .tflite FlatBuffer from disk.
+        # allocate_tensors() pre-allocates the fixed input/output buffers
+        # so inference can run without additional heap allocation per call.
+        _interpreter = tf.lite.Interpreter(model_path=str(path))
+        _interpreter.allocate_tensors()
         _load_error = ""
-        logger.info("[TF] ✓ Nutrition model loaded. Input shape: %s", _model.input_shape)
+
+        input_details = _interpreter.get_input_details()
+        output_details = _interpreter.get_output_details()
+        logger.info(
+            "[TFLite] ✓ Nutrition interpreter ready."
+            "  Input : index=%d  shape=%s  dtype=%s"
+            "  Output: index=%d  shape=%s  dtype=%s",
+            input_details[0]["index"],  input_details[0]["shape"],
+            input_details[0]["dtype"].__name__,
+            output_details[0]["index"], output_details[0]["shape"],
+            output_details[0]["dtype"].__name__,
+        )
     except Exception as exc:
-        _load_error = f"tf.keras.models.load_model raised: {exc}"
-        logger.error("[TF] ✗ Load FAILED: %s", _load_error)
+        _load_error = f"tf.lite.Interpreter raised: {exc}"
+        logger.error("[TFLite] ✗ Load FAILED: %s", _load_error)
+        _interpreter = None
         return None
 
-    return _model
+    return _interpreter
 
 
 def get_tf_diagnostics() -> dict:
@@ -159,7 +200,7 @@ def get_tf_diagnostics() -> dict:
             pass
 
     return {
-        "model_loaded": _model is not None,
+        "model_loaded": _interpreter is not None,
         "model_path": str(path),
         "file_exists": exists,
         "file_size_bytes": size_bytes,
@@ -206,14 +247,22 @@ def predict_nutrient_status(file_bytes: bytes) -> dict:
         RuntimeError: model not loaded (caller should return HTTP 503).
         ValueError:   image could not be decoded (caller should return HTTP 422).
     """
-    model = get_model()
-    if model is None:
+    interpreter = get_model()
+    if interpreter is None:
         raise RuntimeError("TF model is not available – file may be missing or failed to load.")
 
     x = preprocess_image_bytes(file_bytes)
 
+    # TFLite inference: write input → invoke → read output.
+    # This is the correct pattern for tf.lite.Interpreter.
+    # model.predict() does not exist on Interpreter objects.
+    input_details  = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
     t0 = time.perf_counter()
-    proba = model.predict(x, verbose=0)[0]
+    interpreter.set_tensor(input_details[0]["index"], x)
+    interpreter.invoke()
+    proba = interpreter.get_tensor(output_details[0]["index"])[0]
     inference_time_ms = round((time.perf_counter() - t0) * 1000, 2)
 
     # Primary prediction

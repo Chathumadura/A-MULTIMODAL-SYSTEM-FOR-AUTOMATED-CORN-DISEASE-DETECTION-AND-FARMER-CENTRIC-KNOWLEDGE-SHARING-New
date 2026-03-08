@@ -83,12 +83,12 @@ class _Settings:
     )
 
     # ------------------------------------------------------------------
-    # TensorFlow model – corn disease detection
+    # TensorFlow model – corn disease detection (.tflite FlatBuffer)
     # Set DISEASE_MODEL_PATH in your .env or on the Render dashboard.
     # ------------------------------------------------------------------
     DISEASE_MODEL_PATH: Path = _resolve_path(
         "DISEASE_MODEL_PATH",
-        "models/disease_model.keras",
+        "models/disease_model.tflite",
     )
 
 

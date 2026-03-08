@@ -8,10 +8,14 @@ Usage (called automatically by render.yaml buildCommand):
     python scripts/download_models.py
 
 Environment variables (set on the Render dashboard):
-    TF_MODEL_URL      – direct download URL for the TF .h5 file
-    YIELD_MODEL_URL   – direct download URL for the sklearn .pkl file
+    TF_MODEL_URL      – direct download URL for the TFLite nutrition model (.tflite)
+    PEST_MODEL_URL    – direct download URL for the TFLite pest model (.tflite)
+    YIELD_MODEL_URL   – direct download URL for the sklearn yield model (.pkl)
+    DISEASE_MODEL_URL – direct download URL for the TFLite disease model (.tflite)
     TF_MODEL_PATH     – (optional) override destination path
+    PEST_MODEL_PATH   – (optional) override destination path
     YIELD_MODEL_PATH  – (optional) override destination path
+    DISEASE_MODEL_PATH – (optional) override destination path
 
 If a URL variable is not set the script skips that file silently.
 If the destination already contains a valid binary (not an LFS pointer,
@@ -39,7 +43,9 @@ BASE_DIR    = Path(__file__).resolve().parent.parent   # backend/
 CHUNK       = 8 * 1024 * 1024                          # 8 MB chunks
 MIN_VALID   = 1 * 1024 * 1024                          # 1 MB minimum for "real" file
 LFS_SIG     = b"version https://git-lfs"
-HDF5_MAGIC  = b"\x89HDF\r\n\x1a\n"
+# Note: all model files are TFLite FlatBuffers (.tflite) or pickle (.pkl).
+# TFLite files have no universal magic-byte header – validation checks only
+# the LFS pointer signature and minimum file size.
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -131,12 +137,12 @@ def main() -> int:
         (
             "TF_MODEL_URL",
             _resolve_path("TF_MODEL_PATH", "models/corn_final_model.tflite"),
-            "TF nutrition model (.h5)",
+            "TF nutrition model (.tflite)",
         ),
         (
             "PEST_MODEL_URL",
             _resolve_path("PEST_MODEL_PATH", "models/pest_model.tflite"),
-            "Pest detection model (.keras)",
+            "Pest detection model (.tflite)",
         ),
         (
             "YIELD_MODEL_URL",
@@ -145,8 +151,8 @@ def main() -> int:
         ),
         (
             "DISEASE_MODEL_URL",
-            _resolve_path("DISEASE_MODEL_PATH", "models/disease_model.keras"),
-            "Disease detection model (.keras)",
+            _resolve_path("DISEASE_MODEL_PATH", "models/disease_model.tflite"),
+            "Disease detection model (.tflite)",
         ),
     ]
 

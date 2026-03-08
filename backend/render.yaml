@@ -47,7 +47,7 @@ services:
       - key: YIELD_MODEL_PATH
         value: corn_yield_model.pkl
       - key: DISEASE_MODEL_PATH
-        value: models/disease_model.keras
+        value: models/disease_model.tflite
 
       # ── Model download URLs ──────────────────────────────────────────────────
       # IMPORTANT: do NOT use value: "" here – Render would push that empty
@@ -59,7 +59,7 @@ services:
       #   TF_MODEL_URL      → direct download URL for corn_final_model.tflite
       #   PEST_MODEL_URL    → direct download URL for pest_model.tflite
       #   YIELD_MODEL_URL   → direct download URL for corn_yield_model.pkl
-      #   DISEASE_MODEL_URL → direct download URL for disease_model.keras
+      #   DISEASE_MODEL_URL → direct download URL for disease_model.tflite
       #
       # Supported sources: any public HTTPS URL, Google Drive share link
       # (auto-rewritten to direct download), Dropbox (?dl=0 → ?dl=1),

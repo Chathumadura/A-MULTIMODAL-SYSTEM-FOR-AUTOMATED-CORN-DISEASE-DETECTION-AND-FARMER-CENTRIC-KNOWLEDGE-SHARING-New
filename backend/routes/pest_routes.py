@@ -20,35 +20,67 @@ _pest_model: Any = None
 _pest_load_error: str = ""
 
 
+# Minimum size for a real model binary (rules out Git LFS pointer stubs).
+_MIN_PEST_MODEL_BYTES: int = 1 * 1024 * 1024  # 1 MB
+_LFS_SIG: bytes = b"version https://git-lfs"
+
+
 def get_pest_model() -> Any:
-    """Return the loaded pest TF model (lazy, cached after first load)."""
+    """
+    Return the loaded pest TFLite interpreter (lazy, cached after first load).
+
+    The pest model is now a .tflite FlatBuffer.  tf.keras.models.load_model()
+    cannot read .tflite files – tf.lite.Interpreter is the correct runtime.
+
+    First call  → load, allocate_tensors(), cache.
+    Later calls → return the cached interpreter immediately.
+    """
     global _pest_model, _pest_load_error
+
+    # ── Cache hit ─────────────────────────────────────────────────────────────
     if _pest_model is not None:
-        logger.debug("[pest] Cache hit – returning already-loaded pest model.")
+        logger.debug("[pest] Cache hit – returning cached pest interpreter.")
         return _pest_model
 
+    # ── First call: load the TFLite model ─────────────────────────────────────
     logger.info("[pest] Lazy loading pest model (first request) …")
     path = settings.PEST_MODEL_PATH.resolve()
     logger.info("[pest] Resolved model path : %s", path)
     logger.info("[pest] File exists         : %s", path.exists())
-    if path.exists():
-        logger.info("[pest] File size (bytes)   : %d", path.stat().st_size)
 
     if not path.exists():
         _pest_load_error = f"File not found: {path}"
         logger.error("[pest] ✗ Model file missing at %s", path)
         return None
 
+    size = path.stat().st_size
+    logger.info("[pest] File size (bytes)   : %d", size)
+
+    if size < _MIN_PEST_MODEL_BYTES:
+        header = path.read_bytes()[:128]
+        if header.startswith(_LFS_SIG):
+            _pest_load_error = f"Git LFS pointer detected ({size} bytes). Real .tflite not downloaded."
+        else:
+            _pest_load_error = f"File suspiciously small ({size} bytes). May be corrupt."
+        logger.error("[pest] ✗ %s", _pest_load_error)
+        return None
+
+    logger.info("[pest] Creating tf.lite.Interpreter …")
     try:
-        _pest_model = tf.keras.models.load_model(str(path), compile=False)
+        _pest_model = tf.lite.Interpreter(model_path=str(path))
+        _pest_model.allocate_tensors()
         _pest_load_error = ""
+        input_details = _pest_model.get_input_details()
         logger.info(
-            "[pest] ✓ Pest model loaded successfully (input=%s)",
-            _pest_model.input_shape,
+            "[pest] ✓ Pest interpreter ready. Input: index=%d shape=%s dtype=%s",
+            input_details[0]["index"],
+            input_details[0]["shape"],
+            input_details[0]["dtype"].__name__,
         )
     except Exception as exc:
         _pest_load_error = str(exc)
-        logger.error("[pest] ✗ Failed to load pest model from %s: %s", path, exc)
+        logger.error("[pest] ✗ Failed to create pest interpreter from %s: %s", path, exc)
+        _pest_model = None
         return None
 
     return _pest_model
@@ -99,7 +131,13 @@ async def pest_predict(file: UploadFile = File(...)) -> dict:
     processed = _preprocess_image(image)
 
     try:
-        preds = pest_model.predict(processed)
+        # TFLite inference: set input → invoke → read output.
+        # Interpreter.predict() does not exist; this is the correct pattern.
+        input_details  = pest_model.get_input_details()
+        output_details = pest_model.get_output_details()
+        pest_model.set_tensor(input_details[0]["index"], processed)
+        pest_model.invoke()
+        preds = pest_model.get_tensor(output_details[0]["index"])
     except Exception as exc:
         logger.exception("Pest model inference failed: %s", exc)
         raise HTTPException(status_code=500, detail="Prediction failed.")

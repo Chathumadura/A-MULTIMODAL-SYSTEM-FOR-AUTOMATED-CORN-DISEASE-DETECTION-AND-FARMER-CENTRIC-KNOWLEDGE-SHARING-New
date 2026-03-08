@@ -7,7 +7,7 @@ Endpoints:
   POST /disease/predict  – upload a corn leaf image; returns predicted
                            disease class + confidence score
 
-Model loading is intentionally lazy: the Keras model is loaded into RAM
+Model loading is intentionally lazy: the TFLite interpreter is loaded into RAM
 only on the first call to POST /disease/predict, then cached for
 subsequent requests.  This keeps startup memory usage low on Render.
 """
@@ -85,7 +85,13 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
 
     # ── 4. Infer ──────────────────────────────────────────────────────────────
     try:
-        preds = model.predict(processed)
+        # TFLite inference: write input → invoke → read output.
+        # Interpreter.predict() does not exist; this is the correct pattern.
+        input_details  = model.get_input_details()
+        output_details = model.get_output_details()
+        model.set_tensor(input_details[0]["index"], processed)
+        model.invoke()
+        preds = model.get_tensor(output_details[0]["index"])
     except Exception as exc:
         logger.exception("[disease] Inference failed: %s", exc)
         raise HTTPException(status_code=500, detail="Prediction failed.")
