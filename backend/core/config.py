@@ -61,7 +61,7 @@ class _Settings:
     # ------------------------------------------------------------------
     TF_MODEL_PATH: Path = _resolve_path(
         "TF_MODEL_PATH",
-        "models/corn_final_model.h5",
+        "models/corn_final_model.tflite",
     )
 
     # ------------------------------------------------------------------
@@ -80,6 +80,15 @@ class _Settings:
     YIELD_MODEL_PATH: Path = _resolve_path(
         "YIELD_MODEL_PATH",
         "corn_yield_model.pkl",
+    )
+
+    # ------------------------------------------------------------------
+    # TensorFlow model – corn disease detection
+    # Set DISEASE_MODEL_PATH in your .env or on the Render dashboard.
+    # ------------------------------------------------------------------
+    DISEASE_MODEL_PATH: Path = _resolve_path(
+        "DISEASE_MODEL_PATH",
+        "models/disease_model.keras",
     )
 
 

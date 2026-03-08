@@ -22,6 +22,7 @@ from routes.yield_routes import router as yield_router
 from routes.nutrition_routes import router as nutrition_router
 from routes.fertilizer_routes import router as fertilizer_router
 from routes.pest_routes import router as pest_router
+from routes.disease_routes import router as disease_router
 from utils.inference import get_tf_diagnostics
 from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
@@ -68,9 +69,10 @@ app.add_middleware(
 #
 # Environment variables that MUST be set in the Render dashboard
 # (do NOT put blank value: "" in render.yaml – that overwrites dashboard values):
-#   TF_MODEL_URL    → direct download URL for corn_final_model.h5
-#   PEST_MODEL_URL  → direct download URL for pest_model_final.keras
-#   YIELD_MODEL_URL → direct download URL for corn_yield_model.pkl
+#   TF_MODEL_URL      → direct download URL for corn_final_model.tflite
+#   PEST_MODEL_URL    → direct download URL for pest_model_final.keras
+#   YIELD_MODEL_URL   → direct download URL for corn_yield_model.pkl
+#   DISEASE_MODEL_URL → direct download URL for disease_model.keras
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
 async def startup_event() -> None:
@@ -79,9 +81,10 @@ async def startup_event() -> None:
     logger.info("[startup] Downloads run before any model is loaded into RAM.")
 
     _models = [
-        ("TF_MODEL_URL",    settings.TF_MODEL_PATH,   "corn_final_model.h5"),
-        ("PEST_MODEL_URL",  settings.PEST_MODEL_PATH,  "pest_model_final.keras"),
-        ("YIELD_MODEL_URL", settings.YIELD_MODEL_PATH, "corn_yield_model.pkl"),
+        ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite"),
+        ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model_final.keras"),
+        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.pkl"),
+        ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.keras"),
     ]
 
     results: list[tuple[str, bool]] = []
@@ -125,6 +128,7 @@ app.include_router(yield_router)       # /yield/predict   /yield/explain
 app.include_router(nutrition_router)   # /nutrition/predict
 app.include_router(fertilizer_router)  # /fertilizer/recommendations/{label}  /fertilizer/labels
 app.include_router(pest_router)        # /pest/  /pest/predict
+app.include_router(disease_router)     # /disease/  /disease/predict
 
 
 # ---------------------------------------------------------------------------

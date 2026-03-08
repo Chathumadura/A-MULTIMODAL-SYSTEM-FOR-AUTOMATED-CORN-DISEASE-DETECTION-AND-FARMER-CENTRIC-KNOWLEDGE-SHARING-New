@@ -41,11 +41,13 @@ services:
 
       # ── Model paths (relative to backend/; resolved via BASE_DIR in config.py)
       - key: TF_MODEL_PATH
-        value: models/corn_final_model.h5
+        value: models/corn_final_model.tflite
       - key: PEST_MODEL_PATH
         value: models/pest_model_final.keras
       - key: YIELD_MODEL_PATH
         value: corn_yield_model.pkl
+      - key: DISEASE_MODEL_PATH
+        value: models/disease_model.keras
 
       # ── Model download URLs ──────────────────────────────────────────────────
       # IMPORTANT: do NOT use value: "" here – Render would push that empty
@@ -54,9 +56,10 @@ services:
       # dashboard (Environment tab) and is never clobbered by this file.
       #
       # On the Render dashboard go to Environment and set:
-      #   TF_MODEL_URL    → direct download URL for corn_final_model.h5
-      #   PEST_MODEL_URL  → direct download URL for pest_model_final.keras
-      #   YIELD_MODEL_URL → direct download URL for corn_yield_model.pkl
+      #   TF_MODEL_URL      → direct download URL for corn_final_model.tflite
+      #   PEST_MODEL_URL    → direct download URL for pest_model_final.keras
+      #   YIELD_MODEL_URL   → direct download URL for corn_yield_model.pkl
+      #   DISEASE_MODEL_URL → direct download URL for disease_model.keras
       #
       # Supported sources: any public HTTPS URL, Google Drive share link
       # (auto-rewritten to direct download), Dropbox (?dl=0 → ?dl=1),
@@ -67,4 +70,6 @@ services:
       - key: PEST_MODEL_URL
         sync: false   # real URL must be set in Render dashboard → Environment tab
       - key: YIELD_MODEL_URL
+        sync: false   # real URL must be set in Render dashboard → Environment tab
+      - key: DISEASE_MODEL_URL
         sync: false   # real URL must be set in Render dashboard → Environment tab

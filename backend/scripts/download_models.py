@@ -130,7 +130,7 @@ def main() -> int:
     targets = [
         (
             "TF_MODEL_URL",
-            _resolve_path("TF_MODEL_PATH", "models/corn_final_model.h5"),
+            _resolve_path("TF_MODEL_PATH", "models/corn_final_model.tflite"),
             "TF nutrition model (.h5)",
         ),
         (
@@ -142,6 +142,11 @@ def main() -> int:
             "YIELD_MODEL_URL",
             _resolve_path("YIELD_MODEL_PATH", "corn_yield_model.pkl"),
             "Yield model (.pkl)",
+        ),
+        (
+            "DISEASE_MODEL_URL",
+            _resolve_path("DISEASE_MODEL_PATH", "models/disease_model.keras"),
+            "Disease detection model (.keras)",
         ),
     ]
 
