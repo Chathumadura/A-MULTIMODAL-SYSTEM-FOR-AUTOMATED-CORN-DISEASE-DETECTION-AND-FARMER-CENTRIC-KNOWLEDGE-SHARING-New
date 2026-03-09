@@ -82,6 +82,10 @@ def _load() -> YieldModelState | None:
 
     try:
         logger.info("[yield] Loading sklearn pipeline from %s", resolved)
+        logger.debug(
+            "[yield] Load environment: numpy=%s, pandas=%s, joblib=%s, scikit-learn=%s",
+            np.__version__, pd.__version__, joblib.__version__, None,  # scikit-learn not imported here
+        )
         pipeline = joblib.load(resolved)
         preprocessor = pipeline.named_steps["preprocessor"]
         model = pipeline.named_steps["model"]
@@ -103,8 +107,15 @@ def _load() -> YieldModelState | None:
         return YieldModelState(pipeline, preprocessor, model, explainer, all_feature_names)
 
     except Exception as exc:
-        # include traceback to help diagnose file corruption, version mismatches, etc.
-        logger.exception("[yield] ✗ Failed to load yield pipeline (full traceback follows)")
+        # include full traceback, exception type, and message
+        exc_type = type(exc).__name__
+        exc_msg = str(exc)
+        logger.error(
+            "[yield] ✗ Failed to load yield pipeline."
+            "  Exception: %s(%s)",
+            exc_type, exc_msg,
+        )
+        logger.exception("[yield] Full traceback for yield model load failure:")
         return None
 
 

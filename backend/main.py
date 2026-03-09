@@ -13,6 +13,8 @@ All configuration comes from core/config.py.
 """
 
 import logging
+import sys
+import platform
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,6 +28,13 @@ from routes.disease_routes import router as disease_router
 from utils.inference import get_tf_diagnostics
 from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
+
+# Version diagnostics
+import numpy
+import pandas
+import joblib
+import scikit_learn
+import shap
 
 # ---------------------------------------------------------------------------
 # Logging – configured exactly once; every module uses logging.getLogger()
@@ -77,6 +86,23 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event() -> None:
     logger.info("=" * 60)
+    logger.info("[startup] === ENVIRONMENT & VERSION DIAGNOSTICS ===")
+    logger.info("[startup] Python version     : %s", sys.version.replace('\n', ' '))
+    logger.info("[startup] Platform           : %s", platform.platform())
+    logger.info("[startup] Python executable  : %s", sys.executable)
+    logger.info("[startup] ")
+    logger.info("[startup] === DEPENDENCY VERSIONS ===")
+    logger.info("[startup] numpy              : %s", numpy.__version__)
+    logger.info("[startup] pandas             : %s", pandas.__version__)
+    logger.info("[startup] scikit-learn       : %s", scikit_learn.__version__)
+    logger.info("[startup] joblib             : %s", joblib.__version__)
+    logger.info("[startup] shap               : %s", shap.__version__)
+    try:
+        import tensorflow as tf
+        logger.info("[startup] tensorflow-cpu    : %s", tf.__version__)
+    except ImportError:
+        logger.info("[startup] tensorflow-cpu    : (not installed)")
+    logger.info("[startup] ")
     logger.info("[startup] === MODEL DOWNLOAD PHASE ===")
     logger.info("[startup] Downloads run before any model is loaded into RAM.")
 
@@ -124,12 +150,18 @@ async def startup_event() -> None:
             settings.YIELD_MODEL_PATH,
         )
 
-    logger.info("[startup] === DOWNLOAD SUMMARY ===")
+    logger.info("[startup] === MODEL DOWNLOAD SUMMARY ===")
     for label, ready in results:
         status = "READY   ✓" if ready else "MISSING ✗"
         logger.info("[startup]   %-28s %s", label, status)
 
     logger.info("[startup] Models will be loaded lazily on first request.")
+    logger.info("[startup] ")
+    logger.info("[startup] YIELD MODEL DIAGNOSTICS:")
+    logger.info("[startup]   Path     : %s", settings.YIELD_MODEL_PATH.resolve())
+    logger.info("[startup]   Exists   : %s", settings.YIELD_MODEL_PATH.exists())
+    if settings.YIELD_MODEL_PATH.exists():
+        logger.info("[startup]   Size     : %d bytes", settings.YIELD_MODEL_PATH.stat().st_size)
     logger.info("=" * 60)
 
 
