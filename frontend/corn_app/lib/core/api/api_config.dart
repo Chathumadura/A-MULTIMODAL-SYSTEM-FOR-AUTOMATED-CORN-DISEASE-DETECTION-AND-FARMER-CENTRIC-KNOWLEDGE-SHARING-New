@@ -67,7 +67,7 @@ class ApiConfig {
   ///  1. `--dart-define=RUN_MODE=<emulator|device|production>`
   ///  2. Release build → [RunMode.production]
   ///  3. Debug on Android → [RunMode.emulator]  (safe AVD default)
-  ///  4. Everything else → [RunMode.production]
+  ///  4. Everything else → [RunMode.device] (local dev server fallback)
   static RunMode get runMode {
     // 1. Explicit override via --dart-define
     const defined = String.fromEnvironment('RUN_MODE');
@@ -81,8 +81,8 @@ class ApiConfig {
     // 3. Debug + Android emulator (most common dev setup)
     if (!kIsWeb && Platform.isAndroid) return RunMode.emulator;
 
-    // 4. Fallback (debug web, desktop, iOS simulator)
-    return RunMode.production;
+    // 4. Fallback (debug web, desktop, iOS simulator) → try local dev server on 127.0.0.1
+    return RunMode.device;
   }
 
   // ── URL resolution ───────────────────────────────────────────────────────
@@ -103,8 +103,11 @@ class ApiConfig {
         // 10.0.2.2 is Android Emulator's special alias for the host machine.
         return 'http://10.0.2.2:$_localPort';
       case RunMode.device:
-        // Physical device must reach the host over LAN; set _physicalDeviceIp.
-        return 'http://$_physicalDeviceIp:$_localPort';
+        // Physical device or web/desktop — prefer localhost for dev
+        if (kIsWeb || (!Platform.isAndroid && !Platform.isIOS)) {
+          return 'http://127.0.0.1:$_localPort';  // web/desktop → localhost
+        }
+        return 'http://$_physicalDeviceIp:$_localPort';  // real phone/tablet on LAN
       case RunMode.production:
         return _productionUrl;
     }
