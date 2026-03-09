@@ -2,7 +2,7 @@
 Yield prediction model utilities.
 
 The sklearn pipeline is loaded lazily so the full app can start (and serve
-disease-detection requests) even when models/corn_yield_model.tflite is absent.
+disease-detection requests) even when models/corn_yield_model.pkl is absent.
 When the model file is missing, yield endpoints return HTTP 503.
 """
 
@@ -39,15 +39,50 @@ def _load() -> YieldModelState | None:
     """Load the sklearn pipeline and build the SHAP explainer (lazy, first call only)."""
     path = settings.YIELD_MODEL_PATH
     logger.info("[yield] Lazy loading yield pipeline (first request) …")
-    logger.info("[yield] Resolved model path : %s", path.resolve())
-    logger.info("[yield] File exists         : %s", path.exists())
 
-    if not path.exists():
-        logger.error("Yield model file not found: %s", path)
+    # show the raw value from config/ENV and some file diagnostics
+    resolved = path.resolve()
+    suffix = resolved.suffix.lower()
+    logger.info("[yield] Resolved model path : %s", resolved)
+    logger.info("[yield] File exists         : %s", resolved.exists())
+    if resolved.exists():
+        logger.info("[yield] File size (bytes)    : %d", resolved.stat().st_size)
+    logger.info("[yield] File extension       : %s", suffix)
+
+    # guard against common misconfiguration where a .tflite is pointed at
+    if suffix == ".tflite" or suffix == ".lite":
+        logger.warning(
+            "[yield] YIELD_MODEL_PATH points to a TFLite file; this service expects a pickled sklearn pipeline (.pkl)." 
+            " Attempting to locate a sibling .pkl file as a fallback."
+        )
+        alt = resolved.with_suffix(".pkl")
+        if alt.exists():
+            logger.info("[yield] Found alternate .pkl at %s – will load this instead", alt)
+            resolved = alt
+            suffix = resolved.suffix.lower()
+        else:
+            logger.error(
+                "[yield] No .pkl sibling found next to %s; cannot load yield model.",
+                resolved,
+            )
+            return None
+
+    # final sanity check: only load known file types
+    if suffix not in (".pkl", ".joblib"):
+        logger.error(
+            "[yield] Unsupported file extension '%s' for yield model. "
+            "Expected .pkl or .joblib.",
+            suffix,
+        )
+        return None
+
+    if not resolved.exists():
+        logger.error("Yield model file not found: %s", resolved)
         return None
 
     try:
-        pipeline = joblib.load(path)
+        logger.info("[yield] Loading sklearn pipeline from %s", resolved)
+        pipeline = joblib.load(resolved)
         preprocessor = pipeline.named_steps["preprocessor"]
         model = pipeline.named_steps["model"]
 
@@ -68,7 +103,8 @@ def _load() -> YieldModelState | None:
         return YieldModelState(pipeline, preprocessor, model, explainer, all_feature_names)
 
     except Exception as exc:
-        logger.error("[yield] ✗ Failed to load yield pipeline: %s", exc)
+        # include traceback to help diagnose file corruption, version mismatches, etc.
+        logger.exception("[yield] ✗ Failed to load yield pipeline (full traceback follows)")
         return None
 
 

@@ -71,7 +71,7 @@ app.add_middleware(
 # (do NOT put blank value: "" in render.yaml – that overwrites dashboard values):
 #   TF_MODEL_URL      → direct download URL for corn_final_model.tflite
 #   PEST_MODEL_URL    → direct download URL for pest_model.tflite
-#   YIELD_MODEL_URL   → direct download URL for models/corn_yield_model.tflite
+#   YIELD_MODEL_URL   → direct download URL for models/corn_yield_model.pkl
 #   DISEASE_MODEL_URL → direct download URL for disease_model.keras
 # ---------------------------------------------------------------------------
 @app.on_event("startup")
@@ -87,7 +87,7 @@ async def startup_event() -> None:
     _models = [
         ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite", _MB),
         ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model.tflite",        _MB),
-        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.tflite", _32KB),
+        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.pkl", _32KB),
         ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.tflite",    _MB),
     ]
 
@@ -115,6 +115,14 @@ async def startup_event() -> None:
                     label, local_path,
                 )
         results.append((label, exists_now and size_now >= min_bytes))
+
+    # Extra sanity check for yield path misconfiguration
+    if settings.YIELD_MODEL_PATH.suffix.lower() == ".tflite":
+        logger.warning(
+            "[startup] YIELD_MODEL_PATH is set to a .tflite file (%s). "
+            "This endpoint expects a pickled sklearn pipeline (.pkl).",
+            settings.YIELD_MODEL_PATH,
+        )
 
     logger.info("[startup] === DOWNLOAD SUMMARY ===")
     for label, ready in results:
@@ -155,9 +163,13 @@ def health() -> dict:
     - **tf_diagnostics** – detailed path / file / LFS / error info for the TF model
     """
     tf_diag = get_tf_diagnostics()
+    yield_exists = settings.YIELD_MODEL_PATH.exists()
     return {
         "status": "ok",
         "tf_model": tf_diag["model_loaded"],
         "yield_model": get_yield_state() is not None,
+        # extra fields for easier debugging of yield path
+        "yield_model_path": str(settings.YIELD_MODEL_PATH.resolve()),
+        "yield_file_exists": yield_exists,
         "tf_diagnostics": tf_diag,
     }
