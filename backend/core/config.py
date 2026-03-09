@@ -79,7 +79,7 @@ class _Settings:
     # ------------------------------------------------------------------
     YIELD_MODEL_PATH: Path = _resolve_path(
         "YIELD_MODEL_PATH",
-        "models/corn_yield_model.pkl",
+        "models/corn_yield_model.tflite",
     )
 
     # ------------------------------------------------------------------

@@ -149,7 +149,7 @@ def main() -> int:
         ),
         (
             "YIELD_MODEL_URL",
-            _resolve_path("YIELD_MODEL_PATH", "models/corn_yield_model.pkl"),
+            _resolve_path("YIELD_MODEL_PATH", "models/corn_yield_model.tflite"),
             "Yield sklearn pipeline (.tflite)",
             MIN_VALID_SMALL,   # sklearn joblib pipeline is ~70 KB, not MB-scale
         ),

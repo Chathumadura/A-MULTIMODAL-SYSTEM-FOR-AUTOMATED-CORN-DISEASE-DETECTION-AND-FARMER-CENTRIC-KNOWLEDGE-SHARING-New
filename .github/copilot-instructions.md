@@ -32,7 +32,7 @@ This is a multi-platform corn yield prediction system with explainable ML (SHAP)
 ### Backend
 
 - Start: `cd yield-prediction-backend; uvicorn main:app --reload --port 8000`
-- Requires `models/corn_yield_model.pkl` in backend folder
+- Requires `models/corn_yield_model.tflite` in backend folder
 - Install: `pip install fastapi uvicorn pandas numpy joblib shap scikit-learn`
 
 ### Flutter App
@@ -58,7 +58,7 @@ This is a multi-platform corn yield prediction system with explainable ML (SHAP)
 ## Common Issues
 
 - CORS: allow_origins=["*"] for dev; restrict in prod
-- Model loading: `models/corn_yield_model.pkl` must match sklearn version
+- Model loading: `models/corn_yield_model.tflite` must match sklearn version
 - Android emulator: use `10.0.2.2` for host access
 
 ## Future/Expansion
