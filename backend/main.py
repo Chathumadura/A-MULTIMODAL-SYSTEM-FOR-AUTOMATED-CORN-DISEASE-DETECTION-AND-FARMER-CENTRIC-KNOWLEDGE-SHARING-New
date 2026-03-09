@@ -87,7 +87,7 @@ async def startup_event() -> None:
     _models = [
         ("TF_MODEL_URL",      settings.TF_MODEL_PATH,      "corn_final_model.tflite", _MB),
         ("PEST_MODEL_URL",    settings.PEST_MODEL_PATH,    "pest_model.tflite",        _MB),
-        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "models/corn_yield_model.tflite", _32KB),
+        ("YIELD_MODEL_URL",   settings.YIELD_MODEL_PATH,   "corn_yield_model.tflite", _32KB),
         ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.tflite",    _MB),
     ]
 
