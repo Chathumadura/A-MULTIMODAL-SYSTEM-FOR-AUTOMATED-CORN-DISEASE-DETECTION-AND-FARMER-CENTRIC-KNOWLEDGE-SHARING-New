@@ -105,9 +105,9 @@ class ApiConfig {
       case RunMode.device:
         // Physical device or web/desktop — prefer localhost for dev
         if (kIsWeb || (!Platform.isAndroid && !Platform.isIOS)) {
-          return 'http://127.0.0.1:$_localPort';  // web/desktop → localhost
+          return 'http://127.0.0.1:$_localPort'; // web/desktop → localhost
         }
-        return 'http://$_physicalDeviceIp:$_localPort';  // real phone/tablet on LAN
+        return 'http://$_physicalDeviceIp:$_localPort'; // real phone/tablet on LAN
       case RunMode.production:
         return _productionUrl;
     }
