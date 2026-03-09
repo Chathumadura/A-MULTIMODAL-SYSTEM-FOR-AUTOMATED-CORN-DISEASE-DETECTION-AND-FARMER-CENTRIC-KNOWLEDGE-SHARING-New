@@ -33,7 +33,7 @@ from utils.yield_model import get_yield_state
 import numpy
 import pandas
 import joblib
-import scikit_learn
+import sklearn
 import shap
 
 # ---------------------------------------------------------------------------
@@ -94,7 +94,7 @@ async def startup_event() -> None:
     logger.info("[startup] === DEPENDENCY VERSIONS ===")
     logger.info("[startup] numpy              : %s", numpy.__version__)
     logger.info("[startup] pandas             : %s", pandas.__version__)
-    logger.info("[startup] scikit-learn       : %s", scikit_learn.__version__)
+    logger.info("[startup] scikit-learn       : %s", sklearn.__version__)
     logger.info("[startup] joblib             : %s", joblib.__version__)
     logger.info("[startup] shap               : %s", shap.__version__)
     try:
