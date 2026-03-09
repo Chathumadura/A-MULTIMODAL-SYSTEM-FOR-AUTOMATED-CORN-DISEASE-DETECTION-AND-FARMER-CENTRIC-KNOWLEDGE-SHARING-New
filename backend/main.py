@@ -205,3 +205,147 @@ def health() -> dict:
         "yield_file_exists": yield_exists,
         "tf_diagnostics": tf_diag,
     }
+
+# Load the old model
+pipeline = joblib.load("path/to/corn_yield_model.pkl")
+
+# Re-save it (this re-pickles with current environment versions)
+joblib.dump(pipeline, "path/to/corn_yield_model_v2.pkl", protocol=joblib.HIGHEST_PROTOCOL)
+
+print("Model re-saved as corn_yield_model_v2.pkl")
+
+# ---------------------------------------------------------------------------
+# Yield prediction model utilities.
+# ---------------------------------------------------------------------------
+"""
+Yield prediction model utilities.
+
+The sklearn pipeline is loaded lazily so the full app can start (and serve
+disease-detection requests) even when models/corn_yield_model.pkl is absent.
+When the model file is missing, yield endpoints return HTTP 503.
+"""
+
+from __future__ import annotations
+
+import logging
+from typing import NamedTuple
+
+import joblib
+import numpy as np
+import pandas as pd
+import shap
+
+from core.config import settings
+
+logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Model state container
+# ---------------------------------------------------------------------------
+class YieldModelState(NamedTuple):
+    pipeline: object                  # full sklearn Pipeline
+    preprocessor: object              # ColumnTransformer step
+    model: object                     # underlying estimator (trees)
+    explainer: shap.TreeExplainer
+    all_feature_names: list[str]      # post-transform feature names
+
+
+_state: YieldModelState | None = None
+
+
+def _load() -> YieldModelState | None:
+    """Load the sklearn pipeline and build the SHAP explainer (lazy, first call only)."""
+    path = settings.YIELD_MODEL_PATH
+    logger.info("[yield] Lazy loading yield pipeline (first request) …")
+
+    # show the raw value from config/ENV and some file diagnostics
+    resolved = path.resolve()
+    suffix = resolved.suffix.lower()
+    logger.info("[yield] Resolved model path : %s", resolved)
+    logger.info("[yield] File exists         : %s", resolved.exists())
+    if resolved.exists():
+        logger.info("[yield] File size (bytes)    : %d", resolved.stat().st_size)
+    logger.info("[yield] File extension       : %s", suffix)
+
+    # guard against common misconfiguration where a .tflite is pointed at
+    if suffix == ".tflite" or suffix == ".lite":
+        logger.warning(
+            "[yield] YIELD_MODEL_PATH points to a TFLite file; this service expects a pickled sklearn pipeline (.pkl)." 
+            " Attempting to locate a sibling .pkl file as a fallback."
+        )
+        alt = resolved.with_suffix(".pkl")
+        if alt.exists():
+            logger.info("[yield] Found alternate .pkl at %s – will load this instead", alt)
+            resolved = alt
+            suffix = resolved.suffix.lower()
+        else:
+            logger.error(
+                "[yield] No .pkl sibling found next to %s; cannot load yield model.",
+                resolved,
+            )
+            return None
+
+    # final sanity check: only load known file types
+    if suffix not in (".pkl", ".joblib"):
+        logger.error(
+            "[yield] Unsupported file extension '%s' for yield model. "
+            "Expected .pkl or .joblib.",
+            suffix,
+        )
+        return None
+
+    if not resolved.exists():
+        logger.error("Yield model file not found: %s", resolved)
+        return None
+
+    try:
+        logger.info("[yield] Loading sklearn pipeline from %s", resolved)
+        logger.debug(
+            "[yield] Load environment: numpy=%s, pandas=%s, joblib=%s, scikit-learn=%s",
+            np.__version__, pd.__version__, joblib.__version__, None,  # scikit-learn not imported here
+        )
+        pipeline = joblib.load(resolved)
+        preprocessor = pipeline.named_steps["preprocessor"]
+        model = pipeline.named_steps["model"]
+
+        # Derive post-transform feature names
+        numeric_features: list[str] = list(preprocessor.transformers_[0][2])
+        categorical_features: list[str] = list(preprocessor.transformers_[1][2])
+        ohe = preprocessor.named_transformers_["cat"]
+        cat_feature_names: list[str] = list(
+            ohe.get_feature_names_out(categorical_features)
+        )
+        all_feature_names = numeric_features + cat_feature_names
+
+        explainer = shap.TreeExplainer(model)
+        logger.info(
+            "[yield] ✓ Yield pipeline loaded. Total features: %d",
+            len(all_feature_names),
+        )
+        return YieldModelState(pipeline, preprocessor, model, explainer, all_feature_names)
+
+    except Exception as exc:
+        # include full traceback, exception type, and message
+        exc_type = type(exc).__name__
+        exc_msg = str(exc)
+        logger.error(
+            "[yield] ✗ Failed to load yield pipeline."
+            "  Exception: %s(%s)",
+            exc_type, exc_msg,
+        )
+        logger.exception("[yield] Full traceback for yield model load failure:")
+        return None
+
+
+def get_yield_state() -> YieldModelState | None:
+    """Return the loaded model state (lazy, cached after first call)."""
+    global _state
+    if _state is not None:
+        logger.debug("[yield] Cache hit – returning already-loaded yield model.")
+        return _state
+    _state = _load()
+    return _state
+
+
+# [rest of the file remains unchanged: pretty_feature_name, _BASE_LABELS, _CAT_LABELS, build_full_row]
