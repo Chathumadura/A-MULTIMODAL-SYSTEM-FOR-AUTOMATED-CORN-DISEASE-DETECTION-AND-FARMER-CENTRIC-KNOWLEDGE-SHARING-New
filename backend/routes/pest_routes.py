@@ -151,6 +151,13 @@ async def pest_predict(file: UploadFile = File(...)) -> dict:
     confidence = float(np.max(preds))
     class_id = int(np.argmax(preds))
 
+        # Build a map of all class probabilities (percentage, rounded)
+        try:
+            probs = preds.reshape(-1).tolist()
+        except Exception:
+            probs = list(map(float, preds[0]))
+        all_probabilities = {CLASS_NAMES[i]: round(float(probs[i]) * 100, 2) for i in range(len(CLASS_NAMES))}
+
     logger.info(
         "[pest] prediction: class=%s (id=%d), confidence=%.2f%%, file=%s",
         CLASS_NAMES[class_id],
@@ -166,11 +173,13 @@ async def pest_predict(file: UploadFile = File(...)) -> dict:
             "prediction": "not_corn_leaf",
             "confidence": round(confidence * 100, 2),
             "message": "Uploaded image is not a corn leaf. Please upload a clear corn leaf image.",
+            "all_probabilities": all_probabilities,
         }
 
     return {
         "prediction": CLASS_NAMES[class_id],
         "confidence": round(confidence * 100, 2),
         "message": "Corn leaf detected successfully",
+        "all_probabilities": all_probabilities,
     }
 

@@ -21,6 +21,7 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
   File? _image;
   String _result = 'No result yet';
   bool _loading = false;
+  Map<String, double>? _probabilities;
 
   Future<void> _pick(ImageSource source) async {
     final XFile? image = await _picker.pickImage(source: source);
@@ -92,11 +93,11 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
     setState(() => _loading = true);
 
     try {
-      final data =
-          await _apiClient.uploadImageForPestDetection(_image!);
+      final data = await _apiClient.uploadImageForPestDetection(_image!);
 
       final prediction = data['prediction'] as String?;
       final confidence = data['confidence'];
+      final allProbs = data['all_probabilities'] as Map<String, dynamic>?;
       final message = data['message'] as String?;
 
       if (prediction == 'not_corn_leaf') {
@@ -105,13 +106,15 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
           context: context,
           builder: (_) => AlertDialog(
             title: Text(
-              AppLocalizations.of(context)
-                  .translate('pest_invalid_image_title'),
+              AppLocalizations.of(
+                context,
+              ).translate('pest_invalid_image_title'),
             ),
             content: Text(
               message ??
-                  AppLocalizations.of(context)
-                      .translate('pest_invalid_image_message'),
+                  AppLocalizations.of(
+                    context,
+                  ).translate('pest_invalid_image_message'),
             ),
             actions: [
               TextButton(
@@ -127,6 +130,18 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
           _result = confValue != null
               ? 'Pest: $prediction\nConfidence: ${confValue.toStringAsFixed(2)}%'
               : 'Pest: $prediction';
+          if (allProbs != null) {
+            _probabilities = allProbs.map(
+              (k, v) => MapEntry(
+                k,
+                (v is num)
+                    ? v.toDouble()
+                    : double.tryParse(v.toString()) ?? 0.0,
+              ),
+            );
+          } else {
+            _probabilities = null;
+          }
         });
       }
     } catch (e) {
@@ -293,10 +308,7 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
                     child: _image != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(16),
-                            child: Image.file(
-                              _image!,
-                              fit: BoxFit.cover,
-                            ),
+                            child: Image.file(_image!, fit: BoxFit.cover),
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -405,8 +417,9 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1B5E20)
-                                        .withOpacity(0.08),
+                                    color: const Color(
+                                      0xFF1B5E20,
+                                    ).withOpacity(0.08),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -432,17 +445,84 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
                               ],
                             ),
                             const SizedBox(height: 14),
-                            Text(
-                              _result,
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.poppins(
-                                fontSize: 14.5,
-                                fontWeight: FontWeight.w500,
-                                height: 1.4,
-                                color: _result.contains('Pest')
-                                    ? const Color(0xFF1B5E20)
-                                    : Colors.red.shade700,
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _result,
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14.5,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.4,
+                                    color: _result.contains('Pest')
+                                        ? const Color(0xFF1B5E20)
+                                        : Colors.red.shade700,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                if (_probabilities != null) ...[
+                                  const Text('Other probabilities:'),
+                                  const SizedBox(height: 8),
+                                  // Sorted list of probabilities
+                                  ..._probabilities!.entries.toList()
+                                    ..sort(
+                                      (a, b) => b.value.compareTo(a.value),
+                                    ).map((e) {
+                                      final pct = e.value;
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 6,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  e.key,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${pct.toStringAsFixed(2)}%',
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    color: Colors.grey.shade700,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 6),
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: LinearProgressIndicator(
+                                                value: (pct / 100).clamp(
+                                                  0.0,
+                                                  1.0,
+                                                ),
+                                                minHeight: 8,
+                                                backgroundColor:
+                                                    Colors.grey.shade200,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                      const Color(0xFF1B5E20),
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                ],
+                              ],
                             ),
                           ],
                         ),
@@ -455,4 +535,3 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
     );
   }
 }
-
