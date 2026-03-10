@@ -35,7 +35,7 @@ class ApiDiseaseClassifier implements DiseaseClassifier {
           allProbabilities?.entries
               .map((entry) => MapEntry(entry.key, entry.value))
               .toList()
-            ..sort((a, b) => b.value.compareTo(a.value));
+            ?..sort((a, b) => b.value.compareTo(a.value));
 
       debugPrint(
         '✅ [DiseaseClassifier] Parsed prediction: $prediction, confidence: $confidence',

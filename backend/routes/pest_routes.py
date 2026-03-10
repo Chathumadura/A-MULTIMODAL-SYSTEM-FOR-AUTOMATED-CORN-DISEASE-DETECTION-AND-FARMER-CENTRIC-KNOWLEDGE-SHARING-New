@@ -151,12 +151,12 @@ async def pest_predict(file: UploadFile = File(...)) -> dict:
     confidence = float(np.max(preds))
     class_id = int(np.argmax(preds))
 
-        # Build a map of all class probabilities (percentage, rounded)
-        try:
-            probs = preds.reshape(-1).tolist()
-        except Exception:
-            probs = list(map(float, preds[0]))
-        all_probabilities = {CLASS_NAMES[i]: round(float(probs[i]) * 100, 2) for i in range(len(CLASS_NAMES))}
+    # Build a map of all class probabilities (percentage, rounded)
+    try:
+        probs = preds.reshape(-1).tolist()
+    except Exception:
+        probs = list(map(float, preds[0]))
+    all_probabilities = {CLASS_NAMES[i]: round(float(probs[i]) * 100, 2) for i in range(len(CLASS_NAMES))}
 
     logger.info(
         "[pest] prediction: class=%s (id=%d), confidence=%.2f%%, file=%s",

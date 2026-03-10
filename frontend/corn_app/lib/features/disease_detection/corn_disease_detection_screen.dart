@@ -93,7 +93,7 @@ class _CornDiseaseDetectionScreenState extends State<CornDiseaseDetectionScreen>
     try {
       debugPrint('Starting disease prediction for image: ${_image!.path}');
       final result = await _classifier.predict(_image!);
-      debugPrint('Disease prediction completed: ${result.prediction}');
+      debugPrint('Disease prediction completed: ${result.label}');
       if (!mounted) return;
 
       setState(() {
