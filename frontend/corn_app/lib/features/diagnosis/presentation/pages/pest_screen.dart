@@ -465,62 +465,65 @@ class _PestDetectionScreenState extends State<PestDetectionScreen> {
                                   const Text('Other probabilities:'),
                                   const SizedBox(height: 8),
                                   // Sorted list of probabilities
-                                  ..._probabilities!.entries.toList()
-                                    ..sort(
-                                      (a, b) => b.value.compareTo(a.value),
-                                    ).map((e) {
-                                      final pct = e.value;
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 6,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  e.key,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${pct.toStringAsFixed(2)}%',
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    color: Colors.grey.shade700,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 6),
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: LinearProgressIndicator(
-                                                value: (pct / 100).clamp(
-                                                  0.0,
-                                                  1.0,
-                                                ),
-                                                minHeight: 8,
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation(
-                                                      const Color(0xFF1B5E20),
+                                  ...(_probabilities!.entries.toList()..sort(
+                                        (a, b) => b.value.compareTo(a.value),
+                                      ))
+                                      .map((e) {
+                                        final pct = e.value;
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 6,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    e.key,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
+                                                  ),
+                                                  Text(
+                                                    '${pct.toStringAsFixed(2)}%',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      color:
+                                                          Colors.grey.shade700,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
+                                              const SizedBox(height: 6),
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                child: LinearProgressIndicator(
+                                                  value: (pct / 100).clamp(
+                                                    0.0,
+                                                    1.0,
+                                                  ),
+                                                  minHeight: 8,
+                                                  backgroundColor:
+                                                      Colors.grey.shade200,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation(
+                                                        const Color(0xFF1B5E20),
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      })
+                                      .toList(),
                                 ],
                               ],
                             ),
