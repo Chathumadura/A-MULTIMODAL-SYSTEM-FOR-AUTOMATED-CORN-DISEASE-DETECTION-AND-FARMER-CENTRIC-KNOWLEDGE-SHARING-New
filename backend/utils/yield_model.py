@@ -9,12 +9,15 @@ When the model file is missing, yield endpoints return HTTP 503.
 from __future__ import annotations
 
 import logging
+import sys
+import platform
 from typing import NamedTuple
 
 import joblib
 import numpy as np
 import pandas as pd
 import shap
+import sklearn
 
 from core.config import settings
 
@@ -38,6 +41,55 @@ _state: YieldModelState | None = None
 def _load() -> YieldModelState | None:
     """Load the sklearn pipeline and build the SHAP explainer (lazy, first call only)."""
     path = settings.YIELD_MODEL_PATH
+    
+    # =========================================================================
+    # COMPREHENSIVE VERSION DIAGNOSTICS - Printed immediately before model load
+    # This is CRITICAL for debugging pickle compatibility issues like _loss errors
+    # =========================================================================
+    logger.info("=" * 70)
+    logger.info("[yield] ============================================================")
+    logger.info("[yield]  YIELD MODEL LOADING - VERSION DIAGNOSTICS")
+    logger.info("[yield] ============================================================")
+    logger.info("[yield] Python version     : %s", sys.version.replace('\n', ' '))
+    logger.info("[yield] Platform           : %s", platform.platform())
+    logger.info("[yield] Python executable  : %s", sys.executable)
+    logger.info("[yield] ")
+    logger.info("[yield] --- CRITICAL PACKAGE VERSIONS ---")
+    logger.info("[yield] numpy              : %s", np.__version__)
+    logger.info("[yield] pandas             : %s", pd.__version__)
+    logger.info("[yield] scikit-learn       : %s", sklearn.__version__)
+    logger.info("[yield] joblib             : %s", joblib.__version__)
+    logger.info("[yield] shap               : %s", shap.__version__)
+    logger.info("[yield] ")
+    logger.info("[yield] --- MODEL FILE INFO ---")
+    logger.info("[yield] Model path         : %s", path.resolve())
+    logger.info("[yield] File exists        : %s", path.exists())
+    if path.exists():
+        logger.info("[yield] File size (bytes) : %d", path.stat().st_size)
+    logger.info("[yield] ")
+    
+    # Warn about known compatibility issues
+    sklearn_version = tuple(map(int, sklearn.__version__.split('.')[:2]))
+    if sklearn_version >= (1, 5):
+        logger.warning(
+            "[yield] WARNING: scikit-learn %s detected. "
+            "If model was pickled with <1.5, you may see '_loss' module errors. "
+            "Consider pinning scikit-learn==1.3.2 or re-export model with sklearn %s",
+            sklearn.__version__, sklearn.__version__
+        )
+    elif sklearn_version < (1, 4):
+        logger.warning(
+            "[yield] WARNING: scikit-learn %s is older. "
+            "If model was pickled with >=1.5, you may see '_loss' module errors. "
+            "Consider upgrading scikit-learn or re-export model with sklearn %s",
+            sklearn.__version__, sklearn.__version__
+        )
+    else:
+        logger.info("[yield] scikit-learn version %s should be compatible with 1.3.x pickled models", sklearn.__version__)
+    logger.info("[yield] ============================================================")
+    logger.info("=" * 70)
+    # =========================================================================
+    
     logger.info("[yield] Lazy loading yield pipeline (first request) …")
 
     # show the raw value from config/ENV and some file diagnostics
@@ -84,9 +136,15 @@ def _load() -> YieldModelState | None:
         logger.info("[yield] Loading sklearn pipeline from %s", resolved)
         logger.debug(
             "[yield] Load environment: numpy=%s, pandas=%s, joblib=%s, scikit-learn=%s",
-            np.__version__, pd.__version__, joblib.__version__, None,  # scikit-learn not imported here
+            np.__version__, pd.__version__, joblib.__version__, sklearn.__version__,
         )
+        
+        # =========================================================================
+        # ACTUAL MODEL LOADING - This is where _loss errors occur
+        # =========================================================================
         pipeline = joblib.load(resolved)
+        # =========================================================================
+        
         preprocessor = pipeline.named_steps["preprocessor"]
         model = pipeline.named_steps["model"]
 
@@ -105,6 +163,64 @@ def _load() -> YieldModelState | None:
             len(all_feature_names),
         )
         return YieldModelState(pipeline, preprocessor, model, explainer, all_feature_names)
+
+    except ModuleNotFoundError as exc:
+        # Special handling for _loss and similar internal module errors
+        if '_loss' in str(exc) or 'sklearn' in str(exc).lower():
+            logger.error(
+                "[yield] ════════════════════════════════════════════════════════════"
+            )
+            logger.error(
+                "[yield]  MODEL LOAD FAILED DUE TO VERSION MISMATCH"
+            )
+            logger.error(
+                "[yield] ════════════════════════════════════════════════════════════"
+            )
+            logger.error(
+                "[yield] The error '%s' indicates the model was pickled with a different "
+                "scikit-learn version than what's currently installed.", 
+                str(exc)
+            )
+            logger.error(
+                "[yield] CURRENT scikit-learn: %s", sklearn.__version__
+            )
+            logger.error(
+                "[yield] "
+            )
+            logger.error(
+                "[yield] TO FIX THIS ISSUE:"
+            )
+            logger.error(
+                "[yield] 1. Re-export the model from the ORIGINAL training environment using:"
+            )
+            logger.error(
+                "[yield]      import joblib"
+            )
+            logger.error(
+                "[yield]      joblib.dump(your_pipeline, 'corn_yield_model.pkl')"
+            )
+            logger.error(
+                "[yield] 2. OR match the training environment's package versions:"
+            )
+            logger.error(
+                "[yield]      pip install numpy==1.26.4 pandas==2.1.4 scikit-learn==1.3.2 joblib==1.3.2"
+            )
+            logger.error(
+                "[yield] 3. Upload the new .pkl file to your model storage and update YIELD_MODEL_URL"
+            )
+            logger.error(
+                "[yield] ════════════════════════════════════════════════════════════"
+            )
+        else:
+            exc_type = type(exc).__name__
+            exc_msg = str(exc)
+            logger.error(
+                "[yield] ✗ Failed to load yield pipeline (ModuleNotFoundError)."
+                "  Exception: %s(%s)",
+                exc_type, exc_msg,
+            )
+        logger.exception("[yield] Full traceback for yield model load failure:")
+        return None
 
     except Exception as exc:
         # include full traceback, exception type, and message
