@@ -28,6 +28,7 @@ from routes.disease_routes import router as disease_router
 from utils.inference import get_tf_diagnostics
 from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
+from utils.disease_model import get_disease_model, get_disease_load_error
 
 # Constants
 STARTUP_LOG_PREFIX = "[startup] "
@@ -182,6 +183,15 @@ async def startup_event() -> None:
     _log_environment_diagnostics()
     results = _download_and_verify_models()
     _log_model_summary(results)
+
+    # Load disease model at startup
+    logger.info(f"{STARTUP_LOG_PREFIX}Loading disease model at startup...")
+    disease_model = get_disease_model()
+    if disease_model is not None:
+        logger.info(f"{STARTUP_LOG_PREFIX}✓ Disease model loaded successfully at startup")
+    else:
+        error = get_disease_load_error()
+        logger.warning(f"{STARTUP_LOG_PREFIX}⚠ Disease model failed to load: {error}")
 
     # Extra sanity check for yield path misconfiguration
     if settings.YIELD_MODEL_PATH.suffix.lower() == ".tflite":

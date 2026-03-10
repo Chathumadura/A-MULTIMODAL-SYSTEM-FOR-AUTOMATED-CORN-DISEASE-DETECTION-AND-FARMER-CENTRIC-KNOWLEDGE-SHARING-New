@@ -49,6 +49,7 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
 
     - **prediction** – top-1 disease class name
     - **confidence** – top-1 probability (0–100 %)
+    - **all_probabilities** – dict of all class probabilities (0–100 %)
 
     ### Error codes
     | HTTP | Reason                                       |
@@ -108,16 +109,26 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
 
     # ── 5. Low-confidence guard ───────────────────────────────────────────────
     if confidence < CONFIDENCE_THRESHOLD:
+        all_probabilities = {
+            DISEASE_CLASS_NAMES[i]: round(float(preds[0][i]) * 100, 2)
+            for i in range(len(DISEASE_CLASS_NAMES))
+        }
         return {
             "prediction": "uncertain",
             "confidence": round(confidence * 100, 2),
+            "all_probabilities": all_probabilities,
             "message": (
                 "Could not confidently identify a disease. "
                 "Please upload a clear corn leaf image."
             ),
         }
 
+    all_probabilities = {
+        DISEASE_CLASS_NAMES[i]: round(float(preds[0][i]) * 100, 2)
+        for i in range(len(DISEASE_CLASS_NAMES))
+    }
     return {
         "prediction": DISEASE_CLASS_NAMES[class_id],
         "confidence": round(confidence * 100, 2),
+        "all_probabilities": all_probabilities,
     }
