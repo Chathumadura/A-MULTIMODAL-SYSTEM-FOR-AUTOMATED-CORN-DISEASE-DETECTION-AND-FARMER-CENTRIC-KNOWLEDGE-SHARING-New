@@ -111,6 +111,9 @@ def pest_root() -> dict:
 
 @router.post("/predict")
 async def pest_predict(file: UploadFile = File(...)) -> dict:
+    logger.info("[pest] /predict route hit, file: %s, size: %d bytes", file.filename, len(await file.read()))
+    await file.seek(0)  # Reset file pointer
+
     pest_model = get_pest_model()
     if pest_model is None:
         raise HTTPException(status_code=503, detail="Pest detection model not loaded.")
@@ -129,6 +132,8 @@ async def pest_predict(file: UploadFile = File(...)) -> dict:
         raise HTTPException(status_code=422, detail="Invalid image file.")
 
     processed = _preprocess_image(image)
+    logger.info("[pest] preprocessed image shape: %s, dtype: %s, range: [%.3f, %.3f]", 
+               processed.shape, processed.dtype, np.min(processed), np.max(processed))
 
     try:
         # TFLite inference: set input → invoke → read output.
@@ -138,12 +143,21 @@ async def pest_predict(file: UploadFile = File(...)) -> dict:
         pest_model.set_tensor(input_details[0]["index"], processed)
         pest_model.invoke()
         preds = pest_model.get_tensor(output_details[0]["index"])
+        logger.info("[pest] raw TFLite output: %s", preds)
     except Exception as exc:
-        logger.exception("Pest model inference failed: %s", exc)
+        logger.exception("[pest] Inference failed: %s", exc)
         raise HTTPException(status_code=500, detail="Prediction failed.")
 
     confidence = float(np.max(preds))
     class_id = int(np.argmax(preds))
+
+    logger.info(
+        "[pest] prediction: class=%s (id=%d), confidence=%.2f%%, file=%s",
+        CLASS_NAMES[class_id],
+        class_id,
+        confidence * 100,
+        file.filename,
+    )
 
     CONFIDENCE_THRESHOLD = 0.5
 

@@ -165,6 +165,5 @@ def preprocess_disease_image(image_bytes: bytes) -> np.ndarray:
     """
     image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     image = image.resize((IMG_SIZE, IMG_SIZE))
-    arr = np.array(image, dtype=np.float32)
-    arr = arr[:, :, ::-1] / 255.0  # BGR and normalize
+    arr = np.array(image, dtype=np.float32) / 255.0
     return np.expand_dims(arr, axis=0)

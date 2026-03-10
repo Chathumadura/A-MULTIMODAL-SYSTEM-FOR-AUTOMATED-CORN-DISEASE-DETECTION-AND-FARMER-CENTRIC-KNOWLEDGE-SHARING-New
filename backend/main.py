@@ -184,15 +184,6 @@ async def startup_event() -> None:
     results = _download_and_verify_models()
     _log_model_summary(results)
 
-    # Load disease model at startup
-    logger.info(f"{STARTUP_LOG_PREFIX}Loading disease model at startup...")
-    disease_model = get_disease_model()
-    if disease_model is not None:
-        logger.info(f"{STARTUP_LOG_PREFIX}✓ Disease model loaded successfully at startup")
-    else:
-        error = get_disease_load_error()
-        logger.warning(f"{STARTUP_LOG_PREFIX}⚠ Disease model failed to load: {error}")
-
     # Extra sanity check for yield path misconfiguration
     if settings.YIELD_MODEL_PATH.suffix.lower() == ".tflite":
         logger.warning(
