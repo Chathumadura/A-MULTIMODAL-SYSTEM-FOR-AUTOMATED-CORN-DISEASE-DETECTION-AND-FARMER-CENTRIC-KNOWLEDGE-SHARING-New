@@ -837,7 +837,7 @@ class _ResultContent extends StatelessWidget {
                 ),
               ),
               Text(
-                '${(prediction.confidence * 100).toStringAsFixed(2)}%',
+                '${prediction.confidence.toStringAsFixed(2)}%',
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -911,7 +911,7 @@ class _ProbabilityRow extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${(shown * 100).toStringAsFixed(2)}%',
+                    '${shown.toStringAsFixed(2)}%',
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       color: const Color(0xFF375143),
@@ -924,7 +924,7 @@ class _ProbabilityRow extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(999),
                 child: LinearProgressIndicator(
-                  value: shown,
+                  value: shown / 100,
                   minHeight: 8,
                   backgroundColor: const Color(0xFFE8EFE4),
                   valueColor: const AlwaysStoppedAnimation<Color>(
