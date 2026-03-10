@@ -68,23 +68,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     }
   }
 
-  String _getExplanation(String className) {
-    switch (className) {
-      case 'Healthy':
-        return 'මෙම බෝගය සෞඛ්‍ය සම්පන්නයි. සියලුම පෝෂක මට්ටම් ප්‍රශස්තයි.\n\nThis crop is healthy. All nutrient levels are optimal.';
-      case 'NAB':
-        return 'නයිට්‍රජන් (N) ඌනතාවය හඳුනාගෙන ඇත. නිර්දේශිත නයිට්‍රජන් පොහොර මාත්‍රාව යොදන්න.\n\nNitrogen deficiency detected. Apply recommended nitrogen fertilizer dose.';
-      case 'PAB':
-        return 'පොස්පරස් (P) ඌනතාවය හඳුනාගෙන ඇත. මාර්ගෝපදේශ අනුව පොස්පේට් පොහොර යොදන්න.\n\nPhosphorus deficiency detected. Apply phosphate fertilizer as per guidelines.';
-      case 'KAB':
-        return 'පොටෑසියම් (K) ඌනතාවය හඳුනාගෙන ඇත. MOP හෝ සුදුසු K ප්‍රභවයක් යොදන්න.\n\nPotassium deficiency detected. Apply MOP or suitable K source.';
-      case 'ZNAB':
-        return 'සිංක් (Zn) ඌනතාවය හඳුනාගෙන ඇත. ZnSO₄ හෝ chelated Zn යොදන්න.\n\nZinc deficiency detected. Apply ZnSO₄ or chelated zinc fertilizer.';
-      default:
-        return 'හඳු නා නොගත් ඌනතාවයකි. කෘෂිකාර්මික විශේෂඥයෙකුගෙන් උපදෙස් ලබා ගන්න.\n\nUnknown deficiency. Please consult an agricultural expert.';
-    }
-  }
-
   Future<void> _analyzeImage() async {
     if (_selectedImage == null) return;
 
@@ -164,9 +147,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
   }
 
   void _showResultSheet(String className, double confidence) {
-    final advice = _getActionRequired(className);
-    final explanation = _getExplanation(className);
-
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF0F1224),
@@ -203,7 +183,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            className,
+                            _getSinhalaLabel(className),
                             style: TextStyle(
                               color: className == 'Healthy'
                                   ? const Color(0xFF00D9A0)
@@ -218,44 +198,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                           style: const TextStyle(color: Colors.white70),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      explanation,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1D1F33),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: const Color(0xFF00D9A0).withOpacity(0.25),
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.science, color: Color(0xFF00D9A0)),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              advice,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                height: 1.4,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                     const SizedBox(height: 16),
                     _buildSinhalaDeficiencyMessage(),
