@@ -72,7 +72,9 @@ class ApiClient {
   ) async {
     final streamed = await request.send().timeout(_uploadTimeout);
     final response = await http.Response.fromStream(streamed);
-    debugPrint('🌐 [ApiClient] RESPONSE → $label status: ${response.statusCode}');
+    debugPrint(
+      '🌐 [ApiClient] RESPONSE → $label status: ${response.statusCode}',
+    );
     return _decode(response, label);
   }
 

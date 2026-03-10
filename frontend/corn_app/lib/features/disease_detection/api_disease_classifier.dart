@@ -37,7 +37,9 @@ class ApiDiseaseClassifier implements DiseaseClassifier {
               .toList()
             ..sort((a, b) => b.value.compareTo(a.value));
 
-      debugPrint('✅ [DiseaseClassifier] Parsed prediction: $prediction, confidence: $confidence');
+      debugPrint(
+        '✅ [DiseaseClassifier] Parsed prediction: $prediction, confidence: $confidence',
+      );
 
       return DiseasePrediction(
         label: prediction,
