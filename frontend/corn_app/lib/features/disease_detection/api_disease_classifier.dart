@@ -22,7 +22,7 @@ class ApiDiseaseClassifier implements DiseaseClassifier {
       final response = await _apiClient.uploadImageForDiseaseDetection(
         imageFile,
       );
-      debugPrint('✅ [DiseaseClassifier] API response: $response');
+      debugPrint('✅ [DiseaseClassifier] API response received: $response');
 
       final prediction = response['prediction'] as String;
       final confidence = (response['confidence'] as num).toDouble();
@@ -36,6 +36,8 @@ class ApiDiseaseClassifier implements DiseaseClassifier {
               .map((entry) => MapEntry(entry.key, entry.value))
               .toList()
             ..sort((a, b) => b.value.compareTo(a.value));
+
+      debugPrint('✅ [DiseaseClassifier] Parsed prediction: $prediction, confidence: $confidence');
 
       return DiseasePrediction(
         label: prediction,

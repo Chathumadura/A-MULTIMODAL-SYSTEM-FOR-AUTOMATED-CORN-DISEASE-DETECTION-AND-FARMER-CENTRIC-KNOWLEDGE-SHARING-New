@@ -15,6 +15,7 @@ subsequent requests.  This keeps startup memory usage low on Render.
 import logging
 
 import numpy as np
+import tensorflow as tf
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from utils.disease_model import (
@@ -59,6 +60,9 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
     | 500  | Internal model inference error               |
     | 503  | Disease model file missing / not yet loaded  |
     """
+    logger.info("[disease] /predict route hit, file: %s, size: %d bytes", file.filename, len(await file.read()))
+    await file.seek(0)  # Reset file pointer
+
     # ── 1. Ensure the model is loaded ─────────────────────────────────────────
     model = get_disease_model()
     if model is None:
@@ -81,6 +85,8 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
     # ── 3. Preprocess ─────────────────────────────────────────────────────────
     try:
         processed = preprocess_disease_image(image_bytes)
+        logger.info("[disease] preprocessed image shape: %s, dtype: %s, range: [%.3f, %.3f]", 
+                   processed.shape, processed.dtype, np.min(processed), np.max(processed))
     except Exception:
         raise HTTPException(status_code=422, detail="Invalid image file.")
 
@@ -93,6 +99,15 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
         model.set_tensor(input_details[0]["index"], processed)
         model.invoke()
         preds = model.get_tensor(output_details[0]["index"])
+        logger.info("[disease] raw TFLite output: %s", preds)
+
+        # Ensure preds are probabilities (apply softmax if necessary)
+        pred_sum = np.sum(preds)
+        if pred_sum < 0.99 or pred_sum > 1.01:
+            logger.info("[disease] Applying softmax to raw logits, sum was %.3f", pred_sum)
+            preds = tf.nn.softmax(preds, axis=-1).numpy()
+        else:
+            logger.info("[disease] Output appears to be probabilities, sum=%.3f", pred_sum)
     except Exception as exc:
         logger.exception("[disease] Inference failed: %s", exc)
         raise HTTPException(status_code=500, detail="Prediction failed.")
@@ -101,8 +116,9 @@ async def disease_predict(file: UploadFile = File(...)) -> dict:
     class_id = int(np.argmax(preds))
 
     logger.info(
-        "[disease] /predict  class=%s  confidence=%.2f%%  file=%s",
+        "[disease] prediction: class=%s (id=%d), confidence=%.2f%%, file=%s",
         DISEASE_CLASS_NAMES[class_id],
+        class_id,
         confidence * 100,
         file.filename,
     )

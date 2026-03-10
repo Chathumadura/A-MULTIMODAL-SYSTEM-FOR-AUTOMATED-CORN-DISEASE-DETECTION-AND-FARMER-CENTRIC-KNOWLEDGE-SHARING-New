@@ -34,14 +34,13 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Class labels
 # Update to match the exact alphabetical order produced by flow_from_directory
-# (or ImageDataGenerator) when the model was trained.
+# (or ImageDataGenerator) when the model was trained.  Based on model output shape [1 4].
 # ---------------------------------------------------------------------------
 DISEASE_CLASS_NAMES: list[str] = [
     "Blight",
     "Common_Rust",
     "Gray_Leaf_Spot",
     "Healthy",
-    "Not_Corn",
 ]
 
 # Image preprocessing constants – must match the training pipeline.
@@ -166,5 +165,6 @@ def preprocess_disease_image(image_bytes: bytes) -> np.ndarray:
     """
     image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     image = image.resize((IMG_SIZE, IMG_SIZE))
-    arr = np.array(image, dtype=np.float32) / 255.0
+    arr = np.array(image, dtype=np.float32)
+    arr = arr[:, :, ::-1] / 255.0  # BGR and normalize
     return np.expand_dims(arr, axis=0)
