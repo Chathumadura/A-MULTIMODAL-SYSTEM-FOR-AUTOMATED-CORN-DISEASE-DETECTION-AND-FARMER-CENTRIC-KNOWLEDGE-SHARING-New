@@ -54,7 +54,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
   String _getActionRequired(String className) {
     switch (className) {
       case 'Healthy':
-        return 'සෞඛ්‍ය සම්පන්නයි! පුහුණු කිරීම දිගටම කරගෙන යන්න.\n\nHealthy! Continue regular care.';
+        return 'සෞඛ්‍ය සම්පන්නයි! .\n\nHealthy! Continue regular care.';
       case 'NAB':
         return 'නයිට්‍රජන් පොහොර යොදන්න.\n\nApply Nitrogen Fertilizer.';
       case 'PAB':
@@ -258,6 +258,8 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                       ),
                     ),
                     const SizedBox(height: 16),
+                    _buildSinhalaDeficiencyMessage(),
+                    const SizedBox(height: 16),
                     // Fertilizer recommendations section
                     if (_fertilizerRecommendations != null &&
                         className != 'Healthy')
@@ -374,6 +376,138 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
         _allProbabilities!.entries.where((e) => e.key != 'Not_Corn').toList()
           ..sort((a, b) => b.value.compareTo(a.value));
     return filtered.take(k).toList();
+  }
+
+  // ── Sinhala label + primary/secondary helpers ─────────────────────────────
+
+  static const Map<String, String> _sinhalaLabels = {
+    'NAB': 'නයිට්‍රජන් (N)',
+    'PAB': 'පොස්පරස් (P)',
+    'KAB': 'පොටෑසියම් (K)',
+    'ZNAB': 'සින්ක් (Zn)',
+    'Healthy': 'සෞඛ්‍ය සම්පන්න පත්‍රය',
+    'Not_Corn': 'බඩඉරිඟු පත්‍රයක් නොවේ',
+  };
+
+  String _getSinhalaLabel(String key) => _sinhalaLabels[key] ?? key;
+
+  List<MapEntry<String, double>> _getSortedProbabilities() {
+    if (_allProbabilities == null) return [];
+    return _allProbabilities!.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+  }
+
+  MapEntry<String, double>? _getPrimaryPrediction() {
+    final sorted = _getSortedProbabilities();
+    return sorted.isNotEmpty ? sorted.first : null;
+  }
+
+  /// Returns the second-highest class only when it is meaningful:
+  /// - probability >= 0.20
+  /// - neither the primary nor secondary class is Not_Corn
+  MapEntry<String, double>? _getSecondaryPrediction() {
+    final sorted = _getSortedProbabilities();
+    if (sorted.length < 2) return null;
+    final primary = sorted.first;
+    final secondary = sorted[1];
+    if (secondary.value >= 0.20 &&
+        primary.key != 'Not_Corn' &&
+        secondary.key != 'Not_Corn') {
+      return secondary;
+    }
+    return null;
+  }
+
+  Widget _buildSinhalaDeficiencyMessage() {
+    final primary = _getPrimaryPrediction();
+    final secondary = _getSecondaryPrediction();
+
+    if (primary == null ||
+        primary.key == 'Healthy' ||
+        primary.key == 'Not_Corn') {
+      return const SizedBox.shrink();
+    }
+
+    final primaryLabel = _getSinhalaLabel(primary.key);
+    final primaryPct = (primary.value * 100).toStringAsFixed(0);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1D1F33),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.withOpacity(0.30)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.language, color: Colors.orange, size: 15),
+              SizedBox(width: 7),
+              Text(
+                'සිංහල සාරාංශය',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'දැනට $primaryLabel ඌනතාවය ප්‍රධාන වශයෙන් හඳුනාගෙන ඇත ($primaryPct%).',
+            style: GoogleFonts.notoSansSinhala(
+              color: Colors.white,
+              fontSize: 14,
+              height: 1.65,
+            ),
+          ),
+          if (secondary != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              'ඊට අමතරව ${_getSinhalaLabel(secondary.key)} ඌනතාවයට අදාල සමාන ලක්ෂණද පෙන්විය හැකි බැවින්, ඉදිරියේදී අවධානය යොමු කරන්න (${(secondary.value * 100).toStringAsFixed(0)}%).',
+              style: GoogleFonts.notoSansSinhala(
+                color: Colors.white70,
+                fontSize: 13,
+                height: 1.65,
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.blue.withOpacity(0.22)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: Icon(Icons.info_outline, color: Colors.blue, size: 14),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'සටහන: පහතින් පෙන්වන පොහොර නිර්දේශය ප්‍රධාන වශයෙන් හඳුනාගත් ඌනතාවයට පමණක් අදාල වේ.',
+                    style: GoogleFonts.notoSansSinhala(
+                      color: Colors.blue,
+                      fontSize: 12,
+                      height: 1.55,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildTopKPanel({int k = 3}) {
