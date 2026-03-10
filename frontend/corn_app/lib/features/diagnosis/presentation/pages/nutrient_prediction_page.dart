@@ -169,38 +169,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: className == 'Healthy'
-                                ? const Color(0xFF00D9A0).withOpacity(0.15)
-                                : Colors.orange.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            _getSinhalaLabel(className),
-                            style: TextStyle(
-                              color: className == 'Healthy'
-                                  ? const Color(0xFF00D9A0)
-                                  : Colors.orange,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          '${(confidence * 100).toStringAsFixed(1)}% sure',
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildSinhalaDeficiencyMessage(),
+                    _buildPrimarySecondaryMessageCard(),
                     const SizedBox(height: 16),
                     // Fertilizer recommendations section
                     if (_fertilizerRecommendations != null &&
@@ -360,16 +329,36 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
     return null;
   }
 
-  Widget _buildSinhalaDeficiencyMessage() {
+  Widget _buildPrimarySecondaryMessageCard() {
     final primary = _getPrimaryPrediction();
     final secondary = _getSecondaryPrediction();
 
-    if (primary == null ||
-        primary.key == 'Healthy' ||
-        primary.key == 'Not_Corn') {
+    if (primary == null || primary.key == 'Not_Corn') {
       return const SizedBox.shrink();
     }
 
+    // Healthy case – no deficiency wording needed
+    if (primary.key == 'Healthy') {
+      final pct = (primary.value * 100).toStringAsFixed(0);
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1D1F33),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFF00D9A0).withOpacity(0.35)),
+        ),
+        child: Text(
+          'දැනට සෞඛ්‍ය සම්පන්නයි ($pct%). ශාකය හොඳ තත්ත්වයේ පවතී.',
+          style: GoogleFonts.notoSansSinhala(
+            color: Colors.white,
+            fontSize: 14,
+            height: 1.65,
+          ),
+        ),
+      );
+    }
+
+    // Deficiency case
     final primaryLabel = _getSinhalaLabel(primary.key);
     final primaryPct = (primary.value * 100).toStringAsFixed(0);
 
@@ -383,22 +372,6 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: const [
-              Icon(Icons.language, color: Colors.orange, size: 15),
-              SizedBox(width: 7),
-              Text(
-                'සිංහල සාරාංශය',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
           Text(
             'දැනට $primaryLabel ඌනතාවය ප්‍රධාන වශයෙන් හඳුනාගෙන ඇත ($primaryPct%).',
             style: GoogleFonts.notoSansSinhala(
