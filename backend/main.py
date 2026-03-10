@@ -29,6 +29,10 @@ from utils.inference import get_tf_diagnostics
 from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
 
+# Constants
+STARTUP_LOG_PREFIX = "[startup] "
+SEPARATOR_LINE = "=" * 60
+
 # Version diagnostics
 import numpy
 import pandas
@@ -83,28 +87,63 @@ app.add_middleware(
 #   YIELD_MODEL_URL   → direct download URL for models/corn_yield_model.pkl
 #   DISEASE_MODEL_URL → direct download URL for disease_model.keras
 # ---------------------------------------------------------------------------
-@app.on_event("startup")
-async def startup_event() -> None:
-    logger.info("=" * 60)
-    logger.info("[startup] === ENVIRONMENT & VERSION DIAGNOSTICS ===")
-    logger.info("[startup] Python version     : %s", sys.version.replace('\n', ' '))
-    logger.info("[startup] Platform           : %s", platform.platform())
-    logger.info("[startup] Python executable  : %s", sys.executable)
-    logger.info("[startup] ")
-    logger.info("[startup] === DEPENDENCY VERSIONS ===")
-    logger.info("[startup] numpy              : %s", numpy.__version__)
-    logger.info("[startup] pandas             : %s", pandas.__version__)
-    logger.info("[startup] scikit-learn       : %s", sklearn.__version__)
-    logger.info("[startup] joblib             : %s", joblib.__version__)
-    logger.info("[startup] shap               : %s", shap.__version__)
+# Constants
+STARTUP_LOG_PREFIX = "[startup] "
+SEPARATOR_LINE = "=" * 60
+
+
+def _log_environment_diagnostics() -> None:
+    """Log environment and version diagnostics."""
+    logger.info(SEPARATOR_LINE)
+    logger.info(f"{STARTUP_LOG_PREFIX}=== ENVIRONMENT & VERSION DIAGNOSTICS ===")
+    logger.info(f"{STARTUP_LOG_PREFIX}Python version     : %s", sys.version.replace('\n', ' '))
+    logger.info(f"{STARTUP_LOG_PREFIX}Platform           : %s", platform.platform())
+    logger.info(f"{STARTUP_LOG_PREFIX}Python executable  : %s", sys.executable)
+    logger.info(f"{STARTUP_LOG_PREFIX}")
+    logger.info(f"{STARTUP_LOG_PREFIX}=== DEPENDENCY VERSIONS ===")
+    logger.info(f"{STARTUP_LOG_PREFIX}numpy              : %s", numpy.__version__)
+    logger.info(f"{STARTUP_LOG_PREFIX}pandas             : %s", pandas.__version__)
+    logger.info(f"{STARTUP_LOG_PREFIX}scikit-learn       : %s", sklearn.__version__)
+    logger.info(f"{STARTUP_LOG_PREFIX}joblib             : %s", joblib.__version__)
+    logger.info(f"{STARTUP_LOG_PREFIX}shap               : %s", shap.__version__)
     try:
         import tensorflow as tf
-        logger.info("[startup] tensorflow-cpu    : %s", tf.__version__)
+        logger.info(f"{STARTUP_LOG_PREFIX}tensorflow-cpu    : %s", tf.__version__)
     except ImportError:
-        logger.info("[startup] tensorflow-cpu    : (not installed)")
-    logger.info("[startup] ")
-    logger.info("[startup] === MODEL DOWNLOAD PHASE ===")
-    logger.info("[startup] Downloads run before any model is loaded into RAM.")
+        logger.info(f"{STARTUP_LOG_PREFIX}tensorflow-cpu    : (not installed)")
+    logger.info(f"{STARTUP_LOG_PREFIX}")
+
+
+def _verify_model(env_var: str, local_path, label: str, min_bytes: int) -> tuple[str, bool]:
+    """Download and verify a single model, return (label, ready)."""
+    download_model_if_needed(env_var, local_path, min_valid_bytes=min_bytes)
+    # Post-download confirmation: re-check disk regardless of return value
+    exists_now = local_path.exists()
+    size_now   = local_path.stat().st_size if exists_now else 0
+    if exists_now and size_now >= min_bytes:
+        logger.info(
+            f"{STARTUP_LOG_PREFIX}✓ %-28s ready at %s  (%d bytes)",
+            label, local_path, size_now,
+        )
+    else:
+        if exists_now:
+            logger.warning(
+                f"{STARTUP_LOG_PREFIX}⚠ %-28s found but suspiciously small (%d bytes) at %s",
+                label, size_now, local_path,
+            )
+        else:
+            logger.warning(
+                f"{STARTUP_LOG_PREFIX}✗ %-28s NOT found at %s  "
+                "– dependent endpoints will return HTTP 503",
+                label, local_path,
+            )
+    return (label, exists_now and size_now >= min_bytes)
+
+
+def _download_and_verify_models() -> list[tuple[str, bool]]:
+    """Download and verify all models, return list of (label, ready) tuples."""
+    logger.info(f"{STARTUP_LOG_PREFIX}=== MODEL DOWNLOAD PHASE ===")
+    logger.info(f"{STARTUP_LOG_PREFIX}Downloads run before any model is loaded into RAM.")
 
     # min_valid_bytes: TFLite image models are 5-30 MB (threshold 1 MB).
     # The yield model is a small sklearn joblib pipeline (~70 KB); use 32 KB threshold.
@@ -117,52 +156,40 @@ async def startup_event() -> None:
         ("DISEASE_MODEL_URL", settings.DISEASE_MODEL_PATH, "disease_model.tflite",    _MB),
     ]
 
-    results: list[tuple[str, bool]] = []
-    for env_var, local_path, label, min_bytes in _models:
-        download_model_if_needed(env_var, local_path, min_valid_bytes=min_bytes)
-        # Post-download confirmation: re-check disk regardless of return value
-        exists_now = local_path.exists()
-        size_now   = local_path.stat().st_size if exists_now else 0
-        if exists_now and size_now >= min_bytes:
-            logger.info(
-                "[startup] ✓ %-28s ready at %s  (%d bytes)",
-                label, local_path, size_now,
-            )
-        else:
-            if exists_now:
-                logger.warning(
-                    "[startup] ⚠ %-28s found but suspiciously small (%d bytes) at %s",
-                    label, size_now, local_path,
-                )
-            else:
-                logger.warning(
-                    "[startup] ✗ %-28s NOT found at %s  "
-                    "– dependent endpoints will return HTTP 503",
-                    label, local_path,
-                )
-        results.append((label, exists_now and size_now >= min_bytes))
+    results = [_verify_model(env_var, local_path, label, min_bytes) for env_var, local_path, label, min_bytes in _models]
+    return results
+
+
+def _log_model_summary(results: list[tuple[str, bool]]) -> None:
+    """Log the model download summary."""
+    logger.info(f"{STARTUP_LOG_PREFIX}=== MODEL DOWNLOAD SUMMARY ===")
+    for label, ready in results:
+        status = "READY   ✓" if ready else "MISSING ✗"
+        logger.info(f"{STARTUP_LOG_PREFIX}  %-28s %s", label, status)
+
+    logger.info(f"{STARTUP_LOG_PREFIX}Models will be loaded lazily on first request.")
+    logger.info(f"{STARTUP_LOG_PREFIX}")
+    logger.info(f"{STARTUP_LOG_PREFIX}YIELD MODEL DIAGNOSTICS:")
+    logger.info(f"{STARTUP_LOG_PREFIX}  Path     : %s", settings.YIELD_MODEL_PATH.resolve())
+    logger.info(f"{STARTUP_LOG_PREFIX}  Exists   : %s", settings.YIELD_MODEL_PATH.exists())
+    if settings.YIELD_MODEL_PATH.exists():
+        logger.info(f"{STARTUP_LOG_PREFIX}  Size     : %d bytes", settings.YIELD_MODEL_PATH.stat().st_size)
+    logger.info(SEPARATOR_LINE)
+
+
+@app.on_event("startup")
+async def startup_event() -> None:
+    _log_environment_diagnostics()
+    results = _download_and_verify_models()
+    _log_model_summary(results)
 
     # Extra sanity check for yield path misconfiguration
     if settings.YIELD_MODEL_PATH.suffix.lower() == ".tflite":
         logger.warning(
-            "[startup] YIELD_MODEL_PATH is set to a .tflite file (%s). "
+            f"{STARTUP_LOG_PREFIX}YIELD_MODEL_PATH is set to a .tflite file (%s). "
             "This endpoint expects a pickled sklearn pipeline (.pkl).",
             settings.YIELD_MODEL_PATH,
         )
-
-    logger.info("[startup] === MODEL DOWNLOAD SUMMARY ===")
-    for label, ready in results:
-        status = "READY   ✓" if ready else "MISSING ✗"
-        logger.info("[startup]   %-28s %s", label, status)
-
-    logger.info("[startup] Models will be loaded lazily on first request.")
-    logger.info("[startup] ")
-    logger.info("[startup] YIELD MODEL DIAGNOSTICS:")
-    logger.info("[startup]   Path     : %s", settings.YIELD_MODEL_PATH.resolve())
-    logger.info("[startup]   Exists   : %s", settings.YIELD_MODEL_PATH.exists())
-    if settings.YIELD_MODEL_PATH.exists():
-        logger.info("[startup]   Size     : %d bytes", settings.YIELD_MODEL_PATH.stat().st_size)
-    logger.info("=" * 60)
 
 
 # ---------------------------------------------------------------------------

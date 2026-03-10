@@ -23,6 +23,13 @@ from core.config import settings
 
 logger = logging.getLogger(__name__)
 
+# Constants for logging
+YIELD_LOG_PREFIX = "[yield] "
+SEPARATOR_LINE = "=" * 70
+BLOCK_SEPARATOR = "═" * 60
+DIAG_HEADER = "============================================================"
+EMPTY_LINE = ""
+
 
 # ---------------------------------------------------------------------------
 # Model state container
@@ -38,83 +45,69 @@ class YieldModelState(NamedTuple):
 _state: YieldModelState | None = None
 
 
-def _load() -> YieldModelState | None:
-    """Load the sklearn pipeline and build the SHAP explainer (lazy, first call only)."""
-    path = settings.YIELD_MODEL_PATH
-    
-    # =========================================================================
-    # COMPREHENSIVE VERSION DIAGNOSTICS - Printed immediately before model load
-    # This is CRITICAL for debugging pickle compatibility issues like _loss errors
-    # =========================================================================
-    logger.info("=" * 70)
-    logger.info("[yield] ============================================================")
-    logger.info("[yield]  YIELD MODEL LOADING - VERSION DIAGNOSTICS")
-    logger.info("[yield] ============================================================")
-    logger.info("[yield] Python version     : %s", sys.version.replace('\n', ' '))
-    logger.info("[yield] Platform           : %s", platform.platform())
-    logger.info("[yield] Python executable  : %s", sys.executable)
-    logger.info("[yield] ")
-    logger.info("[yield] --- CRITICAL PACKAGE VERSIONS ---")
-    logger.info("[yield] numpy              : %s", np.__version__)
-    logger.info("[yield] pandas             : %s", pd.__version__)
-    logger.info("[yield] scikit-learn       : %s", sklearn.__version__)
-    logger.info("[yield] joblib             : %s", joblib.__version__)
-    logger.info("[yield] shap               : %s", shap.__version__)
-    logger.info("[yield] ")
-    logger.info("[yield] --- MODEL FILE INFO ---")
-    logger.info("[yield] Model path         : %s", path.resolve())
-    logger.info("[yield] File exists        : %s", path.exists())
-    if path.exists():
-        logger.info("[yield] File size (bytes) : %d", path.stat().st_size)
-    logger.info("[yield] ")
-    
-    # Warn about known compatibility issues
+def _log_sklearn_compatibility() -> None:
+    """Log sklearn version compatibility warnings."""
     sklearn_version = tuple(map(int, sklearn.__version__.split('.')[:2]))
-    if sklearn_version >= (1, 5):
+    if sklearn_version < (1, 7):
         logger.warning(
-            "[yield] WARNING: scikit-learn %s detected. "
-            "If model was pickled with <1.5, you may see '_loss' module errors. "
-            "Consider pinning scikit-learn==1.3.2 or re-export model with sklearn %s",
-            sklearn.__version__, sklearn.__version__
-        )
-    elif sklearn_version < (1, 4):
-        logger.warning(
-            "[yield] WARNING: scikit-learn %s is older. "
-            "If model was pickled with >=1.5, you may see '_loss' module errors. "
-            "Consider upgrading scikit-learn or re-export model with sklearn %s",
-            sklearn.__version__, sklearn.__version__
+            f"{YIELD_LOG_PREFIX}WARNING: scikit-learn %s detected. "
+            "The model was pickled with sklearn 1.7.2. "
+            "Versions <1.7 may cause AttributeError on ColumnTransformer. "
+            "Please upgrade to scikit-learn>=1.7.2",
+            sklearn.__version__
         )
     else:
-        logger.info("[yield] scikit-learn version %s should be compatible with 1.3.x pickled models", sklearn.__version__)
-    logger.info("[yield] ============================================================")
-    logger.info("=" * 70)
-    # =========================================================================
-    
-    logger.info("[yield] Lazy loading yield pipeline (first request) …")
+        logger.info(f"{YIELD_LOG_PREFIX}scikit-learn version %s should be compatible with 1.7.x pickled models", sklearn.__version__)
 
-    # show the raw value from config/ENV and some file diagnostics
+
+def _log_version_diagnostics() -> None:
+    """Log comprehensive version diagnostics for debugging pickle issues."""
+    logger.info(SEPARATOR_LINE)
+    logger.info(f"{YIELD_LOG_PREFIX}{DIAG_HEADER}")
+    logger.info(f"{YIELD_LOG_PREFIX} YIELD MODEL LOADING - VERSION DIAGNOSTICS")
+    logger.info(f"{YIELD_LOG_PREFIX}{DIAG_HEADER}")
+    logger.info(f"{YIELD_LOG_PREFIX}Python version     : %s", sys.version.replace('\n', ' '))
+    logger.info(f"{YIELD_LOG_PREFIX}Platform           : %s", platform.platform())
+    logger.info(f"{YIELD_LOG_PREFIX}Python executable  : %s", sys.executable)
+    logger.info(f"{YIELD_LOG_PREFIX}{EMPTY_LINE}")
+    logger.info(f"{YIELD_LOG_PREFIX}--- CRITICAL PACKAGE VERSIONS ---")
+    logger.info(f"{YIELD_LOG_PREFIX}numpy              : %s", np.__version__)
+    logger.info(f"{YIELD_LOG_PREFIX}pandas             : %s", pd.__version__)
+    logger.info(f"{YIELD_LOG_PREFIX}scikit-learn       : %s", sklearn.__version__)
+    logger.info(f"{YIELD_LOG_PREFIX}joblib             : %s", joblib.__version__)
+    logger.info(f"{YIELD_LOG_PREFIX}shap               : %s", shap.__version__)
+    logger.info(f"{YIELD_LOG_PREFIX}{EMPTY_LINE}")
+    
+    _log_sklearn_compatibility()
+    
+    logger.info(f"{YIELD_LOG_PREFIX}{DIAG_HEADER}")
+    logger.info(SEPARATOR_LINE)
+
+
+def _check_model_file(path) -> str | None:
+    """Check and resolve the model file path, returning the resolved path or None if invalid."""
     resolved = path.resolve()
     suffix = resolved.suffix.lower()
-    logger.info("[yield] Resolved model path : %s", resolved)
-    logger.info("[yield] File exists         : %s", resolved.exists())
+    logger.info(f"{YIELD_LOG_PREFIX}Resolved model path : %s", resolved)
+    logger.info(f"{YIELD_LOG_PREFIX}File exists         : %s", resolved.exists())
     if resolved.exists():
-        logger.info("[yield] File size (bytes)    : %d", resolved.stat().st_size)
-    logger.info("[yield] File extension       : %s", suffix)
+        logger.info(f"{YIELD_LOG_PREFIX}File size (bytes)    : %d", resolved.stat().st_size)
+    logger.info(f"{YIELD_LOG_PREFIX}File extension       : %s", suffix)
 
     # guard against common misconfiguration where a .tflite is pointed at
     if suffix == ".tflite" or suffix == ".lite":
         logger.warning(
-            "[yield] YIELD_MODEL_PATH points to a TFLite file; this service expects a pickled sklearn pipeline (.pkl)." 
+            f"{YIELD_LOG_PREFIX}YIELD_MODEL_PATH points to a TFLite file; this service expects a pickled sklearn pipeline (.pkl)." 
             " Attempting to locate a sibling .pkl file as a fallback."
         )
         alt = resolved.with_suffix(".pkl")
         if alt.exists():
-            logger.info("[yield] Found alternate .pkl at %s – will load this instead", alt)
+            logger.info(f"{YIELD_LOG_PREFIX}Found alternate .pkl at %s – will load this instead", alt)
             resolved = alt
             suffix = resolved.suffix.lower()
         else:
             logger.error(
-                "[yield] No .pkl sibling found next to %s; cannot load yield model.",
+                f"{YIELD_LOG_PREFIX}No .pkl sibling found next to %s; cannot load yield model.",
                 resolved,
             )
             return None
@@ -122,7 +115,7 @@ def _load() -> YieldModelState | None:
     # final sanity check: only load known file types
     if suffix not in (".pkl", ".joblib"):
         logger.error(
-            "[yield] Unsupported file extension '%s' for yield model. "
+            f"{YIELD_LOG_PREFIX}Unsupported file extension '%s' for yield model. "
             "Expected .pkl or .joblib.",
             suffix,
         )
@@ -132,18 +125,19 @@ def _load() -> YieldModelState | None:
         logger.error("Yield model file not found: %s", resolved)
         return None
 
+    return str(resolved)
+
+
+def _load_pipeline(resolved_path: str) -> YieldModelState | None:
+    """Load the pipeline from the resolved path and build the state."""
     try:
-        logger.info("[yield] Loading sklearn pipeline from %s", resolved)
+        logger.info(f"{YIELD_LOG_PREFIX}Loading sklearn pipeline from %s", resolved_path)
         logger.debug(
-            "[yield] Load environment: numpy=%s, pandas=%s, joblib=%s, scikit-learn=%s",
+            f"{YIELD_LOG_PREFIX}Load environment: numpy=%s, pandas=%s, joblib=%s, scikit-learn=%s",
             np.__version__, pd.__version__, joblib.__version__, sklearn.__version__,
         )
         
-        # =========================================================================
-        # ACTUAL MODEL LOADING - This is where _loss errors occur
-        # =========================================================================
-        pipeline = joblib.load(resolved)
-        # =========================================================================
+        pipeline = joblib.load(resolved_path)
         
         preprocessor = pipeline.named_steps["preprocessor"]
         model = pipeline.named_steps["model"]
@@ -159,67 +153,13 @@ def _load() -> YieldModelState | None:
 
         explainer = shap.TreeExplainer(model)
         logger.info(
-            "[yield] ✓ Yield pipeline loaded. Total features: %d",
+            f"{YIELD_LOG_PREFIX}✓ Yield pipeline loaded. Total features: %d",
             len(all_feature_names),
         )
         return YieldModelState(pipeline, preprocessor, model, explainer, all_feature_names)
 
     except ModuleNotFoundError as exc:
-        # Special handling for _loss and similar internal module errors
-        if '_loss' in str(exc) or 'sklearn' in str(exc).lower():
-            logger.error(
-                "[yield] ════════════════════════════════════════════════════════════"
-            )
-            logger.error(
-                "[yield]  MODEL LOAD FAILED DUE TO VERSION MISMATCH"
-            )
-            logger.error(
-                "[yield] ════════════════════════════════════════════════════════════"
-            )
-            logger.error(
-                "[yield] The error '%s' indicates the model was pickled with a different "
-                "scikit-learn version than what's currently installed.", 
-                str(exc)
-            )
-            logger.error(
-                "[yield] CURRENT scikit-learn: %s", sklearn.__version__
-            )
-            logger.error(
-                "[yield] "
-            )
-            logger.error(
-                "[yield] TO FIX THIS ISSUE:"
-            )
-            logger.error(
-                "[yield] 1. Re-export the model from the ORIGINAL training environment using:"
-            )
-            logger.error(
-                "[yield]      import joblib"
-            )
-            logger.error(
-                "[yield]      joblib.dump(your_pipeline, 'corn_yield_model.pkl')"
-            )
-            logger.error(
-                "[yield] 2. OR match the training environment's package versions:"
-            )
-            logger.error(
-                "[yield]      pip install numpy==1.26.4 pandas==2.1.4 scikit-learn==1.3.2 joblib==1.3.2"
-            )
-            logger.error(
-                "[yield] 3. Upload the new .pkl file to your model storage and update YIELD_MODEL_URL"
-            )
-            logger.error(
-                "[yield] ════════════════════════════════════════════════════════════"
-            )
-        else:
-            exc_type = type(exc).__name__
-            exc_msg = str(exc)
-            logger.error(
-                "[yield] ✗ Failed to load yield pipeline (ModuleNotFoundError)."
-                "  Exception: %s(%s)",
-                exc_type, exc_msg,
-            )
-        logger.exception("[yield] Full traceback for yield model load failure:")
+        _handle_module_not_found_error(exc)
         return None
 
     except Exception as exc:
@@ -227,19 +167,66 @@ def _load() -> YieldModelState | None:
         exc_type = type(exc).__name__
         exc_msg = str(exc)
         logger.error(
-            "[yield] ✗ Failed to load yield pipeline."
+            f"{YIELD_LOG_PREFIX}✗ Failed to load yield pipeline."
             "  Exception: %s(%s)",
             exc_type, exc_msg,
         )
-        logger.exception("[yield] Full traceback for yield model load failure:")
+        logger.exception(f"{YIELD_LOG_PREFIX}Full traceback for yield model load failure:")
         return None
+
+
+def _handle_module_not_found_error(exc: ModuleNotFoundError) -> None:
+    """Handle ModuleNotFoundError with special case for sklearn version mismatches."""
+    if '_loss' in str(exc) or 'sklearn' in str(exc).lower():
+        logger.error(f"{YIELD_LOG_PREFIX}{BLOCK_SEPARATOR}")
+        logger.error(f"{YIELD_LOG_PREFIX} MODEL LOAD FAILED DUE TO VERSION MISMATCH")
+        logger.error(f"{YIELD_LOG_PREFIX}{BLOCK_SEPARATOR}")
+        logger.error(
+            f"{YIELD_LOG_PREFIX}The error '%s' indicates the model was pickled with a different "
+            "scikit-learn version than what's currently installed.", 
+            str(exc)
+        )
+        logger.error(f"{YIELD_LOG_PREFIX}CURRENT scikit-learn: %s", sklearn.__version__)
+        logger.error(f"{YIELD_LOG_PREFIX}")
+        logger.error(f"{YIELD_LOG_PREFIX}TO FIX THIS ISSUE:")
+        logger.error(f"{YIELD_LOG_PREFIX}1. Re-export the model from the ORIGINAL training environment using:")
+        logger.error(f"{YIELD_LOG_PREFIX}     import joblib")
+        logger.error(f"{YIELD_LOG_PREFIX}     joblib.dump(your_pipeline, 'corn_yield_model.pkl')")
+        logger.error(f"{YIELD_LOG_PREFIX}2. OR match the training environment's package versions:")
+        logger.error(f"{YIELD_LOG_PREFIX}     pip install numpy==1.26.4 pandas==2.1.4 scikit-learn>=1.7.2 joblib==1.3.2")
+        logger.error(f"{YIELD_LOG_PREFIX}3. Upload the new .pkl file to your model storage and update YIELD_MODEL_URL")
+        logger.error(f"{YIELD_LOG_PREFIX}{BLOCK_SEPARATOR}")
+    else:
+        exc_type = type(exc).__name__
+        exc_msg = str(exc)
+        logger.error(
+            f"{YIELD_LOG_PREFIX}✗ Failed to load yield pipeline (ModuleNotFoundError)."
+            "  Exception: %s(%s)",
+            exc_type, exc_msg,
+        )
+    logger.exception(f"{YIELD_LOG_PREFIX}Full traceback for yield model load failure:")
+
+
+def _load() -> YieldModelState | None:
+    """Load the sklearn pipeline and build the SHAP explainer (lazy, first call only)."""
+    path = settings.YIELD_MODEL_PATH
+    
+    _log_version_diagnostics()
+    
+    logger.info(f"{YIELD_LOG_PREFIX}Lazy loading yield pipeline (first request) …")
+
+    resolved_path = _check_model_file(path)
+    if resolved_path is None:
+        return None
+
+    return _load_pipeline(resolved_path)
 
 
 def get_yield_state() -> YieldModelState | None:
     """Return the loaded model state (lazy, cached after first call)."""
     global _state
     if _state is not None:
-        logger.debug("[yield] Cache hit – returning already-loaded yield model.")
+        logger.debug(f"{YIELD_LOG_PREFIX}Cache hit – returning already-loaded yield model.")
         return _state
     _state = _load()
     return _state

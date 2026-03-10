@@ -63,7 +63,14 @@ def _raise(exc: Exception) -> None:
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
-@router.post("/predict", response_model=YieldExplainResponse)
+@router.post(
+    "/predict",
+    responses={
+        422: {"description": "Invalid input"},
+        503: {"description": "Model not loaded"},
+        500: {"description": "Server error"},
+    },
+)
 def yield_predict(payload: YieldRequest) -> YieldExplainResponse:
     """
     Predict corn yield (kg/acre) and return top-5 SHAP feature contributions.
@@ -78,7 +85,14 @@ def yield_predict(payload: YieldRequest) -> YieldExplainResponse:
         _raise(exc)
 
 
-@router.post("/explain", response_model=YieldExplainResponse)
+@router.post(
+    "/explain",
+    responses={
+        422: {"description": "Invalid input"},
+        503: {"description": "Model not loaded"},
+        500: {"description": "Server error"},
+    },
+)
 def yield_explain(payload: YieldRequest) -> YieldExplainResponse:
     """
     Dedicated SHAP explanation endpoint – identical response to /yield/predict.
