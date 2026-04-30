@@ -1,0 +1,58 @@
+# 🔒 Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔒 Virtual Environment
+.venv/
+venv/
+env/
+
+# 🔒 Logs & Runtime files
+*.log
+hs_err_pid*
+replay_pid*
+runtime.txt
+
+# 🔒 Model files (VERY IMPORTANT)
+*.h5
+*.keras
+*.pkl
+*.tflite
+backend/models/
+
+# 🔒 Environment variables
+.env
+.env.*
+
+# 🔒 VS Code / IDE
+.vscode/
+.idea/
+
+# 🔒 OS files
+.DS_Store
+Thumbs.db
+
+# 🔒 Build / dist
+build/
+dist/
+*.egg-info/
+
+# 🔒 Flutter
+frontend/corn_app/build/
+frontend/corn_app/.dart_tool/
+frontend/corn_app/.packages
+
+# 🔒 Android / iOS (Flutter)
+frontend/corn_app/android/.gradle/
+frontend/corn_app/android/app/build/
+frontend/corn_app/ios/Pods/
+
+# 🔒 Node (if used)
+node_modules/
+
+# 🔒 Temporary files
+*.tmp
+*.bak
+*.swp
