@@ -150,7 +150,9 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton.icon(
-                  onPressed: (_image == null || _loading) ? null : _runDiagnosis,
+                  onPressed: (_image == null || _loading)
+                      ? null
+                      : _runDiagnosis,
                   icon: _loading
                       ? const SizedBox(
                           width: 18,
@@ -189,13 +191,15 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 const SizedBox(height: 16),
                 _ModelResultCard(
                   title: loc.translate('leaf_diagnosis_nutrition_title'),
-                  modelResult: _result!['nutrition_result'] as Map<String, dynamic>?,
+                  modelResult:
+                      _result!['nutrition_result'] as Map<String, dynamic>?,
                   accentColor: const Color(0xFF2E7D32),
                 ),
                 const SizedBox(height: 12),
                 _ModelResultCard(
                   title: loc.translate('leaf_diagnosis_disease_title'),
-                  modelResult: _result!['disease_result'] as Map<String, dynamic>?,
+                  modelResult:
+                      _result!['disease_result'] as Map<String, dynamic>?,
                   accentColor: const Color(0xFF1565C0),
                 ),
                 if (_result!['final_diagnosis_type'] == 'nutrient_deficiency' &&
@@ -204,7 +208,8 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                   _RecommendationCard(
                     title: loc.translate('leaf_diagnosis_fertilizer_title'),
                     recommendation:
-                        _result!['fertilizer_recommendations'] as Map<String, dynamic>,
+                        _result!['fertilizer_recommendations']
+                            as Map<String, dynamic>,
                   ),
                 ],
                 if (_result!['final_diagnosis_type'] == 'invalid_image') ...[
@@ -465,10 +470,12 @@ class _ModelResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prediction = modelResult?['predicted_class'] ?? modelResult?['prediction'] ?? '-';
+    final prediction =
+        modelResult?['predicted_class'] ?? modelResult?['prediction'] ?? '-';
     final confidence = (modelResult?['confidence'] as num?)?.toDouble();
     final top3 = modelResult?['top_3'] as List<dynamic>?;
-    final allProbabilities = modelResult?['all_probabilities'] as Map<String, dynamic>?;
+    final allProbabilities =
+        modelResult?['all_probabilities'] as Map<String, dynamic>?;
 
     return Container(
       width: double.infinity,
@@ -523,8 +530,13 @@ class _ModelResultCard extends StatelessWidget {
             const SizedBox(height: 6),
             ...top3.take(3).map((item) {
               final map = item as Map<String, dynamic>;
-              final label = map['class'] ?? map['prediction'] ?? map['predicted_class'] ?? '-';
-              final value = (map['probability'] as num?)?.toDouble() ??
+              final label =
+                  map['class'] ??
+                  map['prediction'] ??
+                  map['predicted_class'] ??
+                  '-';
+              final value =
+                  (map['probability'] as num?)?.toDouble() ??
                   (map['confidence'] as num?)?.toDouble() ??
                   0.0;
               return Padding(
@@ -568,7 +580,10 @@ class _ModelResultCard extends StatelessWidget {
 }
 
 class _RecommendationCard extends StatelessWidget {
-  const _RecommendationCard({required this.title, required this.recommendation});
+  const _RecommendationCard({
+    required this.title,
+    required this.recommendation,
+  });
 
   final String title;
   final Map<String, dynamic> recommendation;
@@ -605,7 +620,10 @@ class _RecommendationCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Fertilizer: ${recommendation['fertilizer']}',
-              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600),
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
           if (recommendation['application_rate'] != null) ...[
@@ -632,10 +650,12 @@ class _RecommendationCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            ...additionalTips.map((tip) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text('• ${tip.toString()}'),
-                )),
+            ...additionalTips.map(
+              (tip) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text('• ${tip.toString()}'),
+              ),
+            ),
           ],
         ],
       ),
@@ -690,7 +710,10 @@ class _PossibleDiagnosesCard extends StatelessWidget {
                   ),
                   Text(
                     '${(confidence * 100).toStringAsFixed(1)}%',
-                    style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
