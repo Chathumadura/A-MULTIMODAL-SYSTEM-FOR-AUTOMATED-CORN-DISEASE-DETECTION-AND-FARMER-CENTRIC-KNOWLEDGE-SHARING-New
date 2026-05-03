@@ -291,6 +291,23 @@ class MainDashboardPage extends StatelessWidget {
 
               const SizedBox(height: 14),
 
+              _LeafDiagnosisPromoCard(
+                title: loc.translate('leaf_diagnosis_title'),
+                subtitle: loc.translate('leaf_diagnosis_subtitle'),
+                chipText: loc.translate('leaf_diagnosis_chip'),
+                buttonText: loc.translate('leaf_diagnosis_start'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const LeafDiagnosisPage(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 18),
+
               GridView(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -332,21 +349,6 @@ class MainDashboardPage extends StatelessWidget {
                     },
                   ),
                   _FeatureCard(
-                    imagePath: 'assets/dashboard/nutrient_analysis.png',
-                    title: 'Leaf Diagnosis',
-                    description:
-                        'Run nutrient and disease analysis together from one leaf image.',
-                    buttonText: 'Open Diagnosis',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const LeafDiagnosisPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  _FeatureCard(
                     imagePath: 'assets/dashboard/pest_alert.png',
                     title: 'Pest Detection & Alerts',
                     description: 'Get real-time alerts to protect your crop.',
@@ -377,6 +379,169 @@ class MainDashboardPage extends StatelessWidget {
                     },
                   ),
                 ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LeafDiagnosisPromoCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String chipText;
+  final String buttonText;
+  final VoidCallback onTap;
+
+  const _LeafDiagnosisPromoCard({
+    required this.title,
+    required this.subtitle,
+    required this.chipText,
+    required this.buttonText,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(28),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFFFF9E6), Color(0xFFF1F8E9), Color(0xFFE8F5E9)],
+            ),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: const Color(0xFF2E7D32).withOpacity(0.15),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF1B5E20).withOpacity(0.08),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFF1B5E20),
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF2D5016).withOpacity(0.85),
+                        height: 1.45,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF2E7D32).withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        chipText,
+                        style: GoogleFonts.poppins(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF1B5E20),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 42,
+                      child: ElevatedButton(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2E7D32),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              buttonText,
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            const Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: 140,
+                  height: 160,
+                  color: const Color(0xFF2E7D32).withOpacity(0.08),
+                  child: Image.asset(
+                    'lib/features/diagnosis/presentation/image/image1.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Center(
+                        child: Icon(
+                          Icons.image_not_supported_outlined,
+                          color: const Color(0xFF2E7D32).withOpacity(0.5),
+                          size: 40,
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ],
           ),
