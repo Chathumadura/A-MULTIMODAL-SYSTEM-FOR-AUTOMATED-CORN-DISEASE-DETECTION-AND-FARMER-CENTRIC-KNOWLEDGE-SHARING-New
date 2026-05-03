@@ -181,6 +181,31 @@ class ApiClient {
     return _sendMultipart(request, 'POST /disease/predict');
   }
 
+  /// POST /leaf-diagnosis/predict — combined nutrition + disease diagnosis.
+  Future<Map<String, dynamic>> predictLeafDiagnosis(File imageFile) async {
+    final request = http.MultipartRequest(
+      'POST',
+      _uri('/leaf-diagnosis/predict'),
+    );
+
+    final ext = imageFile.path.split('.').last.toLowerCase();
+    final mime = switch (ext) {
+      'png' => 'image/png',
+      'jpg' || 'jpeg' => 'image/jpeg',
+      _ => 'application/octet-stream',
+    };
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'file',
+        imageFile.path,
+        contentType: MediaType.parse(mime),
+      ),
+    );
+
+    return _sendMultipart(request, 'POST /leaf-diagnosis/predict');
+  }
+
   /// POST /nutrition/predict — Web-safe variant that accepts raw bytes.
   ///
   /// Use this on Flutter Web where `dart:io` is unavailable:

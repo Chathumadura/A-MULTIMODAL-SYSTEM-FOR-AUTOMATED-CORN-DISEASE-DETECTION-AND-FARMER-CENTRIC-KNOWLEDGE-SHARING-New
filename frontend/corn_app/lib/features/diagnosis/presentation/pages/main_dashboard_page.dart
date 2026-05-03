@@ -5,6 +5,7 @@ import 'capture_leaf_page.dart';
 import 'corn_yield_page_enhanced.dart';
 import 'pest_screen.dart';
 import '../../../disease_detection/corn_disease_detection_screen.dart';
+import 'leaf_diagnosis_page.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 class MainDashboardPage extends StatelessWidget {
@@ -326,6 +327,21 @@ class MainDashboardPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => const CaptureLeafPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _FeatureCard(
+                    imagePath: 'assets/dashboard/nutrient_analysis.png',
+                    title: 'Leaf Diagnosis',
+                    description:
+                        'Run nutrient and disease analysis together from one leaf image.',
+                    buttonText: 'Open Diagnosis',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LeafDiagnosisPage(),
                         ),
                       );
                     },

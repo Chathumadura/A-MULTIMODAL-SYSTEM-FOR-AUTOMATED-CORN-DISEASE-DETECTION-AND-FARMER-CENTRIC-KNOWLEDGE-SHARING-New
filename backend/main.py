@@ -25,6 +25,7 @@ from routes.nutrition_routes import router as nutrition_router
 from routes.fertilizer_routes import router as fertilizer_router
 from routes.pest_routes import router as pest_router
 from routes.disease_routes import router as disease_router
+from routes.leaf_diagnosis_routes import router as leaf_diagnosis_router
 from utils.inference import get_tf_diagnostics
 from utils.model_downloader import download_model_if_needed
 from utils.yield_model import get_yield_state
@@ -201,6 +202,7 @@ app.include_router(nutrition_router)   # /nutrition/predict
 app.include_router(fertilizer_router)  # /fertilizer/recommendations/{label}  /fertilizer/labels
 app.include_router(pest_router)        # /pest/  /pest/predict
 app.include_router(disease_router)     # /disease/  /disease/predict
+app.include_router(leaf_diagnosis_router)  # /leaf-diagnosis/predict
 
 
 # ---------------------------------------------------------------------------
