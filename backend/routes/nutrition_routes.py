@@ -1,24 +1,4 @@
-"""
-Nutrition (image-based nutrient diagnosis) routes.
 
-Prefix : /nutrition
-Endpoints:
-  POST /nutrition/predict  – upload a corn leaf image; returns:
-    - primary prediction + confidence
-    - top-3 predictions (multi-condition research support)
-    - all per-class probabilities
-    - Not_Corn guard message when applicable
-    - fertilizer recommendations
-    - inference_time_ms + model_version
-
-Validation (enforced here, before the service layer):
-  - Content-Type must be image/jpeg, image/jpg, or image/png
-  - File size must be <= 5 MB
-  - File must not be empty
-
-All error responses share the same JSON envelope:
-  { "error": "<code>", "detail": "<human message>" }
-"""
 
 import logging
 
@@ -43,28 +23,7 @@ def _error(status: int, code: str, detail: str) -> JSONResponse:
 
 @router.post("/predict")
 async def nutrition_predict(file: UploadFile = File(...)):
-    """
-    Upload a corn leaf image (JPEG or PNG, max 5 MB) and receive:
 
-    - **predicted_class** – top-1 label
-    - **confidence** – top-1 probability (0-1)
-    - **top_3** – top-3 labels with probabilities (for multi-condition research)
-    - **all_probabilities** – full softmax output keyed by class name
-    - **is_corn** – boolean guard
-    - **fertilizer_recommendations** – actionable advice (null when not applicable)
-    - **inference_time_ms** – model latency
-    - **model_version** – identifier of the loaded TF model
-
-    ### Error codes
-    | HTTP | error code         | Reason                            |
-    |------|--------------------|-----------------------------------|
-    | 400  | empty_file         | Zero-byte upload                  |
-    | 415  | unsupported_media  | Not JPEG/PNG                      |
-    | 413  | file_too_large     | Exceeds 5 MB                      |
-    | 422  | invalid_image      | Cannot be decoded / preprocessed  |
-    | 503  | model_unavailable  | TF model not loaded               |
-    | 500  | server_error       | Unexpected internal error         |
-    """
     logger.info("POST /nutrition/predict  file=%s  content_type=%s", file.filename, file.content_type)
 
     # ── 1. Content-type validation ────────────────────────────────────────────
