@@ -94,10 +94,10 @@ def get_yield_state() -> YieldModelState | None:
 # Human-readable feature label mappings
 # ---------------------------------------------------------------------------
 _BASE_LABELS: dict[str, str] = {
-    "farm_size_acres": "Farm size (acres)",
-    "seasonal_rainfall_mm": "Seasonal rainfall (mm)",
-    "fertilizer_kg_per_acre": "Fertilizer (kg/acre)",
-    "previous_yield_kg_per_acre": "Previous yield (kg/acre)",
+    "farm_size_acres": "Farm size",
+    "seasonal_rainfall_mm": "Seasonal rainfall",
+    "fertilizer_kg_per_acre": "Fertilizer",
+    "previous_yield_kg_per_acre": "Previous yield",
 }
 
 _CAT_LABELS: dict[str, str] = {
@@ -110,16 +110,13 @@ _CAT_LABELS: dict[str, str] = {
 
 
 def pretty_feature_name(raw_name: str) -> str:
-    """Convert an internal sklearn feature name to a human-readable label."""
+    """Convert an internal sklearn feature name to a base label."""
     if raw_name in _BASE_LABELS:
         return _BASE_LABELS[raw_name]
 
-    # One-hot encoded: e.g. "soil_type_Sandy" → "Soil type: Sandy"
     for cat_key, cat_label in _CAT_LABELS.items():
-        prefix = cat_key + "_"
-        if raw_name.startswith(prefix):
-            value = raw_name[len(prefix):].replace("_", " ")
-            return f"{cat_label}: {value}"
+        if raw_name == cat_key or raw_name.startswith(f"{cat_key}_"):
+            return cat_label
 
     return raw_name.replace("_", " ").capitalize()
 

@@ -38,13 +38,16 @@ class YieldRequest(BaseModel):
 
 
 class FeatureContribution(BaseModel):
-    raw_name: str
+    feature: str
     display_name: str
-    shap_value: float
+    impact_value: float
+    impact_percentage: float
+    direction: str
 
 
 class YieldExplainResponse(BaseModel):
     predicted_yield_kg_per_acre: float
+    base_yield: float
     top_contributing_features: list[FeatureContribution]
 
 

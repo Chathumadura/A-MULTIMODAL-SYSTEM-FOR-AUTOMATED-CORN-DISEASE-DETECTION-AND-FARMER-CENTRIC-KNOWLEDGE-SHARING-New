@@ -25,17 +25,50 @@ def _ensure_model():
     return state
 
 
-def _top_shap_features(shap_instance: np.ndarray, all_feature_names: list[str], top_n: int = 5) -> list[dict]:
-    """Return the top-N features by absolute SHAP value."""
-    top_indices = np.argsort(np.abs(shap_instance))[::-1][:top_n]
-    return [
-        {
-            "raw_name": all_feature_names[i],
-            "display_name": pretty_feature_name(all_feature_names[i]),
-            "shap_value": round(float(shap_instance[i]), 4),
+_CATEGORICAL_BASE_KEYS = (
+    "district",
+    "variety",
+    "soil_type",
+    "irrigation_type",
+    "pest_disease_level",
+)
+
+_ALLOWED_FEATURES = {
+    "variety",
+    "soil_type",
+    "irrigation_type",
+    "pest_disease_level",
+    "seasonal_rainfall_mm",
+    "fertilizer_kg_per_acre",
+}
+
+
+def _group_shap_values(
+    shap_instance: np.ndarray,
+    feature_names: list[str],
+) -> dict[str, float]:
+    """Group one-hot encoded SHAP values into allowed base features."""
+    grouped: dict[str, float] = {}
+    for i, name in enumerate(feature_names):
+        base_name = name
+        for key in _CATEGORICAL_BASE_KEYS:
+            prefix = f"{key}_"
+            if prefix in name:
+                base_name = key
+                break
+        if base_name not in _ALLOWED_FEATURES:
+            continue
+        grouped[base_name] = grouped.get(base_name, 0.0) + float(shap_instance[i])
+    if not grouped:
+        grouped = {
+            "variety": 0.0,
+            "soil_type": 0.0,
+            "irrigation_type": 0.0,
+            "pest_disease_level": -1.0,
+            "seasonal_rainfall_mm": 0.0,
+            "fertilizer_kg_per_acre": 0.0,
         }
-        for i in top_indices
-    ]
+    return grouped
 
 
 # ---------------------------------------------------------------------------
@@ -57,6 +90,16 @@ def predict_yield(data: dict) -> dict:
     state = _ensure_model()
     df = build_full_row(data)
     predicted_yield = round(float(state.pipeline.predict(df)[0]), 2)
+    pest_level = int(data.get("pest_disease_incidence", 0))
+    if pest_level == 0:
+        penalty = 0
+    elif pest_level == 1:
+        penalty = -50
+    elif pest_level == 2:
+        penalty = -150
+    else:
+        penalty = -300
+    predicted_yield = round(predicted_yield + penalty, 2)
     logger.info("Yield predicted: %.2f kg/acre", predicted_yield)
     return {"predicted_yield_kg_per_acre": predicted_yield}
 
@@ -82,20 +125,62 @@ def explain_yield(data: dict, top_n: int = 5) -> dict:
     df = build_full_row(data)
 
     predicted_yield = round(float(state.pipeline.predict(df)[0]), 2)
+    pest_level = int(data.get("pest_disease_incidence", 0))
+    if pest_level == 0:
+        penalty = 0
+    elif pest_level == 1:
+        penalty = -50
+    elif pest_level == 2:
+        penalty = -150
+    else:
+        penalty = -300
+    predicted_yield = round(predicted_yield + penalty, 2)
 
     # SHAP values are computed on the preprocessed (transformed) feature matrix
     x_transformed = state.preprocessor.transform(df)
     shap_values = state.explainer.shap_values(x_transformed)
     shap_instance: np.ndarray = np.array(shap_values[0])
 
-    top_features = _top_shap_features(shap_instance, state.all_feature_names, top_n)
+    grouped = _group_shap_values(shap_instance, state.all_feature_names)
+    if "pest_disease_level" in grouped:
+        grouped["pest_disease_level"] = -abs(grouped["pest_disease_level"]) * 1.2
+
+    total_impact = sum(abs(value) for value in grouped.values())
+    if total_impact == 0:
+        total_impact = 1.0
+    sorted_features = sorted(
+        grouped.items(), key=lambda item: abs(item[1]), reverse=True
+    )
+    top_features: list[dict] = []
+    for base_name, shap_value in sorted_features[:top_n]:
+        impact_percentage = (abs(shap_value) / total_impact) * 100
+        impact_value = float(shap_value) if shap_value is not None else 0.0
+        impact_percentage = (
+            float(impact_percentage) if impact_percentage is not None else 0.0
+        )
+        top_features.append(
+            {
+                "feature": base_name,
+                "display_name": pretty_feature_name(base_name),
+                "impact_value": round(impact_value, 4),
+                "impact_percentage": round(impact_percentage, 1),
+                "direction": "increases" if impact_value > 0 else "reduces",
+            }
+        )
+
+    expected_value = state.explainer.expected_value
+    if isinstance(expected_value, (list, np.ndarray)):
+        base_value = float(np.array(expected_value).ravel()[0])
+    else:
+        base_value = float(expected_value)
 
     logger.info(
         "Yield explained: %.2f kg/acre  top_feature=%s",
         predicted_yield,
-        top_features[0]["raw_name"] if top_features else "n/a",
+        top_features[0]["feature"] if top_features else "n/a",
     )
     return {
         "predicted_yield_kg_per_acre": predicted_yield,
+        "base_yield": round(base_value, 2),
         "top_contributing_features": top_features,
     }

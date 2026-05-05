@@ -164,15 +164,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
         }
 
         setState(() {
-          _result = YieldResult.fromJson(
-            data,
-            selectedCats: {
-              "District": _district,
-              "Soil type": _soilType ?? "",
-              "Irrigation type": _irrigationType ?? "",
-              "Variety": _variety ?? "",
-            },
-          );
+          _result = YieldResult.fromJson(data);
         });
 
         // Trigger result animation
@@ -1247,10 +1239,9 @@ class _ResultCardState extends State<_ResultCard>
     return Colors.grey.shade700;
   }
 
-  String _effectText(double shap) {
-    if (shap > 0) return widget.loc.increasesYield;
-    if (shap < 0) return widget.loc.reducesYield;
-    return widget.loc.noChange;
+  String _effectText(String direction) {
+    if (direction == "increases") return widget.loc.increasesYield;
+    return widget.loc.reducesYield;
   }
 
   Future<void> _startTypingAnimation(String fullText) async {
@@ -1471,16 +1462,9 @@ class _ResultCardState extends State<_ResultCard>
 
     final topFeature = widget.result.topFeatures.first;
     final featureName = topFeature.displayName;
-    final impact = topFeature.shapValue;
+    final impact = topFeature.impactValue;
     final isPositive = impact > 0;
-
-    // Calculate total impact percentage
-    final totalAbsShap = widget.result.topFeatures
-        .map((f) => f.shapValue.abs())
-        .fold<double>(0, (sum, val) => sum + val);
-    final percentage = totalAbsShap > 0
-        ? ((impact.abs() / totalAbsShap) * 100).round()
-        : 0;
+    final percentage = topFeature.impactPercentage.round();
 
     String explanation;
     if (isEn) {
@@ -1498,13 +1482,11 @@ class _ResultCardState extends State<_ResultCard>
       // Add second factor if exists
       if (widget.result.topFeatures.length > 1) {
         final secondFeature = widget.result.topFeatures[1];
-        final secondImpact = secondFeature.shapValue;
-        final secondPercentage = totalAbsShap > 0
-            ? ((secondImpact.abs() / totalAbsShap) * 100).round()
-            : 0;
+        final secondImpact = secondFeature.impactValue;
+        final secondPercentage = secondFeature.impactPercentage.round();
 
         if (secondImpact > 0) {
-          explanation +=
+            explanation +=
               "${secondFeature.displayName} also helps, contributing $secondPercentage%. ";
         } else {
           explanation +=
@@ -1514,7 +1496,7 @@ class _ResultCardState extends State<_ResultCard>
 
       // Add recommendation
       if (!isPositive &&
-          widget.result.topFeatures.any((f) => f.shapValue < 0)) {
+          widget.result.topFeatures.any((f) => f.impactValue < 0)) {
         explanation +=
             "Consider improving the limiting factors to increase your yield.";
       } else {
@@ -1540,6 +1522,13 @@ class _ResultCardState extends State<_ResultCard>
       } else {
         explanation += "ඔබේ වර්තමාන ක්‍රම හොඳ අස්වැන්නක් සඳහා සහාය වේ.";
       }
+    }
+
+    if (widget.result.baseYield != null) {
+      final baseValue = widget.result.baseYield!.toStringAsFixed(0);
+      explanation += isEn
+          ? " Baseline yield for similar conditions is about $baseValue kg per acre."
+          : " සමාන තත්ත්වයන් සඳහා මූලික අස්වැන්න අක්කරයකට කිලෝග්‍රෑම් $baseValue පමණ වේ.";
     }
 
     return explanation;
@@ -1680,14 +1669,6 @@ class _ResultCardState extends State<_ResultCard>
             final index = entry.key;
             final f = entry.value;
 
-            // Calculate percentage for this feature
-            final totalAbsShap = widget.result.topFeatures
-                .map((feature) => feature.shapValue.abs())
-                .fold<double>(0, (sum, val) => sum + val);
-            final percentage = totalAbsShap > 0
-                ? ((f.shapValue.abs() / totalAbsShap) * 100).toStringAsFixed(1)
-                : "0.0";
-
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: Container(
@@ -1722,20 +1703,20 @@ class _ResultCardState extends State<_ResultCard>
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: _pillColor(f.shapValue),
+                            color: _pillColor(f.impactValue),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: _pillTextColor(
-                                f.shapValue,
+                                f.impactValue,
                               ).withOpacity(0.3),
                             ),
                           ),
                           child: Text(
-                            _effectText(f.shapValue),
+                            _effectText(f.direction),
                             style: GoogleFonts.poppins(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
-                              color: _pillTextColor(f.shapValue),
+                              color: _pillTextColor(f.impactValue),
                             ),
                           ),
                         ),
@@ -1743,7 +1724,7 @@ class _ResultCardState extends State<_ResultCard>
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Impact: $percentage%",
+                      "Impact: ${f.impactPercentage.toStringAsFixed(1)}%",
                       style: GoogleFonts.poppins(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -1752,8 +1733,9 @@ class _ResultCardState extends State<_ResultCard>
                     ),
                     const SizedBox(height: 12),
                     _ContributionBar(
-                      value: f.shapValue,
-                      percentage: percentage,
+                      value: f.impactValue,
+                      percentage: f.impactPercentage,
+                      direction: f.direction,
                       index: index,
                     ),
                   ],
@@ -1869,13 +1851,8 @@ class _ResultCardState extends State<_ResultCard>
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final feature =
                           widget.result.topFeatures[group.x.toInt()];
-                      final totalAbsShap = widget.result.topFeatures
-                          .map((f) => f.shapValue.abs())
-                          .fold<double>(0, (sum, val) => sum + val);
-                      final percentage = totalAbsShap > 0
-                          ? ((feature.shapValue.abs() / totalAbsShap) * 100)
-                                .toStringAsFixed(1)
-                          : "0.0";
+                      final percentage =
+                          feature.impactPercentage.toStringAsFixed(1);
                       return BarTooltipItem(
                         '${widget.loc.translate(feature.displayName)}\n$percentage%',
                         GoogleFonts.poppins(
@@ -1895,11 +1872,10 @@ class _ResultCardState extends State<_ResultCard>
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() >= 0 &&
                             value.toInt() < widget.result.topFeatures.length) {
-                          final name = widget
-                              .result
-                              .topFeatures[value.toInt()]
-                              .displayName
-                              .split(':')[0];
+                              final name = widget
+                                .result
+                                .topFeatures[value.toInt()]
+                                .displayName;
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Transform.rotate(
@@ -1965,16 +1941,11 @@ class _ResultCardState extends State<_ResultCard>
                   entry,
                 ) {
                   final index = entry.key;
-                  final feature = entry.value;
-                  final totalAbsShap = widget.result.topFeatures
-                      .map((f) => f.shapValue.abs())
-                      .fold<double>(0, (sum, val) => sum + val);
-                  final percentage = totalAbsShap > 0
-                      ? (feature.shapValue.abs() / totalAbsShap) * 100
-                      : 0.0;
-                  final normalizedValue = feature.shapValue >= 0
-                      ? percentage
-                      : -percentage;
+                    final feature = entry.value;
+                    final percentage = feature.impactPercentage;
+                      final normalizedValue = feature.direction == "increases"
+                        ? percentage
+                        : -percentage;
 
                   return BarChartGroupData(
                     x: index,
@@ -1982,7 +1953,7 @@ class _ResultCardState extends State<_ResultCard>
                       BarChartRodData(
                         toY: normalizedValue,
                         gradient: LinearGradient(
-                          colors: feature.shapValue >= 0
+                          colors: feature.direction == "increases"
                               ? [Colors.green.shade400, Colors.green.shade600]
                               : [Colors.red.shade400, Colors.red.shade600],
                           begin: Alignment.bottomCenter,
@@ -2054,11 +2025,13 @@ class _ContributionBar extends StatefulWidget {
   const _ContributionBar({
     required this.value,
     required this.percentage,
+    required this.direction,
     required this.index,
   });
 
   final double value;
-  final String percentage;
+  final double percentage;
+  final String direction;
   final int index;
 
   @override
@@ -2115,16 +2088,17 @@ class _ContributionBarState extends State<_ContributionBar>
 
   @override
   Widget build(BuildContext context) {
-    final percentValue = double.tryParse(widget.percentage) ?? 0.0;
-    final ratio = percentValue / 100.0;
-    final isPositive = widget.value >= 0;
+    final ratio = widget.percentage / 100.0;
+    final visualRatio = ratio > 0 && ratio < 0.05 ? 0.05 : ratio;
+    final isPositive = widget.direction == "increases";
 
     return AnimatedBuilder(
       animation: _widthAnimation,
       builder: (context, child) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            final width = constraints.maxWidth * ratio * _widthAnimation.value;
+            final width =
+              constraints.maxWidth * visualRatio * _widthAnimation.value;
             return Stack(
               children: [
                 Container(
@@ -2144,7 +2118,7 @@ class _ContributionBarState extends State<_ContributionBar>
                       width: width,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: isPositive
+                            colors: isPositive
                               ? [Colors.green.shade400, Colors.green.shade600]
                               : [Colors.red.shade400, Colors.red.shade600],
                         ),
@@ -2309,113 +2283,53 @@ class _ErrorCard extends StatelessWidget {
 }
 
 class YieldResult {
-  YieldResult({required this.predictedYield, required this.topFeatures});
+  YieldResult({
+    required this.predictedYield,
+    required this.topFeatures,
+    required this.baseYield,
+  });
 
   final double predictedYield;
+  final double? baseYield;
   final List<FeatureContribution> topFeatures;
 
-  factory YieldResult.fromJson(
-    Map<String, dynamic> json, {
-    required Map<String, String> selectedCats,
-  }) {
+  factory YieldResult.fromJson(Map<String, dynamic> json) {
     final featuresJson =
         json["top_contributing_features"] as List<dynamic>? ?? [];
     final rawFeatures = featuresJson
         .map((e) => FeatureContribution.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    // Group categorical features (one-hot encoded)
-    final grouped = _groupCategoricalFeatures(rawFeatures, selectedCats);
-
     return YieldResult(
       predictedYield: (json["predicted_yield_kg_per_acre"] as num).toDouble(),
-      topFeatures: grouped,
+      baseYield: (json["base_yield"] as num?)?.toDouble(),
+      topFeatures: rawFeatures,
     );
-  }
-
-  static List<FeatureContribution> _groupCategoricalFeatures(
-    List<FeatureContribution> features,
-    Map<String, String> selectedCats,
-  ) {
-    final Map<String, List<FeatureContribution>> categoricalGroups = {};
-    final List<FeatureContribution> numericFeatures = [];
-
-    // Categorical prefixes to group
-    final categoricalPrefixes = [
-      'District:',
-      'Soil type:',
-      'Agro-ecological zone:',
-      'Irrigation type:',
-      'Variety:',
-    ];
-
-    for (final feature in features) {
-      bool isCategorical = false;
-
-      for (final prefix in categoricalPrefixes) {
-        if (feature.displayName.startsWith(prefix)) {
-          // Extract base name (e.g., "Soil type")
-          final baseName = prefix.replaceAll(':', '');
-
-          if (!categoricalGroups.containsKey(baseName)) {
-            categoricalGroups[baseName] = [];
-          }
-          categoricalGroups[baseName]!.add(feature);
-          isCategorical = true;
-          break;
-        }
-      }
-
-      if (!isCategorical) {
-        numericFeatures.add(feature);
-      }
-    }
-
-    // Process grouped categorical features
-    final List<FeatureContribution> result = [];
-
-    for (final entry in categoricalGroups.entries) {
-      final baseName = entry.key;
-      final group = entry.value;
-
-      if (group.isEmpty) continue;
-
-      final selectedValue = selectedCats[baseName];
-
-      // Total impact for the whole categorical feature
-      final totalShap = group.fold<double>(0, (sum, f) => sum + f.shapValue);
-
-      // ALWAYS show the user's selected value in the UI
-      final labelValue = (selectedValue != null && selectedValue.isNotEmpty)
-          ? selectedValue
-          : group.first.displayName.split(': ').last; // fallback
-
-      result.add(
-        FeatureContribution(
-          displayName: '$baseName: $labelValue',
-          shapValue: totalShap,
-        ),
-      );
-    }
-
-    // Combine and sort by absolute SHAP value
-    result.addAll(numericFeatures);
-    result.sort((a, b) => b.shapValue.abs().compareTo(a.shapValue.abs()));
-
-    return result;
   }
 }
 
 class FeatureContribution {
-  FeatureContribution({required this.displayName, required this.shapValue});
+  FeatureContribution({
+    required this.feature,
+    required this.displayName,
+    required this.impactValue,
+    required this.impactPercentage,
+    required this.direction,
+  });
 
+  final String feature;
   final String displayName;
-  final double shapValue;
+  final double impactValue;
+  final double impactPercentage;
+  final String direction;
 
   factory FeatureContribution.fromJson(Map<String, dynamic> json) {
     return FeatureContribution(
+      feature: json["feature"] as String,
       displayName: json["display_name"] as String,
-      shapValue: (json["shap_value"] as num).toDouble(),
+      impactValue: (json["impact_value"] as num).toDouble(),
+      impactPercentage: (json["impact_percentage"] as num).toDouble(),
+      direction: json["direction"] as String,
     );
   }
 }
