@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/api/api_client.dart';
 import '../../../../core/localization/app_localizations.dart';
 import 'nutrient_prediction_page.dart';
+import '../../../disease_detection/corn_disease_detection_screen.dart';
 
 String? _readString(Map<String, dynamic> map, List<String> keys) {
   for (final key in keys) {
@@ -125,22 +126,52 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
 
   Future<void> _showDiagnosisPopup(Map<String, dynamic> result) async {
     if (!mounted) return;
-
     final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
-    final issue = _readString(result, ['final_prediction']) ?? 'Unknown';
-    final confidence = _confidencePercent(result['confidence']);
-    final message = _readString(result, ['message']) ?? '';
     final accentColor = _colorForType(type);
-    final label = _labelForDiagnosisCategory(type);
-    final nutrition = _asMap(result['nutrition_result']);
-    final disease = _asMap(result['disease_result']);
+
+    String titleSinhala;
+    String messageSinhala;
+    String buttonLabel;
+
+    switch (type) {
+      case 'nutrient_deficiency':
+        titleSinhala = 'පෝෂක ඌනතාවයක් හඳුනාගෙන ඇත';
+        messageSinhala =
+            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ පෝෂක ඌනතාවයකට අදාල විය හැකිය. වැඩිදුර විස්තර, probability values සහ පොහොර නිර්දේශ ලබා ගැනීමට Nutrient Prediction section එකට යන්න.';
+        buttonLabel = 'Nutrient විස්තර බලන්න';
+        break;
+      case 'disease':
+        titleSinhala = 'රෝග ලක්ෂණයක් හඳුනාගෙන ඇත';
+        messageSinhala =
+            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ රෝග තත්ත්වයකට අදාල විය හැකිය. වැඩිදුර විස්තර සහ රෝගයට අදාල උපදෙස් ලබා ගැනීමට Disease Detection section එකට යන්න.';
+        buttonLabel = 'Disease විස්තර බලන්න';
+        break;
+      case 'healthy':
+        titleSinhala = 'පත්‍රය සෞඛ්‍ය සම්පන්න ලෙස පෙනේ';
+        messageSinhala =
+            'මෙම රූපයෙන් ප්‍රබල පෝෂක ඌනතාවයක් හෝ රෝග ලක්ෂණයක් හඳුනාගැනීමට නොහැකි විය.';
+        buttonLabel = 'හරි';
+        break;
+      case 'invalid_image':
+        titleSinhala = 'වලංගු බඩඉරිඟු පත්‍රයක් නොවේ';
+        messageSinhala = 'කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍රයක රූපයක් upload කරන්න.';
+        buttonLabel = 'නැවත උත්සාහ කරන්න';
+        break;
+      case 'uncertain':
+      default:
+        titleSinhala = 'ප්‍රතිඵලය නිශ්චිත නැත';
+        messageSinhala =
+            'මෙම රූපයෙන් පෝෂක ඌනතාවයක්ද රෝග තත්ත්වයක්ද යන්න නිශ්චිතව තීරණය කළ නොහැක. කරුණාකර වැඩි ආලෝකයක් සහිත පැහැදිලි පත්‍ර රූපයක් නැවත upload කරන්න.';
+        buttonLabel = 'නැවත උත්සාහ කරන්න';
+        break;
+    }
 
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (sheetContext) {
         return Padding(
@@ -154,70 +185,35 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: Container(
+                  width: 48,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               Text(
-                'Diagnosis Found',
+                titleSinhala,
+                textAlign: TextAlign.left,
                 style: GoogleFonts.poppins(
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.w800,
+                  color: accentColor,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                messageSinhala,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  height: 1.5,
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: accentColor.withOpacity(0.20)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: accentColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Detected: $issue',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    if (confidence != null) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        'Confidence: ${confidence.toStringAsFixed(1)}%',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              if (message.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  message,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    height: 1.5,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-              const SizedBox(height: 12),
-              _buildDiagnosisExplanation(type, nutrition, disease),
               const SizedBox(height: 18),
               Row(
                 children: [
@@ -229,11 +225,11 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                         side: const BorderSide(color: Color(0xFFDDD8D8)),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Text(
-                        'Close',
+                        'ආපසු',
                         style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -245,7 +241,38 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                         Navigator.of(sheetContext).pop();
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (!mounted) return;
-                          _openResultDetails(result);
+                          // Handle navigation per final diagnosis type
+                          final typeLocal = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
+                          if (typeLocal == 'nutrient_deficiency') {
+                            final nutritionResult = Map<String, dynamic>.from(
+                              _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
+                            );
+                            nutritionResult['fertilizer_recommendations'] =
+                                result['fertilizer_recommendations'];
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => NutrientPredictionPage(
+                                  imageFile: _selectedImage,
+                                  precomputedResult: nutritionResult,
+                                  skipApiCall: true,
+                                ),
+                              ),
+                            );
+                          } else if (typeLocal == 'disease') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const CornDiseaseDetectionScreen(),
+                              ),
+                            );
+                          } else if (typeLocal == 'healthy') {
+                            // nothing else needed; simple OK button already closed
+                          } else {
+                            // invalid_image or uncertain: clear feedback so user can retry
+                            _clearFeedback();
+                          }
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -253,17 +280,18 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Text(
-                        'View Details',
+                        buttonLabel,
                         style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
             ],
           ),
         );
