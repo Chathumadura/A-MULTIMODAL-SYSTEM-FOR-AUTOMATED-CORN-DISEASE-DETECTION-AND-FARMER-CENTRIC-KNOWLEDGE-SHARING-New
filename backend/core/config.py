@@ -88,7 +88,7 @@ class _Settings:
     # ------------------------------------------------------------------
     DISEASE_MODEL_PATH: Path = _resolve_path(
         "DISEASE_MODEL_PATH",
-        "models/corn_resnet50_model.keras",
+        "models/disease_model.tflite",
     )
 
 

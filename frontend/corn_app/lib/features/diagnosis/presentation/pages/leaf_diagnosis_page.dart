@@ -323,7 +323,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Nutrition: $nutLabel${nutConf != null ? " (${nutConf.toStringAsFixed(1)}%)" : ""}',
+                  'Backend final diagnosis: nutrient deficiency',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: Colors.black87,
@@ -331,7 +331,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Disease: Healthy${disConf != null ? " (${disConf.toStringAsFixed(1)}%)" : ""}',
+                  'Nutrition model: $nutLabel${nutConf != null ? " (${nutConf.toStringAsFixed(1)}%)" : ""}',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: Colors.black87,
@@ -339,7 +339,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'The nutrient model showed stronger confidence, so this is classified as a nutrient deficiency.',
+                  'The backend combined the model outputs and returned nutrient deficiency as the final diagnosis.',
                   style: GoogleFonts.poppins(
                     fontSize: 11.5,
                     height: 1.4,
@@ -381,7 +381,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Disease: $disLabel${disConf != null ? " (${disConf.toStringAsFixed(1)}%)" : ""}',
+                  'Backend final diagnosis: disease',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: Colors.black87,
@@ -389,7 +389,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Nutrition: Healthy${nutConf != null ? " (${nutConf.toStringAsFixed(1)}%)" : ""}',
+                  'Disease model: $disLabel${disConf != null ? " (${disConf.toStringAsFixed(1)}%)" : ""}',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: Colors.black87,
@@ -397,7 +397,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'The disease model showed stronger confidence, so this is classified as a disease-related issue.',
+                  'The backend combined the model outputs and returned disease as the final diagnosis.',
                   style: GoogleFonts.poppins(
                     fontSize: 11.5,
                     height: 1.4,
@@ -474,10 +474,8 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
       final nutritionResult = Map<String, dynamic>.from(
         _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
       );
-      final fertilizerRecs = result['fertilizer_recommendations'];
-      if (fertilizerRecs != null) {
-        nutritionResult['fertilizer_recommendations'] = fertilizerRecs;
-      }
+      nutritionResult['fertilizer_recommendations'] =
+          result['fertilizer_recommendations'];
 
       if (!mounted) return;
       Navigator.push(
