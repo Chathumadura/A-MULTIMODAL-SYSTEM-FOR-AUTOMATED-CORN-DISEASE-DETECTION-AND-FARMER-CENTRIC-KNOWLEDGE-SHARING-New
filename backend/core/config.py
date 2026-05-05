@@ -38,7 +38,7 @@ class _Settings:
     # ------------------------------------------------------------------
     # Server
     # ------------------------------------------------------------------
-    HOST: str = os.getenv("HOST", "127.0.0.1")
+    HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", "8000"))
 
     # ------------------------------------------------------------------
@@ -61,7 +61,16 @@ class _Settings:
     # ------------------------------------------------------------------
     TF_MODEL_PATH: Path = _resolve_path(
         "TF_MODEL_PATH",
-        "models/corn_final_model.h5",
+        "models/corn_final_model.tflite",
+    )
+
+    # ------------------------------------------------------------------
+    # TensorFlow model – pest detection
+    # Set PEST_MODEL_PATH in your .env or on the Render dashboard.
+    # ------------------------------------------------------------------
+    PEST_MODEL_PATH: Path = _resolve_path(
+        "PEST_MODEL_PATH",
+        "models/pest_model.tflite",
     )
 
     # ------------------------------------------------------------------
@@ -70,7 +79,16 @@ class _Settings:
     # ------------------------------------------------------------------
     YIELD_MODEL_PATH: Path = _resolve_path(
         "YIELD_MODEL_PATH",
-        "corn_yield_model.pkl",
+        "models/corn_yield_model.pkl",
+    )
+
+    # ------------------------------------------------------------------
+    # TensorFlow model – corn disease detection (.tflite FlatBuffer)
+    # Set DISEASE_MODEL_PATH in your .env or on the Render dashboard.
+    # ------------------------------------------------------------------
+    DISEASE_MODEL_PATH: Path = _resolve_path(
+        "DISEASE_MODEL_PATH",
+        "models/disease_model.tflite",
     )
 
 

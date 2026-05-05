@@ -8,10 +8,14 @@ Usage (called automatically by render.yaml buildCommand):
     python scripts/download_models.py
 
 Environment variables (set on the Render dashboard):
-    TF_MODEL_URL      – direct download URL for the TF .h5 file
-    YIELD_MODEL_URL   – direct download URL for the sklearn .pkl file
+    TF_MODEL_URL      – direct download URL for the TFLite nutrition model (.tflite)
+    PEST_MODEL_URL    – direct download URL for the TFLite pest model (.tflite)
+    YIELD_MODEL_URL   – direct download URL for the sklearn yield model (.pkl)
+    DISEASE_MODEL_URL – direct download URL for the TFLite disease model (.tflite)
     TF_MODEL_PATH     – (optional) override destination path
+    PEST_MODEL_PATH   – (optional) override destination path
     YIELD_MODEL_PATH  – (optional) override destination path
+    DISEASE_MODEL_PATH – (optional) override destination path
 
 If a URL variable is not set the script skips that file silently.
 If the destination already contains a valid binary (not an LFS pointer,
@@ -35,11 +39,14 @@ import urllib.request
 from pathlib import Path
 
 # ── constants ────────────────────────────────────────────────────────────────
-BASE_DIR    = Path(__file__).resolve().parent.parent   # backend/
-CHUNK       = 8 * 1024 * 1024                          # 8 MB chunks
-MIN_VALID   = 1 * 1024 * 1024                          # 1 MB minimum for "real" file
-LFS_SIG     = b"version https://git-lfs"
-HDF5_MAGIC  = b"\x89HDF\r\n\x1a\n"
+BASE_DIR       = Path(__file__).resolve().parent.parent   # backend/
+CHUNK          = 8 * 1024 * 1024                          # 8 MB chunks
+MIN_VALID      = 1 * 1024 * 1024                          # 1 MB – default for TFLite models
+MIN_VALID_SMALL = 32 * 1024                               # 32 KB – sklearn pipelines (~70 KB)
+LFS_SIG        = b"version https://git-lfs"
+# Note: all model files are TFLite FlatBuffers (.tflite) or pickle (.pkl).
+# TFLite files have no universal magic-byte header – validation checks only
+# the LFS pointer signature and minimum file size.
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -58,17 +65,17 @@ def _rewrite_url(url: str) -> str:
     return url
 
 
-def _is_valid(path: Path) -> bool:
+def _is_valid(path: Path, min_valid: int = MIN_VALID) -> bool:
     """Return True if the file at *path* looks like a real binary (not LFS)."""
     if not path.exists():
         return False
-    if path.stat().st_size < MIN_VALID:
+    if path.stat().st_size < min_valid:
         return False
     header = path.read_bytes()[:len(LFS_SIG)]
     return not header.startswith(LFS_SIG)
 
 
-def _download(url: str, dest: Path) -> None:
+def _download(url: str, dest: Path, min_valid: int = MIN_VALID) -> None:
     """Stream-download *url* to *dest*, showing a progress indicator."""
     url = _rewrite_url(url)
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -98,7 +105,7 @@ def _download(url: str, dest: Path) -> None:
 
         # Validate before replacing
         downloaded_size = tmp.stat().st_size
-        if downloaded_size < MIN_VALID:
+        if downloaded_size < min_valid:
             content_preview = tmp.read_bytes()[:200]
             tmp.unlink(missing_ok=True)
             raise RuntimeError(
@@ -109,7 +116,7 @@ def _download(url: str, dest: Path) -> None:
             )
 
         tmp.rename(dest)
-        print(f"  ✓ Saved {dest.stat().st_size / 1_000_000:.1f} MB → {dest.name}")
+        print(f"  ✓ Saved {dest.stat().st_size / 1_000_000:.2f} MB → {dest.name}")
 
     except Exception as exc:
         tmp.unlink(missing_ok=True)
@@ -130,19 +137,33 @@ def main() -> int:
     targets = [
         (
             "TF_MODEL_URL",
-            _resolve_path("TF_MODEL_PATH", "models/resnet50_multi_nutrient_finetuned.h5"),
-            "TF nutrition model (.h5)",
+            _resolve_path("TF_MODEL_PATH", "models/corn_final_model.tflite"),
+            "TF nutrition model (.tflite)",
+            MIN_VALID,
+        ),
+        (
+            "PEST_MODEL_URL",
+            _resolve_path("PEST_MODEL_PATH", "models/pest_model.tflite"),
+            "Pest detection model (.tflite)",
+            MIN_VALID,
         ),
         (
             "YIELD_MODEL_URL",
-            _resolve_path("YIELD_MODEL_PATH", "corn_yield_model.pkl"),
-            "Yield model (.pkl)",
+            _resolve_path("YIELD_MODEL_PATH", "models/corn_yield_model.pkl"),
+            "Yield sklearn pipeline (.pkl)",
+            MIN_VALID_SMALL,   # sklearn joblib pipeline is ~70 KB, not MB-scale
+        ),
+        (
+            "DISEASE_MODEL_URL",
+            _resolve_path("DISEASE_MODEL_PATH", "models/disease_model.tflite"),
+            "Disease detection model (.tflite)",
+            MIN_VALID,
         ),
     ]
 
     errors: list[str] = []
 
-    for url_env, dest, label in targets:
+    for url_env, dest, label, min_valid in targets:
         url = os.getenv(url_env, "").strip()
         print(f"\n{'─'*60}")
         print(f"  {label}")
@@ -155,8 +176,8 @@ def main() -> int:
             url_display = url
         print(f"  URL env var : {url_env} = {url_display}")
 
-        if _is_valid(dest):
-            print(f"  ✓ Already present and valid ({dest.stat().st_size / 1_000_000:.1f} MB) – skipping download.")
+        if _is_valid(dest, min_valid=min_valid):
+            print(f"  ✓ Already present and valid ({dest.stat().st_size:,} bytes) – skipping download.")
             continue
 
         if not url:
@@ -165,7 +186,7 @@ def main() -> int:
             continue
 
         try:
-            _download(url, dest)
+            _download(url, dest, min_valid=min_valid)
         except RuntimeError as exc:
             print(f"  ✗ ERROR: {exc}")
             errors.append(f"{label}: {exc}")

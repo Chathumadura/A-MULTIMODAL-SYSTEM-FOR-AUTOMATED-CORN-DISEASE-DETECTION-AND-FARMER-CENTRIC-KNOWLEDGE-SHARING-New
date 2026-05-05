@@ -33,8 +33,6 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
   final _fertilizerController = TextEditingController(text: "85");
   final _prevYieldController = TextEditingController(text: "2589");
 
-  final List<String> _districts = ["Anuradhapura"];
-
   final List<String> _varieties = ["Hybrid_A", "Hybrid_B", "OPV_Local"];
 
   final List<String> _soilTypes = ["Sandy", "Loam", "Clay"];
@@ -1159,7 +1157,6 @@ class _ResultCard extends StatefulWidget {
 
 class _ResultCardState extends State<_ResultCard>
     with SingleTickerProviderStateMixin {
-  bool _showExplanation = false;
   String _typedText = "";
   bool _isTyping = false;
 
@@ -1475,10 +1472,6 @@ class _ResultCardState extends State<_ResultCard>
 
   @override
   Widget build(BuildContext context) {
-    final maxAbs = widget.result.topFeatures
-        .map((f) => f.shapValue.abs())
-        .fold<double>(0, max);
-
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(

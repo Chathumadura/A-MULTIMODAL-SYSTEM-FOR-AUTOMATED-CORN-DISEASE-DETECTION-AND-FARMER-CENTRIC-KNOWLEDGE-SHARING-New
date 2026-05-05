@@ -19,7 +19,7 @@ from __future__ import annotations
 import logging
 
 from utils.fertilizer_recommendations import get_fertilizer_recommendations
-from utils.inference import get_model, predict_nutrient_status
+from utils.inference import get_load_error, get_model, predict_nutrient_status
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,9 @@ def run_nutrition_diagnosis(file_bytes: bytes) -> dict:
         ValueError:   Image could not be decoded (route converts to HTTP 422).
     """
     if get_model() is None:
-        raise RuntimeError("TF model is not available.")
+        reason = get_load_error() or "model file may be missing or failed to load"
+        logger.error("[nutrition] Model not available for diagnosis. Reason: %s", reason)
+        raise RuntimeError(f"TF model is not available. Reason: {reason}")
 
     # predict_nutrient_status raises ValueError on bad image / RuntimeError on missing model
     result = predict_nutrient_status(file_bytes)

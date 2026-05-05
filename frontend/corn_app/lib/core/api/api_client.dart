@@ -73,6 +73,9 @@ class ApiClient {
   ) async {
     final streamed = await request.send().timeout(_uploadTimeout);
     final response = await http.Response.fromStream(streamed);
+    debugPrint(
+      '🌐 [ApiClient] RESPONSE → $label status: ${response.statusCode}',
+    );
     return _decode(response, label);
   }
 
@@ -160,6 +163,50 @@ class ApiClient {
       ),
     );
     return _sendMultipart(request, 'POST /pest/predict');
+  }
+
+  /// POST /disease/predict  — send [imageFile] for disease detection.
+  Future<Map<String, dynamic>> uploadImageForDiseaseDetection(
+    File imageFile,
+  ) async {
+    final request = http.MultipartRequest('POST', _uri('/disease/predict'));
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'file',
+        imageFile.path,
+        contentType: MediaType.parse(
+          imageFile.path.toLowerCase().endsWith('.png')
+              ? 'image/png'
+              : 'image/jpeg',
+        ),
+      ),
+    );
+    return _sendMultipart(request, 'POST /disease/predict');
+  }
+
+  /// POST /leaf-diagnosis/predict — combined nutrition + disease diagnosis.
+  Future<Map<String, dynamic>> predictLeafDiagnosis(File imageFile) async {
+    final request = http.MultipartRequest(
+      'POST',
+      _uri('/leaf-diagnosis/predict'),
+    );
+
+    final ext = imageFile.path.split('.').last.toLowerCase();
+    final mime = switch (ext) {
+      'png' => 'image/png',
+      'jpg' || 'jpeg' => 'image/jpeg',
+      _ => 'application/octet-stream',
+    };
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'file',
+        imageFile.path,
+        contentType: MediaType.parse(mime),
+      ),
+    );
+
+    return _sendMultipart(request, 'POST /leaf-diagnosis/predict');
   }
 
   /// POST /nutrition/predict — Web-safe variant that accepts raw bytes.
