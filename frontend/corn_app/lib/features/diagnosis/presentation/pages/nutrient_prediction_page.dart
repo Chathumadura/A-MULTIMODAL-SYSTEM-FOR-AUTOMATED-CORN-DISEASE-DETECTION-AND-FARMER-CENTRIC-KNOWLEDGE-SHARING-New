@@ -8,7 +8,17 @@ import '../../../../core/localization/app_localizations.dart';
 
 class NutrientPredictionPage extends StatefulWidget {
   final String? initialImagePath;
-  const NutrientPredictionPage({super.key, this.initialImagePath});
+  final File? imageFile;
+  final Map<String, dynamic>? precomputedResult;
+  final bool skipApiCall;
+
+  const NutrientPredictionPage({
+    super.key,
+    this.initialImagePath,
+    this.imageFile,
+    this.precomputedResult,
+    this.skipApiCall = false,
+  });
 
   @override
   State<NutrientPredictionPage> createState() => _NutrientPredictionPageState();
@@ -34,11 +44,50 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    if (widget.initialImagePath != null) {
+    if (widget.imageFile != null) {
+      _selectedImage = widget.imageFile;
+    } else if (widget.initialImagePath != null) {
       _selectedImage = File(widget.initialImagePath!);
+    }
+
+    if (widget.precomputedResult != null && widget.skipApiCall) {
+      // Apply precomputed result from Leaf Diagnosis
+      _applyPrecomputedResult(widget.precomputedResult!);
+      _animationController.forward(from: 0.0);
+    } else if (widget.initialImagePath != null && !widget.skipApiCall) {
       // auto-run analysis when arriving from capture screen
       _analyzeImage();
+    } else if (_selectedImage != null) {
+      _animationController.forward(from: 0.0);
     }
+  }
+
+  void _applyPrecomputedResult(Map<String, dynamic> data) {
+    _predictedClass = data['predicted_class']?.toString();
+    _confidence = _asDouble(data['confidence']);
+
+    final recs = data['fertilizer_recommendations'];
+    if (recs is Map<String, dynamic>) {
+      _fertilizerRecommendations = recs;
+    } else if (recs is Map) {
+      _fertilizerRecommendations = Map<String, dynamic>.from(recs);
+    }
+
+    _allProbabilities = _parseProbabilities(data['all_probabilities']);
+  }
+
+  double _asDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    return double.tryParse(value?.toString() ?? '') ?? 0.0;
+  }
+
+  Map<String, double>? _parseProbabilities(dynamic raw) {
+    if (raw is! Map) return null;
+    return Map<String, double>.fromEntries(
+      raw.entries.map(
+        (entry) => MapEntry(entry.key.toString(), _asDouble(entry.value)),
+      ),
+    );
   }
 
   @override
