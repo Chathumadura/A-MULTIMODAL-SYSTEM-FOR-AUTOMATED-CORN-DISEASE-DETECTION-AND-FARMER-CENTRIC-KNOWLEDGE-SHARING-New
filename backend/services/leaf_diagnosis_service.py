@@ -99,16 +99,16 @@ def predict_disease_from_bytes(file_bytes: bytes) -> dict:
     return result
 
 
-def _healthy_response(nutrition_result: dict, disease_result: dict) -> dict:
-    confidence = round(
-        min(float(nutrition_result["confidence"]), float(disease_result["confidence"])),
-        4,
-    )
+def _healthy_response(
+    nutrition_result: dict,
+    disease_result: dict,
+    confidence: float,
+) -> dict:
     return {
         "final_diagnosis_type": "healthy",
         "final_prediction": "Healthy",
-        "confidence": confidence,
-        "message": "Both models indicate the leaf is healthy with acceptable confidence.",
+        "confidence": round(float(confidence), 4),
+        "message": "Healthy leaf",
         "secondary_possibility": None,
         "nutrition_result": nutrition_result,
         "disease_result": disease_result,
@@ -171,17 +171,34 @@ def _uncertain_response(nutrition_result: dict, disease_result: dict) -> dict:
     }
 
 
+def _low_confidence_response(
+    nutrition_result: dict,
+    disease_result: dict,
+    confidence: float,
+) -> dict:
+    return {
+        "final_diagnosis_type": "uncertain",
+        "final_prediction": "Low confidence",
+        "confidence": round(float(confidence), 4),
+        "message": "The confidence is too low. Please upload a clearer corn leaf image.",
+        "secondary_possibility": None,
+        "nutrition_result": nutrition_result,
+        "disease_result": disease_result,
+        "model_versions": {
+            "nutrition": nutrition_result.get("model_version"),
+            "disease": disease_result.get("model_version"),
+        },
+    }
+
+
 def analyze_leaf_diagnosis(file_bytes: bytes) -> dict:
     """
     Run both models on the same image bytes and return a final diagnosis.
     
-    Decision logic:
-    1. If nutrition model predicts "Not_Corn" with high confidence → invalid_image
-    2. If both models predict "Healthy" → healthy
-    3. Compare normalized confidence values:
-       - If nutrition confidence > disease confidence → nutrient_deficiency
-       - If disease confidence > nutrition confidence → disease
-       - If very close (within 0.05) → uncertain
+     Decision logic:
+     1. If nutrition model predicts "Not_Corn" with high confidence → invalid_image
+     2. Compare normalized confidence values and follow the higher-confidence result
+     3. If the higher-confidence prediction is "Healthy" → healthy
     """
     nutrition_result = run_nutrition_diagnosis(file_bytes)
     disease_result = predict_disease_from_bytes(file_bytes)
@@ -207,29 +224,55 @@ def analyze_leaf_diagnosis(file_bytes: bytes) -> dict:
         logger.info("[leaf-diagnosis] Returning invalid_image: Not_Corn detected with confidence %.4f", nutrition_conf)
         return _invalid_image_response(nutrition_result, disease_result)
 
-    # Rule 2: Check if both models predict healthy
-    if (
-        nutrition_label == "Healthy"
-        and disease_label == "Healthy"
-        and nutrition_conf >= HEALTHY_ACCEPTABLE_CONFIDENCE
-        and disease_conf >= HEALTHY_ACCEPTABLE_CONFIDENCE
-    ):
-        logger.info("[leaf-diagnosis] Returning healthy: both models confident")
-        return _healthy_response(nutrition_result, disease_result)
-
-    # Rule 3-5: Compare confidence scores directly
-    confidence_diff = abs(nutrition_conf - disease_conf)
-    very_close_threshold = 0.05  # Within 5 percentage points
-
-    if confidence_diff <= very_close_threshold:
-        # Confidence values are very close → uncertain
+    # If the disease model is very confident that the leaf is healthy,
+    # do not let that override the nutrition-based final decision.
+    if disease_label == "Healthy" and disease_conf >= 0.90:
         logger.info(
-            "[leaf-diagnosis] Returning uncertain: confidence values very close (diff=%.4f)",
-            confidence_diff,
+            "[leaf-diagnosis] Disease healthy confidence too strong (%.4f); using nutrition result instead",
+            disease_conf,
         )
-        return _uncertain_response(nutrition_result, disease_result)
 
-    if nutrition_conf > disease_conf:
+        if nutrition_conf < 0.50:
+            return _low_confidence_response(nutrition_result, disease_result, nutrition_conf)
+
+        if nutrition_label == "Healthy":
+            return _healthy_response(nutrition_result, disease_result, nutrition_conf)
+
+        fertilizer_recommendations = get_fertilizer_recommendations(nutrition_label)
+        return {
+            "final_diagnosis_type": "nutrient_deficiency",
+            "final_prediction": nutrition_label,
+            "confidence": round(nutrition_conf, 4),
+            "message": f"The nutrient deficiency model showed the higher confidence ({nutrition_conf:.1%}), "
+                       f"so this image is classified as a nutrient deficiency.",
+            "secondary_possibility": "disease",
+            "nutrition_result": nutrition_result,
+            "disease_result": disease_result,
+            "fertilizer_recommendations": fertilizer_recommendations,
+            "model_versions": {
+                "nutrition": nutrition_result.get("model_version"),
+                "disease": disease_result.get("model_version"),
+            },
+        }
+
+    selected_confidence = max(nutrition_conf, disease_conf)
+    if selected_confidence < 0.50:
+        logger.info(
+            "[leaf-diagnosis] Returning uncertain: winning confidence too low (%.4f)",
+            selected_confidence,
+        )
+        return _low_confidence_response(nutrition_result, disease_result, selected_confidence)
+
+    # Rule 2: Compare confidence scores directly and follow the winner.
+    if nutrition_conf >= disease_conf:
+        if nutrition_label == "Healthy":
+            logger.info(
+                "[leaf-diagnosis] Returning healthy: nutrition confidence (%.4f) >= disease (%.4f)",
+                nutrition_conf,
+                disease_conf,
+            )
+            return _healthy_response(nutrition_result, disease_result, nutrition_conf)
+
         # Nutrient deficiency has higher confidence
         logger.info(
             "[leaf-diagnosis] Returning nutrient_deficiency: nutrition confidence (%.4f) > disease (%.4f)",
@@ -253,26 +296,33 @@ def analyze_leaf_diagnosis(file_bytes: bytes) -> dict:
             },
         }
 
-    else:
-        # Disease has higher confidence
+    # Disease has higher confidence.
+    if disease_label == "Healthy":
         logger.info(
-            "[leaf-diagnosis] Returning disease: disease confidence (%.4f) > nutrition (%.4f)",
+            "[leaf-diagnosis] Returning healthy: disease confidence (%.4f) > nutrition (%.4f)",
             disease_conf,
             nutrition_conf,
         )
-        return {
-            "final_diagnosis_type": "disease",
-            "final_prediction": disease_label,
-            "confidence": round(disease_conf, 4),
-            "message": f"The disease detection model showed the higher confidence ({disease_conf:.1%}), "
-                       f"so this image is classified as a disease.",
-            "secondary_possibility": "nutrient_deficiency",
-            "nutrition_result": nutrition_result,
-            "disease_result": disease_result,
-            "model_versions": {
-                "nutrition": nutrition_result.get("model_version"),
-                "disease": disease_result.get("model_version"),
-            },
-        }
+        return _healthy_response(nutrition_result, disease_result, disease_conf)
+
+    logger.info(
+        "[leaf-diagnosis] Returning disease: disease confidence (%.4f) > nutrition (%.4f)",
+        disease_conf,
+        nutrition_conf,
+    )
+    return {
+        "final_diagnosis_type": "disease",
+        "final_prediction": disease_label,
+        "confidence": round(disease_conf, 4),
+        "message": f"The disease detection model showed the higher confidence ({disease_conf:.1%}), "
+                   f"so this image is classified as a disease.",
+        "secondary_possibility": "nutrient_deficiency",
+        "nutrition_result": nutrition_result,
+        "disease_result": disease_result,
+        "model_versions": {
+            "nutrition": nutrition_result.get("model_version"),
+            "disease": disease_result.get("model_version"),
+        },
+    }
 
 

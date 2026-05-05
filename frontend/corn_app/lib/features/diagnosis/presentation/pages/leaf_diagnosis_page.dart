@@ -13,6 +13,7 @@ String? _readString(Map<String, dynamic> map, List<String> keys) {
   for (final key in keys) {
     final value = map[key];
     if (value == null) continue;
+
     final text = value.toString().trim();
     if (text.isNotEmpty && text != 'null') {
       return text;
@@ -21,21 +22,21 @@ String? _readString(Map<String, dynamic> map, List<String> keys) {
   return null;
 }
 
-double? _confidencePercent(dynamic value) {
-  if (value is num) {
-    final number = value.toDouble();
-    return number <= 1 ? number * 100 : number;
-  }
-  final parsed = double.tryParse(value?.toString() ?? '');
-  if (parsed == null) return null;
-  return parsed <= 1 ? parsed * 100 : parsed;
-}
-
 Map<String, dynamic>? _asMap(dynamic value) {
   if (value is Map) {
     return Map<String, dynamic>.from(value);
   }
   return null;
+}
+
+double _confidenceAsPercent(dynamic value) {
+  if (value is num) {
+    final v = value.toDouble();
+    return v <= 1 ? v * 100 : v;
+  }
+
+  final parsed = double.tryParse(value?.toString() ?? '') ?? 0.0;
+  return parsed <= 1 ? parsed * 100 : parsed;
 }
 
 class LeafDiagnosisPage extends StatefulWidget {
@@ -53,16 +54,6 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
   bool _isPicking = false;
   bool _isAnalyzing = false;
   String? _errorMessage;
-  Map<String, dynamic>? _result;
-
-  double _normalizeConfidenceValue(dynamic value) {
-    if (value is num) {
-      final number = value.toDouble();
-      return number > 1 ? number / 100.0 : number;
-    }
-    final parsed = double.tryParse(value?.toString() ?? '') ?? 0.0;
-    return parsed > 1 ? parsed / 100.0 : parsed;
-  }
 
   Map<String, dynamic> _buildNutritionResultForRedirect(
     Map<String, dynamic> result,
@@ -71,27 +62,19 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
       _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
     );
 
-    final predictedClass =
-        _readString(nutritionResult, ['predicted_class', 'final_prediction']) ??
-        _readString(result, ['predicted_class', 'final_prediction']);
-    final confidence = _normalizeConfidenceValue(
-      nutritionResult['confidence'] ?? result['confidence'] ?? 1.0,
-    );
-
-    if (predictedClass != null) {
-      nutritionResult['predicted_class'] = predictedClass;
-    }
-    nutritionResult['confidence'] = confidence;
-
-    final existingProbabilities = _asMap(nutritionResult['all_probabilities']);
-    if (existingProbabilities != null && existingProbabilities.isNotEmpty) {
-      nutritionResult['all_probabilities'] = existingProbabilities;
-    } else if (predictedClass != null) {
-      nutritionResult['all_probabilities'] = {predictedClass: confidence};
-    }
+    nutritionResult['predicted_class'] ??= result['final_prediction'];
+    nutritionResult['confidence'] ??= result['confidence'];
 
     nutritionResult['fertilizer_recommendations'] =
         result['fertilizer_recommendations'];
+
+    if (nutritionResult['all_probabilities'] == null &&
+        nutritionResult['predicted_class'] != null) {
+      nutritionResult['all_probabilities'] = {
+        nutritionResult['predicted_class']:
+            nutritionResult['confidence'] ?? 1.0,
+      };
+    }
 
     return nutritionResult;
   }
@@ -111,7 +94,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
 
       setState(() {
         _selectedImage = File(picked.path);
-        _result = null;
+        _errorMessage = null;
       });
     } catch (_) {
       if (!mounted) return;
@@ -140,16 +123,12 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     setState(() {
       _isAnalyzing = true;
       _errorMessage = null;
-      _result = null;
     });
 
     try {
       final data = await _apiClient.predictLeafDiagnosis(_selectedImage!);
       if (!mounted) return;
-      setState(() {
-        _result = data;
-      });
-      // Show diagnosis popup first
+
       await _showDiagnosisPopup(data);
     } catch (error) {
       if (!mounted) return;
@@ -165,68 +144,77 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     }
   }
 
-  String? _getSecondaryCautionMessage(
-    String type,
-    String? secondaryPossibility,
-  ) {
-    if (secondaryPossibility == null) return null;
-
-    if (type == 'nutrient_deficiency' && secondaryPossibility == 'disease') {
-      return 'අමතර සැලකිල්ල: ඉදිරියේදී රෝග තත්ත්වයක ලක්ෂණද පෙන්විය හැකිය. පත්‍රයේ ලප, වියළීම, හෝ පැතිරීම වැඩි වුවහොත් රෝග පරීක්ෂාව නැවත කරන්න. සැලකිල්ලෙන් ඉන්න.';
-    }
-
-    if (type == 'disease' && secondaryPossibility == 'nutrient_deficiency') {
-      return 'අමතර සැලකිල්ල: ඉදිරියේදී පෝෂක ඌනතාවයක ලක්ෂණද පෙන්විය හැකිය. පත්‍රයේ කහවීම, වර්ධනය අඩුවීම, හෝ පෝෂක ඌනතාවයට සමාන ලක්ෂණ වැඩි වුවහොත් Nutrient Prediction section එකෙන් නැවත පරීක්ෂා කරන්න. සැලකිල්ලෙන් ඉන්න.';
-    }
-
-    return null;
-  }
-
   Future<void> _showDiagnosisPopup(Map<String, dynamic> result) async {
     if (!mounted) return;
-    final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
-    final accentColor = _colorForType(type);
-    final secondaryPossibility = _readString(result, ['secondary_possibility']);
-    final secondaryCautionMessage = _getSecondaryCautionMessage(
-      type,
-      secondaryPossibility,
-    );
 
-    String titleSinhala;
-    String messageSinhala;
+    var type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
+    final finalPrediction = _readString(result, ['final_prediction']);
+    final confidencePercent = _confidenceAsPercent(result['confidence']);
+    if (finalPrediction == 'Healthy') {
+      type = 'healthy';
+    }
+    if (confidencePercent < 50) {
+      type = 'uncertain';
+    }
+    final accentColor = _colorForType(type);
+
+    String titleText;
+    String popupBodySinhala;
+    String? cautionSinhala;
     String buttonLabel;
+    bool shouldShowBackButton = true;
 
     switch (type) {
       case 'nutrient_deficiency':
-        titleSinhala = 'ප්‍රධාන ගැටලුව: පෝෂක ඌනතාවයක්';
-        messageSinhala =
-            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ පෝෂක ඌනතාවයකට වැඩි වශයෙන් අදාල වේ. වැඩිදුර විස්තර සහ පොහොර නිර්දේශ ලබා ගැනීමට Nutrient Prediction section එකට යන්න.';
+        titleText = 'Nutrient Deficiency';
+        popupBodySinhala =
+            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ Nutrient Deficiency එකකට වැඩි වශයෙන් අදාල වේ. '
+            'වැඩිදුර විස්තර සහ පොහොර නිර්දේශ ලබා ගැනීමට Nutrient Prediction section එකට යන්න.';
+        cautionSinhala =
+            'ඉදිරියේදී Disease තත්ත්වයක ලක්ෂණද පෙන්විය හැකිය. '
+            'පත්‍රයේ ලප, වියළීම, හෝ පැතිරීම වැඩි වුවහොත් Disease Detection section එකෙන් නැවත පරීක්ෂා කරන්න. '
+            'සැලකිල්ලෙන් ඉන්න.';
         buttonLabel = 'පොහොර නිර්දේශ බලන්න';
         break;
+
       case 'disease':
-        titleSinhala = 'ප්‍රධාන ගැටලුව: රෝග තත්ත්වයක්';
-        messageSinhala =
-            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ රෝග තත්ත්වයකට වැඩි වශයෙන් අදාල වේ. වැඩිදුර විස්තර සහ රෝගයට අදාල උපදෙස් ලබා ගැනීමට Disease Detection section එකට යන්න.';
+        titleText = 'Disease';
+        popupBodySinhala =
+            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ Disease තත්ත්වයකට වැඩි වශයෙන් අදාල වේ. '
+            'වැඩිදුර විස්තර සහ රෝගයට අදාල උපදෙස් ලබා ගැනීමට Disease Detection section එකට යන්න.';
+        cautionSinhala =
+            'ඉදිරියේදී Nutrient Deficiency ලක්ෂණද පෙන්විය හැකිය. '
+            'පත්‍රයේ කහවීම, වර්ධනය අඩුවීම, හෝ Nutrient Deficiency වලට සමාන ලක්ෂණ වැඩි වුවහොත් '
+            'Nutrient Prediction section එකෙන් නැවත පරීක්ෂා කරන්න. සැලකිල්ලෙන් ඉන්න.';
         buttonLabel = 'රෝග විස්තර බලන්න';
         break;
+
       case 'healthy':
-        titleSinhala = 'ප්‍රධාන ගැටලුවක් හඳුනාගෙන නොමැත';
-        messageSinhala =
-            'මෙම රූපයෙන් ප්‍රබල පෝෂක ඌනතාවයක් හෝ රෝග තත්ත්වයක් පෙන්වන්නේ නැත.';
+        titleText = 'Healthy Leaf';
+        popupBodySinhala =
+            'මෙම පත්‍රය සෞඛ්‍ය සම්පන්න ලෙස පෙනේ. ප්‍රබල Nutrient Deficiency හෝ Disease තත්ත්වයක් පෙන්වන්නේ නැත.';
+        cautionSinhala = null;
         buttonLabel = 'හරි';
+        shouldShowBackButton = false;
         break;
+
       case 'invalid_image':
-        titleSinhala = 'වලංගු බඩඉරිඟු පත්‍රයක් නොවේ';
-        messageSinhala =
+        titleText = 'Invalid Image';
+        popupBodySinhala =
             'කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍රයක රූපයක් upload කරන්න.';
+        cautionSinhala = null;
         buttonLabel = 'නැවත උත්සාහ කරන්න';
+        shouldShowBackButton = false;
         break;
+
       case 'uncertain':
       default:
-        titleSinhala = 'ප්‍රතිඵලය නිශ්චිත නැත';
-        messageSinhala =
-            'මෙම රූපයෙන් පෝෂක ඌනතාවයක්ද රෝග තත්ත්වයක්ද යන්න නිශ්චිතව තීරණය කළ නොහැක. කරුණාකර පැහැදිලි පත්‍ර රූපයක් නැවත upload කරන්න.';
+        titleText = 'Uncertain Result';
+        popupBodySinhala =
+            'ප්‍රතිඵලය නිශ්චිත නැත. කරුණාකර වැඩි ආලෝකයක් සහිත පැහැදිලි බඩඉරිඟු පත්‍රයක රූපයක් නැවත upload කරන්න.';
+        cautionSinhala = null;
         buttonLabel = 'නැවත උත්සාහ කරන්න';
+        shouldShowBackButton = false;
         break;
     }
 
@@ -249,122 +237,121 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
-                  Text(
-                    titleSinhala,
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: accentColor,
-                      height: 1.3,
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE0E0E0),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Main message
+                  const SizedBox(height: 18),
                   Text(
-                    messageSinhala,
+                    titleText,
                     style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      height: 1.35,
+                      color: accentColor,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    popupBodySinhala,
+                    style: GoogleFonts.notoSansSinhala(
                       fontSize: 15,
-                      height: 1.6,
+                      height: 1.65,
                       color: Colors.black87,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  // Secondary caution card (if applicable)
-                  if (secondaryCautionMessage != null) ...[
+                  if (cautionSinhala != null) ...[
                     const SizedBox(height: 18),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.12),
+                        color: Colors.amber.withOpacity(0.14),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.amber.withOpacity(0.35),
+                          color: Colors.amber.withOpacity(0.45),
                           width: 1.2,
                         ),
                       ),
-                      child: Text(
-                        secondaryCautionMessage,
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          height: 1.6,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.warning_amber_rounded,
+                                color: Color(0xFFC58A00),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'අමතර සැලකිල්ල',
+                                style: GoogleFonts.notoSansSinhala(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: const Color(0xFFC58A00),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            cautionSinhala,
+                            style: GoogleFonts.notoSansSinhala(
+                              fontSize: 14,
+                              height: 1.6,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                   const SizedBox(height: 24),
-                  // Buttons
                   Row(
                     children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.of(sheetContext).pop(),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.black54,
-                            side: const BorderSide(
-                              color: Color(0xFFDDD8D8),
-                              width: 1.2,
+                      if (shouldShowBackButton) ...[
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.of(sheetContext).pop(),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.black54,
+                              side: const BorderSide(
+                                color: Color(0xFFDDD8D8),
+                                width: 1.2,
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: Text(
-                            'ආපසු',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                            child: Text(
+                              'ආපසු',
+                              style: GoogleFonts.notoSansSinhala(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 14),
+                        const SizedBox(width: 14),
+                      ],
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(sheetContext).pop();
+
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               if (!mounted) return;
-                              // Handle navigation per final diagnosis type
-                              final typeLocal =
-                                  _readString(result, [
-                                    'final_diagnosis_type',
-                                  ]) ??
-                                  'uncertain';
-                              if (typeLocal == 'nutrient_deficiency') {
-                                final nutritionResult =
-                                    _buildNutritionResultForRedirect(result);
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => NutrientPredictionPage(
-                                      imageFile: _selectedImage,
-                                      precomputedResult: nutritionResult,
-                                      skipApiCall: true,
-                                      showAutoResultSheet: true,
-                                    ),
-                                  ),
-                                );
-                              } else if (typeLocal == 'disease') {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => CornDiseaseDetectionScreen(
-                                      initialImageFile: _selectedImage,
-                                    ),
-                                  ),
-                                );
-                              } else if (typeLocal == 'healthy') {
-                                // nothing else needed; simple OK button already closed
-                              } else {
-                                // invalid_image or uncertain: clear feedback so user can retry
-                                _clearFeedback();
-                              }
+                              _handlePopupMainAction(result);
                             });
                           },
                           style: ElevatedButton.styleFrom(
@@ -378,7 +365,8 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                           ),
                           child: Text(
                             buttonLabel,
-                            style: GoogleFonts.poppins(
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.notoSansSinhala(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
                             ),
@@ -396,209 +384,17 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     );
   }
 
-  String _labelForDiagnosisCategory(String type) {
-    switch (type) {
-      case 'nutrient_deficiency':
-        return 'Nutrient Deficiency Detected';
-      case 'disease':
-        return 'Disease Detected';
-      case 'healthy':
-        return 'Healthy Leaf';
-      case 'invalid_image':
-        return 'Invalid Image';
-      case 'uncertain':
-        return 'Uncertain Result';
-      default:
-        return 'Analysis Result';
-    }
-  }
+  void _handlePopupMainAction(Map<String, dynamic> result) {
+    var type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
+    final finalPrediction = _readString(result, ['final_prediction']);
 
-  Widget _buildDiagnosisExplanation(
-    String type,
-    Map<String, dynamic>? nutrition,
-    Map<String, dynamic>? disease,
-  ) {
-    if (type == 'nutrient_deficiency') {
-      final nutLabel = nutrition != null
-          ? _readString(nutrition, ['predicted_class', 'final_prediction']) ??
-                '-'
-          : '-';
-      final nutConf = _confidencePercent(nutrition?['confidence']);
-      final disConf = _confidencePercent(disease?['confidence']);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Why this diagnosis:',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Backend final diagnosis: nutrient deficiency',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Nutrition model: $nutLabel${nutConf != null ? " (${nutConf.toStringAsFixed(1)}%)" : ""}',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'The backend combined the model outputs and returned nutrient deficiency as the final diagnosis.',
-                  style: GoogleFonts.poppins(
-                    fontSize: 11.5,
-                    height: 1.4,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
+    if (finalPrediction == 'Healthy') {
+      type = 'healthy';
     }
-    if (type == 'disease') {
-      final disLabel = disease != null
-          ? _readString(disease, ['predicted_class', 'final_prediction']) ?? '-'
-          : '-';
-      final disConf = _confidencePercent(disease?['confidence']);
-      final nutConf = _confidencePercent(nutrition?['confidence']);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Why this diagnosis:',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Backend final diagnosis: disease',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Disease model: $disLabel${disConf != null ? " (${disConf.toStringAsFixed(1)}%)" : ""}',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'The backend combined the model outputs and returned disease as the final diagnosis.',
-                  style: GoogleFonts.poppins(
-                    fontSize: 11.5,
-                    height: 1.4,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
-    if (type == 'healthy') {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          'No strong nutrient deficiency or disease signal was detected. The leaf appears healthy.',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            height: 1.4,
-            color: Colors.black87,
-          ),
-        ),
-      );
-    }
-    if (type == 'invalid_image') {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          'The uploaded image does not appear to be a valid corn leaf. Please upload a clear corn leaf image.',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            height: 1.4,
-            color: Colors.black87,
-          ),
-        ),
-      );
-    }
-    if (type == 'uncertain') {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          'The system could not confidently decide. Please upload a clearer image with good lighting and visible symptoms.',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            height: 1.4,
-            color: Colors.black87,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-
-  Future<void> _openResultDetails(Map<String, dynamic> result) async {
-    final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
 
     if (type == 'nutrient_deficiency') {
       final nutritionResult = _buildNutritionResultForRedirect(result);
 
-      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -610,20 +406,32 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
           ),
         ),
       );
+      return;
     }
+
+    if (type == 'disease') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              CornDiseaseDetectionScreen(initialImageFile: _selectedImage),
+        ),
+      );
+      return;
+    }
+
+    _clearFeedback();
   }
 
   void _clearFeedback() {
     setState(() {
       _errorMessage = null;
-      _result = null;
     });
   }
 
   String _friendlyErrorMessage(Object error) {
     final raw = error.toString();
 
-    // Network/connection errors
     if (raw.contains('SocketException') ||
         raw.contains('Failed host lookup') ||
         raw.toLowerCase().contains('connection refused')) {
@@ -640,7 +448,6 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
       return 'Request timed out. The server may be waking up, so please try again.';
     }
 
-    // Generic fallback
     return 'විශ්ලේෂණය අසාර්ථක විය. කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍ර රූපයක් නැවත upload කරන්න.';
   }
 
@@ -661,29 +468,9 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     }
   }
 
-  String _labelForType(AppLocalizations loc, String type) {
-    switch (type) {
-      case 'invalid_image':
-        return loc.translate('leaf_diagnosis_invalid_image_title');
-      case 'uncertain':
-        return loc.translate('leaf_diagnosis_uncertain_title');
-      default:
-        return type.replaceAll('_', ' ').trim().toUpperCase();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final type =
-        _readString(_result ?? const <String, dynamic>{}, [
-          'final_diagnosis_type',
-        ]) ??
-        '';
-    final accentColor = _colorForType(type);
-    final diagnosisLabel = type.isEmpty
-        ? loc.translate('leaf_diagnosis_final_title')
-        : _labelForType(loc, type);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -826,9 +613,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                 const SizedBox(height: 16),
                 if (_errorMessage != null) ...[
                   _NoticeCard(
-                    title: type == 'invalid_image'
-                        ? loc.translate('leaf_diagnosis_invalid_image_title')
-                        : loc.translate('leaf_diagnosis_warning'),
+                    title: loc.translate('leaf_diagnosis_warning'),
                     message: _errorMessage!,
                     color: Colors.deepOrange,
                     icon: Icons.warning_amber_outlined,
@@ -841,52 +626,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                   const _LoadingCard(),
                   const SizedBox(height: 16),
                 ],
-                if (_result != null) ...[
-                  _FinalDiagnosisCard(
-                    result: _result!,
-                    accentColor: accentColor,
-                    title: loc.translate('leaf_diagnosis_final_title'),
-                    diagnosisLabel: diagnosisLabel,
-                    loc: loc,
-                  ),
-                  const SizedBox(height: 14),
-                  _ModelResultCard(
-                    title: loc.translate('leaf_diagnosis_nutrition_title'),
-                    data: _asMap(_result!['nutrition_result']),
-                    accentColor: const Color(0xFF2E7D32),
-                  ),
-                  const SizedBox(height: 12),
-                  _ModelResultCard(
-                    title: loc.translate('leaf_diagnosis_disease_title'),
-                    data: _asMap(_result!['disease_result']),
-                    accentColor: const Color(0xFF1565C0),
-                  ),
-                  const SizedBox(height: 12),
-                  if (_result!['fertilizer_recommendations'] != null)
-                    _FertilizerCard(
-                      title: loc.translate('leaf_diagnosis_fertilizer_title'),
-                      recommendation: _result!['fertilizer_recommendations'],
-                    ),
-                  if (_result!['fertilizer_recommendations'] != null)
-                    const SizedBox(height: 12),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      onPressed: _clearFeedback,
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: Text(
-                        loc.translate('leaf_diagnosis_try_again'),
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                      ),
-                      style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF1B5E20),
-                      ),
-                    ),
-                  ),
-                ],
-                if (_result == null &&
-                    _errorMessage == null &&
-                    !_isAnalyzing) ...[
+                if (!_isAnalyzing && _errorMessage == null) ...[
                   const SizedBox(height: 4),
                   Text(
                     loc.translate('leaf_diagnosis_selected_image'),
@@ -1263,7 +1003,7 @@ class _NoticeCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   message,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.notoSansSinhala(
                     fontSize: 13,
                     height: 1.45,
                     color: const Color(0xFF3E453F),
@@ -1281,7 +1021,9 @@ class _NoticeCard extends StatelessWidget {
                     ),
                     child: Text(
                       actionLabel!,
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                      style: GoogleFonts.notoSansSinhala(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -1289,412 +1031,6 @@ class _NoticeCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _FinalDiagnosisCard extends StatelessWidget {
-  const _FinalDiagnosisCard({
-    required this.result,
-    required this.accentColor,
-    required this.title,
-    required this.diagnosisLabel,
-    required this.loc,
-  });
-
-  final Map<String, dynamic> result;
-  final Color accentColor;
-  final String title;
-  final String diagnosisLabel;
-  final AppLocalizations loc;
-
-  @override
-  Widget build(BuildContext context) {
-    final finalPrediction = result['final_prediction']?.toString() ?? '-';
-    final confidence = _confidencePercent(result['confidence']);
-    final message = result['message']?.toString() ?? '';
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: accentColor.withOpacity(0.20), width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(Icons.health_and_safety, color: accentColor),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1B1B1B),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      diagnosisLabel,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: accentColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (confidence != null)
-                Text(
-                  '${confidence.toStringAsFixed(1)}%',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: accentColor,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          _FieldRow(label: 'Final prediction', value: finalPrediction),
-          const SizedBox(height: 8),
-          _FieldRow(
-            label: 'Confidence',
-            value: confidence != null
-                ? '${confidence.toStringAsFixed(1)}%'
-                : '-',
-          ),
-          if (message.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              message,
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                height: 1.5,
-                color: const Color(0xFF3E453F),
-              ),
-            ),
-          ],
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _Badge(
-                label: loc.translate('leaf_diagnosis_final_title'),
-                color: accentColor,
-              ),
-              if (result['final_diagnosis_type'] != null)
-                _Badge(
-                  label: result['final_diagnosis_type'].toString(),
-                  color: accentColor.withOpacity(0.85),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ModelResultCard extends StatelessWidget {
-  const _ModelResultCard({
-    required this.title,
-    required this.data,
-    required this.accentColor,
-  });
-
-  final String title;
-  final Map<String, dynamic>? data;
-  final Color accentColor;
-
-  @override
-  Widget build(BuildContext context) {
-    if (data == null || data!.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final prediction =
-        _readString(data!, [
-          'final_prediction',
-          'predicted_class',
-          'prediction',
-        ]) ??
-        '-';
-    final confidence = _confidencePercent(data!['confidence']);
-    final message = _readString(data!, ['message', 'summary']) ?? '';
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accentColor.withOpacity(0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.poppins(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: accentColor,
-            ),
-          ),
-          const SizedBox(height: 10),
-          _FieldRow(label: 'Prediction', value: prediction),
-          if (confidence != null) ...[
-            const SizedBox(height: 8),
-            _FieldRow(
-              label: 'Confidence',
-              value: '${confidence.toStringAsFixed(1)}%',
-            ),
-          ],
-          if (message.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              message,
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                height: 1.45,
-                color: const Color(0xFF444444),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _FertilizerCard extends StatelessWidget {
-  const _FertilizerCard({required this.title, required this.recommendation});
-
-  final String title;
-  final dynamic recommendation;
-
-  @override
-  Widget build(BuildContext context) {
-    if (recommendation == null) return const SizedBox.shrink();
-
-    if (recommendation is! Map) {
-      final text = recommendation.toString().trim();
-      if (text.isEmpty || text == 'null') return const SizedBox.shrink();
-      return _simpleRecommendationCard(title: title, text: text);
-    }
-
-    final data = Map<String, dynamic>.from(recommendation as Map);
-    if (data.isEmpty) return const SizedBox.shrink();
-
-    final summary = _readString(data, ['summary', 'message']) ?? '';
-    final fertilizer = _readString(data, ['fertilizer', 'recommendation']);
-    final applicationRate = _readString(data, ['application_rate']);
-    final applicationTiming = _readString(data, ['application_timing']);
-    final tips = data['additional_tips'];
-    const accentColor = Color(0xFFC56A00);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF0),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accentColor.withOpacity(0.18)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.poppins(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: accentColor,
-            ),
-          ),
-          if (summary.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              summary,
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                height: 1.45,
-                color: const Color(0xFF4B4330),
-              ),
-            ),
-          ],
-          if (fertilizer != null) ...[
-            const SizedBox(height: 10),
-            _FieldRow(label: 'Fertilizer', value: fertilizer),
-          ],
-          if (applicationRate != null) ...[
-            const SizedBox(height: 8),
-            _FieldRow(label: 'Application rate', value: applicationRate),
-          ],
-          if (applicationTiming != null) ...[
-            const SizedBox(height: 8),
-            _FieldRow(label: 'Application timing', value: applicationTiming),
-          ],
-          if (tips is List && tips.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text(
-              'Tips',
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF7A5D16),
-              ),
-            ),
-            const SizedBox(height: 8),
-            ...tips.map(
-              (tip) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  '• ${tip.toString()}',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12.5,
-                    height: 1.4,
-                    color: const Color(0xFF4B4330),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _simpleRecommendationCard({
-    required String title,
-    required String text,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF0),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFC56A00).withOpacity(0.18)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.poppins(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFFC56A00),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            text,
-            style: GoogleFonts.poppins(
-              fontSize: 13,
-              height: 1.45,
-              color: const Color(0xFF4B4330),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FieldRow extends StatelessWidget {
-  const _FieldRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 110,
-          child: Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF5E6D60),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: GoogleFonts.poppins(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF1B1B1B),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.15)),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.poppins(
-          fontSize: 11.5,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
       ),
     );
   }
