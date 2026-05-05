@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/api/api_client.dart';
 import '../../../../core/localization/app_localizations.dart';
+import 'nutrient_prediction_page.dart';
 
 String? _readString(Map<String, dynamic> map, List<String> keys) {
   for (final key in keys) {
@@ -106,6 +107,8 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
       setState(() {
         _result = data;
       });
+      // Show diagnosis popup first
+      await _showDiagnosisPopup(data);
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -117,6 +120,376 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
           _isAnalyzing = false;
         });
       }
+    }
+  }
+
+  Future<void> _showDiagnosisPopup(Map<String, dynamic> result) async {
+    if (!mounted) return;
+
+    final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
+    final issue = _readString(result, ['final_prediction']) ?? 'Unknown';
+    final confidence = _confidencePercent(result['confidence']);
+    final message = _readString(result, ['message']) ?? '';
+    final accentColor = _colorForType(type);
+    final label = _labelForDiagnosisCategory(type);
+    final nutrition = _asMap(result['nutrition_result']);
+    final disease = _asMap(result['disease_result']);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: 20 + MediaQuery.of(sheetContext).padding.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Diagnosis Found',
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: accentColor.withOpacity(0.20)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: accentColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Detected: $issue',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    if (confidence != null) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        'Confidence: ${confidence.toStringAsFixed(1)}%',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (message.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  message,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    height: 1.5,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
+              _buildDiagnosisExplanation(type, nutrition, disease),
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(sheetContext).pop(),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.black54,
+                        side: const BorderSide(color: Color(0xFFDDD8D8)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: Text(
+                        'Close',
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(sheetContext).pop();
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (!mounted) return;
+                          _openResultDetails(result);
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: accentColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: Text(
+                        'View Details',
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  String _labelForDiagnosisCategory(String type) {
+    switch (type) {
+      case 'nutrient_deficiency':
+        return 'Nutrient Deficiency Detected';
+      case 'disease':
+        return 'Disease Detected';
+      case 'healthy':
+        return 'Healthy Leaf';
+      case 'invalid_image':
+        return 'Invalid Image';
+      case 'uncertain':
+        return 'Uncertain Result';
+      default:
+        return 'Analysis Result';
+    }
+  }
+
+  Widget _buildDiagnosisExplanation(
+    String type,
+    Map<String, dynamic>? nutrition,
+    Map<String, dynamic>? disease,
+  ) {
+    if (type == 'nutrient_deficiency') {
+      final nutLabel = nutrition != null
+          ? _readString(nutrition, ['predicted_class', 'final_prediction']) ??
+                '-'
+          : '-';
+      final nutConf = _confidencePercent(nutrition?['confidence']);
+      final disConf = _confidencePercent(disease?['confidence']);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F5F5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Why this diagnosis:',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Nutrition: $nutLabel${nutConf != null ? " (${nutConf.toStringAsFixed(1)}%)" : ""}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Disease: Healthy${disConf != null ? " (${disConf.toStringAsFixed(1)}%)" : ""}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'The nutrient model showed stronger confidence, so this is classified as a nutrient deficiency.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11.5,
+                    height: 1.4,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+    if (type == 'disease') {
+      final disLabel = disease != null
+          ? _readString(disease, ['predicted_class', 'final_prediction']) ?? '-'
+          : '-';
+      final disConf = _confidencePercent(disease?['confidence']);
+      final nutConf = _confidencePercent(nutrition?['confidence']);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F5F5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Why this diagnosis:',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Disease: $disLabel${disConf != null ? " (${disConf.toStringAsFixed(1)}%)" : ""}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Nutrition: Healthy${nutConf != null ? " (${nutConf.toStringAsFixed(1)}%)" : ""}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'The disease model showed stronger confidence, so this is classified as a disease-related issue.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11.5,
+                    height: 1.4,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+    if (type == 'healthy') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          'No strong nutrient deficiency or disease signal was detected. The leaf appears healthy.',
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            height: 1.4,
+            color: Colors.black87,
+          ),
+        ),
+      );
+    }
+    if (type == 'invalid_image') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          'The uploaded image does not appear to be a valid corn leaf. Please upload a clear corn leaf image.',
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            height: 1.4,
+            color: Colors.black87,
+          ),
+        ),
+      );
+    }
+    if (type == 'uncertain') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          'The system could not confidently decide. Please upload a clearer image with good lighting and visible symptoms.',
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            height: 1.4,
+            color: Colors.black87,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Future<void> _openResultDetails(Map<String, dynamic> result) async {
+    final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
+
+    if (type == 'nutrient_deficiency') {
+      final nutritionResult = Map<String, dynamic>.from(
+        _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
+      );
+      final fertilizerRecs = result['fertilizer_recommendations'];
+      if (fertilizerRecs != null) {
+        nutritionResult['fertilizer_recommendations'] = fertilizerRecs;
+      }
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => NutrientPredictionPage(
+            imageFile: _selectedImage,
+            precomputedResult: nutritionResult,
+            skipApiCall: true,
+          ),
+        ),
+      );
     }
   }
 
