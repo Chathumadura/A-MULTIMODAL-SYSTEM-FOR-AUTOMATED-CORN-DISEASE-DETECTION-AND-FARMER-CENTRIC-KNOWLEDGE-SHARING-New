@@ -1,0 +1,1501 @@
+district,farm_size_acres,variety,soil_type,irrigation_type,seasonal_rainfall_mm,fertilizer_kg_per_acre,previous_yield_kg_per_acre,pest_disease_level,yield_kg_per_acre
+Anuradhapura,0.633,OPV_Local,Loam,Rainfed,858.5,165.2,550.8,2,943
+Anuradhapura,1.925,OPV_Local,Loam,Rainfed,873.7,201.9,968.1,1,1140.4
+Anuradhapura,1.758,OPV_Local,Sandy,Canal,222.8,128.6,817.9,3,466.3
+Anuradhapura,0.717,Hybrid_A,Loam,Rainfed,928.5,115.5,2043.5,2,1554.6
+Anuradhapura,2.687,Hybrid_A,Sandy,Rainfed,998.4,137.9,0,3,1048.3
+Anuradhapura,0.714,Hybrid_A,Clay,Tube well,935.1,117.7,1683,3,1130.6
+Anuradhapura,1.636,Hybrid_B,Loam,Tube well,772.6,42.4,1871,1,1620.6
+Anuradhapura,0.445,OPV_Local,Clay,Rainfed,378.2,127.6,300,1,651.9
+Anuradhapura,1.584,OPV_Local,Loam,Tube well,347,71.9,1066,2,668
+Anuradhapura,2.257,Hybrid_A,Clay,Tube well,380.2,94.1,2360.1,3,1098.6
+Anuradhapura,2.603,Hybrid_B,Loam,Rainfed,348.7,104.8,2034.4,2,979
+Anuradhapura,0.651,Hybrid_A,Loam,Rainfed,911.2,51,1973.1,0,1711.7
+Anuradhapura,0.42,Hybrid_A,Loam,Tube well,1003.4,144.9,1601.5,3,1424.9
+Anuradhapura,0.988,OPV_Local,Loam,Tank,736.5,174.9,1000.8,1,1352.7
+Anuradhapura,1.1,OPV_Local,Loam,Tube well,421.7,215.6,915.2,3,606.9
+Anuradhapura,2.464,Hybrid_B,Sandy,Tank,1050.2,219.7,1987.1,2,1311.7
+Anuradhapura,1.291,Hybrid_A,Sandy,Tank,353.9,88,1914.1,0,1527.5
+Anuradhapura,2.716,OPV_Local,Sandy,Tank,827,155.4,880.3,1,902.4
+Anuradhapura,4.643,Hybrid_A,Loam,Tube well,471.6,50.7,1780,1,1676.3
+Anuradhapura,2.403,OPV_Local,Clay,Tank,748.6,178,0,2,1038.4
+Anuradhapura,0.991,Hybrid_B,Sandy,Canal,823.1,153.4,1424.6,3,1197.8
+Anuradhapura,1.711,OPV_Local,Loam,Canal,858.7,84.2,1018.4,3,840.9
+Anuradhapura,3.219,Hybrid_B,Clay,Canal,413.2,45.1,1477.8,3,903.5
+Anuradhapura,4.432,OPV_Local,Clay,Canal,476.8,155.2,1076,3,702.2
+Anuradhapura,0.824,OPV_Local,Clay,Rainfed,330.4,105.9,1063.2,0,691.5
+Anuradhapura,0.44,OPV_Local,Loam,Tube well,911.3,170.7,944.7,3,734.5
+Anuradhapura,4.226,OPV_Local,Loam,Tank,865.8,86.3,1471,2,1067
+Anuradhapura,0.473,OPV_Local,Loam,Rainfed,370.4,118.6,751,2,657.6
+Anuradhapura,1.024,OPV_Local,Sandy,Rainfed,944,130.6,1000.6,2,605.1
+Anuradhapura,0.598,OPV_Local,Loam,Rainfed,815.4,205.1,0,2,819
+Anuradhapura,1.398,OPV_Local,Loam,Tank,448.1,74.8,0,2,703.3
+Anuradhapura,4.003,Hybrid_A,Loam,Rainfed,360.9,82.4,1889.2,2,976.2
+Anuradhapura,0.683,OPV_Local,Sandy,Canal,925,204.6,669.4,2,813.7
+Anuradhapura,1.486,OPV_Local,Loam,Rainfed,859.3,99.7,0,1,1015.5
+Anuradhapura,3.141,Hybrid_B,Loam,Tank,421.2,138.7,0,3,1041.3
+Anuradhapura,0.838,OPV_Local,Clay,Tank,301.8,51,883.4,2,517.5
+Anuradhapura,0.338,Hybrid_B,Loam,Tank,778.8,72.1,1838.9,1,1717.6
+Anuradhapura,1.388,OPV_Local,Loam,Canal,379.6,67,1124,3,513.6
+Anuradhapura,2.503,OPV_Local,Loam,Rainfed,964,105.3,1318.1,2,936.2
+Anuradhapura,1.459,OPV_Local,Clay,Rainfed,818.6,183.8,1417.5,2,1015.5
+Anuradhapura,1.737,OPV_Local,Sandy,Rainfed,391.3,115.9,728.7,2,669.1
+Anuradhapura,1.012,OPV_Local,Clay,Canal,846.3,80.4,300,2,850.4
+Anuradhapura,0.621,OPV_Local,Loam,Tube well,749.5,92,1090.6,3,723.4
+Anuradhapura,1.109,OPV_Local,Loam,Rainfed,462.2,143.1,1245.3,2,827.9
+Anuradhapura,0.69,OPV_Local,Loam,Tank,777,113.2,0,2,943.3
+Anuradhapura,0.745,OPV_Local,Sandy,Rainfed,912.5,140.7,0,3,587.9
+Anuradhapura,1.777,Hybrid_A,Loam,Tank,982.8,98.8,1838.7,3,1397.4
+Anuradhapura,1.235,Hybrid_A,Loam,Tube well,909.9,71.5,1627.1,0,2079.3
+Anuradhapura,1.337,OPV_Local,Sandy,Canal,772.5,150.2,953.6,3,614.9
+Anuradhapura,0.655,Hybrid_A,Loam,Tank,886.4,62.5,2005.2,2,1543
+Anuradhapura,4.48,OPV_Local,Clay,Canal,306,128.1,0,2,571.8
+Anuradhapura,1.114,OPV_Local,Sandy,Rainfed,936.7,139,0,3,625.4
+Anuradhapura,0.32,Hybrid_B,Loam,Rainfed,420.4,220,1263.3,2,969.7
+Anuradhapura,2.989,OPV_Local,Loam,Tank,353.8,113.3,1006.8,2,845.9
+Anuradhapura,1.2,OPV_Local,Sandy,Tank,764,126,1712.4,3,747.5
+Anuradhapura,8.044,OPV_Local,Sandy,Canal,673.5,138.9,790.7,1,1139.4
+Anuradhapura,0.728,OPV_Local,Loam,Tube well,350.9,189.9,1036,2,862.8
+Anuradhapura,3.523,OPV_Local,Loam,Tube well,1000.5,79.5,587.9,2,903.1
+Anuradhapura,0.58,OPV_Local,Clay,Tank,789.6,128,933.7,2,822.3
+Anuradhapura,0.315,OPV_Local,Loam,Canal,402.3,147.5,725.4,3,522.5
+Anuradhapura,6.693,OPV_Local,Loam,Tank,854.1,100.8,696.4,2,825.5
+Anuradhapura,1.862,OPV_Local,Clay,Tank,840.3,162.2,503.4,0,1063.9
+Anuradhapura,0.505,Hybrid_A,Sandy,Tube well,802.9,79.8,1291.1,1,1362.5
+Anuradhapura,0.266,Hybrid_A,Loam,Tube well,387.6,63.1,2561.6,1,1560
+Anuradhapura,1.096,Hybrid_A,Loam,Rainfed,809.2,82.3,1658.4,1,1634.7
+Anuradhapura,1.119,OPV_Local,Loam,Tube well,368.1,142.1,1383,0,1108.8
+Anuradhapura,3.939,OPV_Local,Loam,Tank,338,148.7,569.2,2,702.6
+Anuradhapura,4.491,OPV_Local,Loam,Rainfed,394.4,158,1142.6,2,742.1
+Anuradhapura,9.836,OPV_Local,Sandy,Rainfed,918.2,211.6,961.8,2,734.1
+Anuradhapura,0.294,Hybrid_A,Loam,Tank,342.7,216.4,1548.8,1,1407.6
+Anuradhapura,0.42,Hybrid_A,Loam,Canal,360.2,87.3,2191,1,1839.9
+Anuradhapura,1.915,OPV_Local,Sandy,Tube well,867.5,96.9,0,2,704.6
+Anuradhapura,0.582,OPV_Local,Clay,Rainfed,427.2,158.4,0,2,627.2
+Anuradhapura,2.621,OPV_Local,Sandy,Tank,885.4,68.2,781.8,0,934
+Anuradhapura,0.276,Hybrid_A,Clay,Rainfed,399.5,48.7,2024.9,2,897.8
+Anuradhapura,1.904,Hybrid_A,Loam,Canal,867.2,125.9,0,1,2147.4
+Anuradhapura,1.842,OPV_Local,Loam,Tube well,693.2,118.1,0,2,1128.2
+Anuradhapura,1.478,Hybrid_A,Loam,Tank,737.6,121.8,2763.7,2,1814.2
+Anuradhapura,0.905,OPV_Local,Loam,Tank,817.5,96.7,1279.6,2,1045
+Anuradhapura,0.869,OPV_Local,Loam,Rainfed,408.9,129.3,646,1,683.7
+Anuradhapura,3.103,OPV_Local,Clay,Tank,815.1,105.7,902.4,1,836.1
+Anuradhapura,1.48,OPV_Local,Clay,Canal,371.4,209.8,945.9,1,874.5
+Anuradhapura,0.898,OPV_Local,Sandy,Tank,855,105.1,944.4,2,776.6
+Anuradhapura,1.571,Hybrid_A,Loam,Rainfed,358,124,0,2,1068.4
+Anuradhapura,0.62,OPV_Local,Loam,Tank,901.3,132,0,0,1263
+Anuradhapura,2.127,Hybrid_A,Sandy,Rainfed,839.6,208.4,0,0,1722.7
+Anuradhapura,3.854,OPV_Local,Sandy,Canal,784.8,41,1112.8,1,818
+Anuradhapura,0.45,OPV_Local,Loam,Tank,814.3,113.3,1231,1,1088.4
+Anuradhapura,1.602,OPV_Local,Loam,Rainfed,705.3,143.2,1014.2,2,736.5
+Anuradhapura,0.78,OPV_Local,Sandy,Tank,423,100.6,1335,0,905.2
+Anuradhapura,1.22,Hybrid_A,Clay,Rainfed,441.1,196.9,2160.2,2,1203.2
+Anuradhapura,3.514,Hybrid_B,Loam,Rainfed,748.4,85,1604.6,1,1626.7
+Anuradhapura,0.365,Hybrid_A,Loam,Rainfed,910.7,131.9,0,3,1162.5
+Anuradhapura,0.936,OPV_Local,Sandy,Tube well,340.3,57.5,1343.5,3,456
+Anuradhapura,0.883,Hybrid_B,Sandy,Canal,426.8,126.8,1167.7,2,1177
+Anuradhapura,2.113,OPV_Local,Loam,Rainfed,1023.6,78.5,1269.7,3,678.3
+Anuradhapura,1.027,Hybrid_B,Loam,Canal,393.1,118.8,1431.8,2,1305.2
+Anuradhapura,0.918,OPV_Local,Loam,Canal,913.9,219.1,752.8,2,1205.5
+Anuradhapura,1.585,OPV_Local,Loam,Rainfed,433.7,82.3,728.7,3,518.4
+Anuradhapura,6.875,Hybrid_B,Clay,Rainfed,857.7,65.1,0,1,1373.7
+Anuradhapura,3.346,OPV_Local,Sandy,Rainfed,797.5,201.8,0,1,930.1
+Anuradhapura,3.371,OPV_Local,Loam,Canal,926.8,93.3,0,2,1122.9
+Anuradhapura,1.413,Hybrid_A,Loam,Rainfed,801.9,133,0,1,1911.4
+Anuradhapura,1.63,OPV_Local,Loam,Tube well,791.7,158.7,1214.8,1,1179.5
+Anuradhapura,1.356,OPV_Local,Sandy,Rainfed,711.9,79,843.2,2,784.3
+Anuradhapura,1.568,Hybrid_B,Loam,Rainfed,1072.3,159.2,1781.7,2,1563.4
+Anuradhapura,1.121,OPV_Local,Loam,Rainfed,984.1,183.2,683.4,3,564.5
+Anuradhapura,0.996,OPV_Local,Loam,Tank,329.3,73,925.6,1,792.7
+Anuradhapura,4.038,OPV_Local,Loam,Tube well,1087.1,71.9,908.7,2,1039.3
+Anuradhapura,3.116,OPV_Local,Loam,Rainfed,340.6,132.4,1219.5,2,574.7
+Anuradhapura,1.031,Hybrid_B,Sandy,Rainfed,860.5,129.3,1248.7,1,1391.4
+Anuradhapura,0.858,Hybrid_B,Loam,Tube well,948.5,74.1,0,3,932.2
+Anuradhapura,0.493,OPV_Local,Sandy,Tube well,346.9,125.6,1376.1,1,726.7
+Anuradhapura,4.47,OPV_Local,Sandy,Rainfed,989.1,203.1,0,2,864.7
+Anuradhapura,2.166,Hybrid_B,Sandy,Rainfed,396.2,88.3,0,2,748.5
+Anuradhapura,1.214,Hybrid_B,Sandy,Rainfed,409.5,210.8,0,1,1001.2
+Anuradhapura,2.085,OPV_Local,Loam,Tube well,792,149,0,2,834.1
+Anuradhapura,7.415,OPV_Local,Sandy,Tank,318.9,133.9,899.9,1,714.7
+Anuradhapura,4.926,Hybrid_B,Loam,Rainfed,389.3,140.3,0,2,1049.2
+Anuradhapura,2.479,Hybrid_B,Loam,Rainfed,931.2,133.1,1742,1,1651.7
+Anuradhapura,0.868,OPV_Local,Loam,Tank,863,190.3,0,3,723.3
+Anuradhapura,3.098,OPV_Local,Loam,Tank,384,151.8,821.5,2,819.6
+Anuradhapura,1.641,OPV_Local,Sandy,Rainfed,372.3,98.3,1466.6,3,413.4
+Anuradhapura,0.824,OPV_Local,Loam,Rainfed,971.9,122,1479,2,1183.2
+Anuradhapura,1.965,Hybrid_B,Clay,Tank,329.5,80.8,1739.6,2,970.3
+Anuradhapura,1.351,Hybrid_B,Clay,Canal,367.1,140.5,1692,2,1194.7
+Anuradhapura,4.762,OPV_Local,Loam,Rainfed,849.3,74.5,990.4,2,843.8
+Anuradhapura,1.601,Hybrid_B,Sandy,Tank,916.8,85.6,1313.4,1,1312.3
+Anuradhapura,2.951,Hybrid_A,Sandy,Rainfed,355,54.5,2388.7,1,926.7
+Anuradhapura,1.5,OPV_Local,Loam,Tube well,410.3,208.3,784,1,968.2
+Anuradhapura,1.179,OPV_Local,Clay,Tank,877.9,131.1,1293.1,1,1106.5
+Anuradhapura,0.599,OPV_Local,Loam,Tank,353,155.5,813.1,3,714.3
+Anuradhapura,1.859,OPV_Local,Loam,Canal,365.8,170.5,720.1,3,793.7
+Anuradhapura,7.717,OPV_Local,Clay,Rainfed,780.7,89.1,1542.4,1,894.4
+Anuradhapura,1.575,Hybrid_A,Loam,Tank,881.8,76.8,2295.7,3,1335.4
+Anuradhapura,1.569,Hybrid_A,Sandy,Rainfed,774.1,107.4,1745.9,1,1805.4
+Anuradhapura,2.933,OPV_Local,Loam,Rainfed,879.4,125.2,0,3,735
+Anuradhapura,1.412,OPV_Local,Loam,Rainfed,868.3,128.4,590.7,2,916.4
+Anuradhapura,0.512,OPV_Local,Loam,Tank,448.2,67.4,1182.2,2,747.4
+Anuradhapura,1.662,Hybrid_A,Sandy,Rainfed,905.7,122,1592.4,0,1673.4
+Anuradhapura,0.966,OPV_Local,Sandy,Rainfed,1135.6,164.1,1375,3,556
+Anuradhapura,1.394,OPV_Local,Loam,Tube well,1003.9,137.8,522.5,2,1042.4
+Anuradhapura,2.743,OPV_Local,Sandy,Rainfed,945,128.1,1036,2,810.4
+Anuradhapura,1.296,OPV_Local,Loam,Canal,888.8,50.3,380.8,1,1106.9
+Anuradhapura,1.296,Hybrid_B,Loam,Rainfed,446.6,80.8,1723.4,2,1077.9
+Anuradhapura,1.117,Hybrid_A,Sandy,Rainfed,1073.3,214.7,2173.1,2,1492.6
+Anuradhapura,4.417,OPV_Local,Loam,Tank,762.4,149.5,1352.2,1,965
+Anuradhapura,0.72,OPV_Local,Loam,Rainfed,747.1,165.5,459.8,2,689.4
+Anuradhapura,4.886,Hybrid_A,Sandy,Canal,689.9,157,0,0,2236.7
+Anuradhapura,0.879,Hybrid_A,Sandy,Rainfed,379.8,144.3,1549.3,2,1066.6
+Anuradhapura,0.706,Hybrid_B,Clay,Tube well,1017.5,129.4,1325.8,1,1563
+Anuradhapura,8.208,Hybrid_B,Clay,Tank,423.9,108,1862.5,3,1093.4
+Anuradhapura,4.005,Hybrid_B,Clay,Tank,463.7,41.7,1108.4,3,805.4
+Anuradhapura,0.262,Hybrid_A,Loam,Tank,473.4,133.2,2267.3,2,1659.1
+Anuradhapura,0.586,Hybrid_A,Clay,Tank,543.3,166.4,1994.3,0,1877.7
+Anuradhapura,4.279,Hybrid_B,Sandy,Tube well,922.5,149.4,0,2,1303.3
+Anuradhapura,0.324,Hybrid_A,Loam,Rainfed,725.7,150.1,2112,0,2154.5
+Anuradhapura,7.935,Hybrid_B,Loam,Rainfed,442.3,86.4,1371.6,1,1204.3
+Anuradhapura,8.621,Hybrid_A,Loam,Rainfed,282,142.9,2309.9,1,1327.8
+Anuradhapura,7.453,Hybrid_B,Clay,Rainfed,437.9,92.1,1515.6,1,1186.7
+Anuradhapura,1.544,OPV_Local,Sandy,Rainfed,408.2,47.7,547.4,2,430.4
+Anuradhapura,0.413,Hybrid_B,Loam,Rainfed,907.7,118.6,1902.5,0,1803.5
+Anuradhapura,0.777,Hybrid_B,Loam,Rainfed,517.4,101.9,1134.5,2,1246.1
+Anuradhapura,1.91,Hybrid_B,Loam,Rainfed,872.7,103.7,2020.1,1,1535.4
+Anuradhapura,1.938,Hybrid_B,Loam,Canal,412,156.3,1573.8,1,1805.5
+Anuradhapura,1.443,Hybrid_B,Sandy,Rainfed,906.5,68.2,1326,2,1051.3
+Anuradhapura,1.403,OPV_Local,Loam,Rainfed,424.9,125,514.8,2,643
+Anuradhapura,3.611,OPV_Local,Loam,Tank,991.2,145.4,779.3,2,1226.2
+Anuradhapura,0.268,OPV_Local,Loam,Tank,1004.7,142.7,953.6,3,683.2
+Anuradhapura,0.978,OPV_Local,Sandy,Tank,886.8,114.1,604.1,0,1206.7
+Anuradhapura,1.668,Hybrid_A,Loam,Tank,768.2,138.8,0,1,2269.3
+Anuradhapura,6.159,OPV_Local,Loam,Tube well,764.4,48,1171.8,2,956.4
+Anuradhapura,2.188,OPV_Local,Loam,Tank,879.1,104.4,0,3,779.6
+Anuradhapura,1.73,Hybrid_B,Loam,Rainfed,295.6,132.8,1525.8,2,901.2
+Anuradhapura,0.491,Hybrid_B,Sandy,Rainfed,926.7,74.7,1772.8,2,1131
+Anuradhapura,0.267,OPV_Local,Sandy,Tube well,820.6,121.6,0,0,980
+Anuradhapura,1.582,OPV_Local,Loam,Tank,657.3,189.3,942.1,0,1484.6
+Anuradhapura,1.69,OPV_Local,Sandy,Tank,956.7,78.8,0,3,536.6
+Anuradhapura,1.989,OPV_Local,Loam,Canal,312.4,114.4,2093.9,3,756.3
+Anuradhapura,0.742,OPV_Local,Loam,Canal,396.6,50.3,1141.9,0,898
+Anuradhapura,9.335,Hybrid_B,Loam,Tube well,368.5,207.1,0,3,1001.6
+Anuradhapura,1.041,OPV_Local,Clay,Canal,346.1,130.4,1096.8,1,815.3
+Anuradhapura,3.375,OPV_Local,Loam,Tube well,862.9,78.7,931.8,2,932
+Anuradhapura,0.852,Hybrid_B,Loam,Rainfed,371,130.5,1731.1,2,1053.7
+Anuradhapura,1.387,Hybrid_A,Clay,Tank,772.4,172.1,2119,2,1698.1
+Anuradhapura,1.481,Hybrid_B,Clay,Rainfed,813.6,139,0,1,1375.1
+Anuradhapura,1.529,Hybrid_A,Sandy,Rainfed,453.1,99.3,0,0,1068.4
+Anuradhapura,1.388,Hybrid_A,Sandy,Canal,1041.2,168.6,1827.3,2,1599.2
+Anuradhapura,6.573,OPV_Local,Clay,Rainfed,945.5,131.3,0,2,814.8
+Anuradhapura,1.559,OPV_Local,Sandy,Tank,337.5,111.1,458,2,762.9
+Anuradhapura,1.756,OPV_Local,Loam,Rainfed,778.3,219.2,795.3,3,670.9
+Anuradhapura,1.35,OPV_Local,Clay,Canal,934,43,1096.3,3,526.2
+Anuradhapura,1.36,Hybrid_A,Loam,Tank,830.4,80.4,2233.9,2,1760
+Anuradhapura,4.222,OPV_Local,Sandy,Canal,952.3,132.6,0,1,1060.5
+Anuradhapura,2.806,Hybrid_A,Clay,Tank,289.9,101.7,1909.8,1,1431.3
+Anuradhapura,0.893,Hybrid_A,Sandy,Tank,802.9,115.2,2212.8,2,1618.1
+Anuradhapura,4.572,OPV_Local,Loam,Tube well,806.1,116.8,1422.6,1,1137.3
+Anuradhapura,1.658,Hybrid_B,Sandy,Rainfed,908.5,125.1,1708.7,3,913.9
+Anuradhapura,1.062,OPV_Local,Loam,Tank,885.9,68.2,484.1,1,988.9
+Anuradhapura,4.853,OPV_Local,Loam,Rainfed,1052.1,57.3,0,3,487.7
+Anuradhapura,4.692,OPV_Local,Loam,Tank,838.4,202.7,1005.3,0,1275.2
+Anuradhapura,0.707,OPV_Local,Loam,Rainfed,885.1,120.4,892.9,3,677.5
+Anuradhapura,0.961,OPV_Local,Loam,Rainfed,915.8,100.9,1499.1,1,1142.9
+Anuradhapura,0.41,Hybrid_B,Loam,Rainfed,804.1,92.8,1083.3,3,989.6
+Anuradhapura,2.419,OPV_Local,Loam,Tube well,788.5,107.5,0,2,1085.2
+Anuradhapura,2.065,Hybrid_A,Clay,Tank,230.6,130.8,0,1,1371.4
+Anuradhapura,0.302,Hybrid_A,Clay,Canal,966.5,68.7,1988.4,3,1217.1
+Anuradhapura,0.74,Hybrid_A,Loam,Tube well,820.5,60.6,0,2,1500.5
+Anuradhapura,1.098,OPV_Local,Sandy,Canal,498.5,206.9,702.6,2,772.8
+Anuradhapura,9.87,Hybrid_A,Clay,Canal,941.3,191.8,0,3,1328.6
+Anuradhapura,2.528,OPV_Local,Clay,Rainfed,402.2,114.8,1570.1,3,497
+Anuradhapura,0.791,OPV_Local,Loam,Canal,308.9,89.4,849.8,3,631.8
+Anuradhapura,0.288,Hybrid_A,Loam,Rainfed,389.5,154.3,2051.3,3,1001.8
+Anuradhapura,1.91,OPV_Local,Clay,Tube well,954.4,55.1,892.6,1,946.4
+Anuradhapura,0.473,Hybrid_A,Clay,Tank,389.8,102.3,1692.5,1,1578
+Anuradhapura,2.422,Hybrid_B,Clay,Tube well,707.7,173.3,1194.5,2,1615.6
+Anuradhapura,0.699,Hybrid_A,Clay,Rainfed,299.6,108.6,0,1,943.6
+Anuradhapura,1.762,OPV_Local,Clay,Tube well,870.7,128.2,931.2,1,1047.9
+Anuradhapura,1.822,Hybrid_B,Loam,Tube well,947.7,58.8,0,2,1183.9
+Anuradhapura,1.514,Hybrid_B,Loam,Tube well,910.5,50.3,1488,1,1550.4
+Anuradhapura,0.599,Hybrid_A,Loam,Tank,412.3,110.6,0,2,1576.8
+Anuradhapura,0.574,Hybrid_A,Clay,Rainfed,935.7,136.3,1677.8,0,1922.9
+Anuradhapura,1.949,Hybrid_A,Loam,Rainfed,446.9,96,1357.2,1,1446.3
+Anuradhapura,3.506,OPV_Local,Clay,Tank,323.2,95.5,1140.7,3,462.3
+Anuradhapura,7.177,OPV_Local,Loam,Tube well,359.2,167.6,603.6,2,701.6
+Anuradhapura,4.36,OPV_Local,Loam,Tank,1067.6,109.3,690.2,2,968
+Anuradhapura,0.852,OPV_Local,Sandy,Tube well,397.4,97.1,743.4,1,764
+Anuradhapura,1.555,Hybrid_B,Loam,Tank,369.5,84.5,1648.4,1,1460.6
+Anuradhapura,1.695,Hybrid_B,Loam,Tank,800.3,168.1,1225.7,3,1359.3
+Anuradhapura,1.137,OPV_Local,Sandy,Canal,418.2,190.9,0,1,872
+Anuradhapura,3.515,Hybrid_A,Loam,Canal,380.2,202.3,2231.3,1,2038.9
+Anuradhapura,0.749,Hybrid_B,Sandy,Rainfed,332.4,84.7,1455.5,2,781.4
+Anuradhapura,1.845,OPV_Local,Clay,Tank,372.6,79,1305.7,3,543.5
+Anuradhapura,1.435,Hybrid_B,Clay,Rainfed,340.7,114.4,1353.9,1,937.2
+Anuradhapura,8.203,OPV_Local,Sandy,Canal,795.8,45.4,671.4,0,911.4
+Anuradhapura,1.512,OPV_Local,Loam,Rainfed,467.7,196,680.1,2,797.4
+Anuradhapura,4.72,Hybrid_B,Loam,Rainfed,345,105.6,1514.8,2,887.8
+Anuradhapura,0.837,OPV_Local,Clay,Rainfed,918.3,205.8,0,1,908
+Anuradhapura,3.751,Hybrid_B,Sandy,Rainfed,987.3,82.6,2167.6,2,1143.1
+Anuradhapura,1.837,Hybrid_B,Loam,Rainfed,379.6,50,1407.3,2,919
+Anuradhapura,3.469,OPV_Local,Loam,Tank,767.6,78.1,1352.4,1,1198.3
+Anuradhapura,2.572,OPV_Local,Loam,Rainfed,802,91,841.2,1,944.8
+Anuradhapura,3.789,Hybrid_A,Loam,Tank,792.5,177.9,2651.4,1,2088.5
+Anuradhapura,1.535,Hybrid_B,Loam,Tube well,487.8,106,1739.7,2,1498.9
+Anuradhapura,1.457,OPV_Local,Loam,Tank,849.9,199.7,724.3,2,1053.6
+Anuradhapura,1.704,OPV_Local,Sandy,Rainfed,385.5,108.9,0,2,500
+Anuradhapura,1.119,Hybrid_A,Loam,Rainfed,861.1,75.2,2263.9,1,1854.8
+Anuradhapura,0.698,Hybrid_A,Sandy,Tube well,363.4,65.6,1751.1,2,1079.7
+Anuradhapura,2.138,Hybrid_B,Loam,Rainfed,829.2,141.7,2122.1,0,1913.1
+Anuradhapura,0.925,Hybrid_B,Loam,Tank,471.9,60,1903.9,3,925.9
+Anuradhapura,0.567,OPV_Local,Loam,Tank,919.6,131.4,937.5,3,780.3
+Anuradhapura,1.483,OPV_Local,Clay,Tube well,908.7,93.2,929.6,1,924.3
+Anuradhapura,1.434,OPV_Local,Clay,Tank,731.7,73.1,932.6,1,927.4
+Anuradhapura,1.948,OPV_Local,Loam,Tank,972.3,164.5,0,2,867.5
+Anuradhapura,1.12,Hybrid_B,Loam,Tank,464.9,150,1847.2,2,1533.5
+Anuradhapura,6.817,Hybrid_A,Sandy,Tank,869.4,104.5,0,2,1596.9
+Anuradhapura,4.893,OPV_Local,Sandy,Tank,373.7,105.5,855.8,1,652.3
+Anuradhapura,1.05,Hybrid_A,Loam,Rainfed,374.9,103.1,1759.6,3,876.9
+Anuradhapura,1.178,Hybrid_B,Clay,Canal,883.7,156.9,0,1,1702.5
+Anuradhapura,1.301,Hybrid_B,Loam,Tube well,802,141.1,1304.5,1,1967.5
+Anuradhapura,4.245,OPV_Local,Loam,Tube well,362.9,99.3,821.3,2,632.6
+Anuradhapura,1.927,OPV_Local,Loam,Tank,665.3,137.1,909.3,3,755.9
+Anuradhapura,4.425,Hybrid_B,Sandy,Tank,925.6,148.9,1766,1,1648.3
+Anuradhapura,2.097,OPV_Local,Loam,Rainfed,817.3,201.4,1482.9,1,1289.2
+Anuradhapura,3.163,OPV_Local,Sandy,Rainfed,260.2,110.1,1256.8,2,446.2
+Anuradhapura,1.571,Hybrid_B,Sandy,Canal,376.9,214.7,1186.7,2,1095.4
+Anuradhapura,0.478,Hybrid_A,Sandy,Rainfed,853.3,116.4,1891.5,2,1375.2
+Anuradhapura,0.877,Hybrid_A,Loam,Rainfed,346.3,136.3,1812.5,2,1199
+Anuradhapura,0.632,OPV_Local,Loam,Tank,900.9,50.7,300,1,861
+Anuradhapura,0.812,Hybrid_A,Sandy,Tank,228.7,133.5,2178.7,3,827.3
+Anuradhapura,1.149,OPV_Local,Clay,Tank,367.8,93.1,1372.3,3,667.9
+Anuradhapura,4.929,Hybrid_A,Sandy,Canal,378.3,97.3,1469.7,2,1169.8
+Anuradhapura,0.703,Hybrid_B,Loam,Rainfed,818,129.1,1381.5,2,1442.2
+Anuradhapura,2.318,OPV_Local,Sandy,Tank,389.5,139.1,959.5,0,917.5
+Anuradhapura,1.93,Hybrid_B,Sandy,Tank,773.9,59.5,0,3,733.4
+Anuradhapura,1.907,OPV_Local,Sandy,Tank,307.9,40.3,874,2,449.4
+Anuradhapura,4.557,Hybrid_B,Loam,Tank,903.7,171.7,1779.6,1,2248.4
+Anuradhapura,0.425,Hybrid_B,Loam,Rainfed,988,113.2,1879.2,1,1653
+Anuradhapura,0.638,Hybrid_B,Sandy,Rainfed,791.5,120,1485.6,0,1347.5
+Anuradhapura,4.576,Hybrid_A,Sandy,Tube well,821.5,102.3,0,2,1493.7
+Anuradhapura,1.283,OPV_Local,Loam,Rainfed,853.1,92.2,643.9,2,831
+Anuradhapura,0.944,OPV_Local,Loam,Rainfed,379.5,110.4,696.3,2,520.3
+Anuradhapura,3.451,Hybrid_A,Loam,Tank,753.6,199.6,1967.5,3,1701.4
+Anuradhapura,6.62,Hybrid_A,Loam,Tube well,903.3,121.8,1340.7,0,2341.6
+Anuradhapura,1.838,OPV_Local,Loam,Tank,809.4,148.5,636.5,2,1126.1
+Anuradhapura,0.884,OPV_Local,Loam,Rainfed,878.5,72.2,1159.8,1,1018.2
+Anuradhapura,0.532,Hybrid_B,Loam,Rainfed,736.8,161.3,1979.2,0,2030.3
+Anuradhapura,0.4,Hybrid_A,Clay,Tank,893.9,76,2502.3,2,1583.5
+Anuradhapura,1.044,OPV_Local,Sandy,Canal,1018.9,108.5,1037.4,2,957.6
+Anuradhapura,1.622,OPV_Local,Loam,Tank,908.2,63.8,1254.6,2,1036
+Anuradhapura,0.652,OPV_Local,Clay,Canal,439.6,115.9,1072.3,0,866.1
+Anuradhapura,1.784,OPV_Local,Sandy,Rainfed,791.4,106.3,1176.3,3,679.5
+Anuradhapura,0.694,Hybrid_A,Loam,Tank,303.6,115.4,1646.2,1,1612.9
+Anuradhapura,0.853,OPV_Local,Loam,Canal,1004.2,128.8,947.4,1,964.9
+Anuradhapura,1.487,Hybrid_B,Sandy,Rainfed,744.2,113.7,1630.1,2,1184.7
+Anuradhapura,8.07,OPV_Local,Loam,Rainfed,897.3,41.9,903.3,2,690.4
+Anuradhapura,1.153,OPV_Local,Loam,Rainfed,342.8,177.2,1039.4,0,809.1
+Anuradhapura,2.206,Hybrid_A,Clay,Canal,872.2,131,0,2,1824.7
+Anuradhapura,0.436,OPV_Local,Loam,Tube well,823.5,194.5,0,1,1011.3
+Anuradhapura,1.597,OPV_Local,Clay,Tube well,519.9,138.6,1322.6,3,627.8
+Anuradhapura,1.922,Hybrid_A,Loam,Rainfed,399.5,200.6,2465.8,1,1585.1
+Anuradhapura,1.907,OPV_Local,Clay,Rainfed,406.5,114.7,1297.7,3,470.9
+Anuradhapura,4.027,OPV_Local,Loam,Rainfed,1009.5,100.9,615,1,885.7
+Anuradhapura,9.58,Hybrid_B,Sandy,Tank,375.5,212.1,1668.6,2,1301.4
+Anuradhapura,1.055,Hybrid_B,Loam,Tank,923.8,102.2,1805.8,3,1207.7
+Anuradhapura,0.618,OPV_Local,Loam,Tank,831.1,132.9,590.7,2,1095.9
+Anuradhapura,0.505,Hybrid_A,Sandy,Rainfed,925.7,51.8,2220.4,2,1261.1
+Anuradhapura,0.947,OPV_Local,Clay,Tank,443.2,111,1511.4,2,809
+Anuradhapura,1.768,Hybrid_B,Loam,Tank,888.6,175.5,1723.9,0,2285.6
+Anuradhapura,1.355,OPV_Local,Loam,Tank,825.1,152.3,0,2,1169.3
+Anuradhapura,1.378,Hybrid_B,Sandy,Tank,412.1,55.8,1677.3,1,976.4
+Anuradhapura,2.24,Hybrid_B,Sandy,Tube well,877.9,136.3,1659.3,3,1078.7
+Anuradhapura,2.928,OPV_Local,Loam,Rainfed,873.5,47.8,875.5,2,754
+Anuradhapura,1.028,Hybrid_A,Clay,Rainfed,414,158.2,1695.4,2,1108.9
+Anuradhapura,3.326,OPV_Local,Sandy,Tank,742.8,114.3,937.1,2,859
+Anuradhapura,1.003,Hybrid_A,Clay,Canal,858.6,216.8,1907.5,2,1790.4
+Anuradhapura,0.669,Hybrid_B,Loam,Tank,946.3,116.5,2019.4,1,1982.7
+Anuradhapura,0.726,OPV_Local,Loam,Canal,279.6,54.5,1305.9,2,688.5
+Anuradhapura,0.848,Hybrid_A,Loam,Rainfed,852.8,106.3,2372,1,1800.2
+Anuradhapura,1.723,Hybrid_B,Sandy,Rainfed,399.4,95,1569.5,2,855.8
+Anuradhapura,7.364,OPV_Local,Loam,Canal,868.2,144,921.9,2,1136.8
+Anuradhapura,0.448,OPV_Local,Loam,Tube well,867.3,84.4,1427.9,3,744.2
+Anuradhapura,0.526,Hybrid_B,Loam,Canal,1022,131.7,0,2,1572.7
+Anuradhapura,1.968,OPV_Local,Sandy,Rainfed,285.9,145.4,1022.8,1,446
+Anuradhapura,0.582,OPV_Local,Loam,Rainfed,394.8,120.6,719.5,1,812.5
+Anuradhapura,1.367,OPV_Local,Sandy,Rainfed,1037.7,53.2,1023,2,644.7
+Anuradhapura,1.323,Hybrid_A,Sandy,Tank,748.1,126.7,1808.1,2,1487.4
+Anuradhapura,3.974,OPV_Local,Loam,Tube well,865.1,96.9,930.5,2,883.4
+Anuradhapura,1.227,Hybrid_A,Clay,Rainfed,961.4,164.8,1651.3,3,1181.9
+Anuradhapura,3.595,Hybrid_B,Loam,Rainfed,708,217.6,1376.2,0,1798.4
+Anuradhapura,2.5,OPV_Local,Loam,Rainfed,353.3,122.1,778.2,2,700
+Anuradhapura,1.52,Hybrid_B,Loam,Rainfed,560.7,116,1408,3,998.7
+Anuradhapura,1.988,Hybrid_B,Clay,Tank,665.5,158.8,1533.9,2,1550.5
+Anuradhapura,0.872,OPV_Local,Sandy,Rainfed,855.2,154.8,0,1,788.9
+Anuradhapura,4.069,Hybrid_A,Clay,Rainfed,997.4,145.5,1659,1,1858.1
+Anuradhapura,4.609,Hybrid_B,Sandy,Tank,1015.1,147.2,1777.3,2,1322.8
+Anuradhapura,1.53,Hybrid_A,Sandy,Tank,978.4,65.1,1995.7,1,1524.9
+Anuradhapura,1.128,OPV_Local,Loam,Rainfed,895.2,93.5,1091.9,2,929.8
+Anuradhapura,1.867,OPV_Local,Loam,Tank,760.5,43.6,0,3,528.7
+Anuradhapura,7.211,Hybrid_B,Loam,Tank,786.7,159.1,0,2,1915.3
+Anuradhapura,2.041,Hybrid_A,Loam,Canal,395.3,215.6,1965.2,3,1430
+Anuradhapura,0.282,Hybrid_A,Loam,Tank,801.1,141.1,1866.2,1,2110.5
+Anuradhapura,3.98,Hybrid_A,Loam,Canal,462.7,59.4,2043.2,1,1956
+Anuradhapura,1.051,OPV_Local,Loam,Tank,422.3,191.9,1153,1,1103.9
+Anuradhapura,1.671,OPV_Local,Loam,Tank,822.1,106.5,1229.3,3,878.9
+Anuradhapura,8.062,OPV_Local,Loam,Tank,981.2,96.1,1521.7,2,1153.1
+Anuradhapura,2.927,Hybrid_A,Clay,Tube well,810.9,67.1,1846.4,3,1104.8
+Anuradhapura,1.789,OPV_Local,Clay,Rainfed,425.5,156.4,869.5,1,689.1
+Anuradhapura,1.584,Hybrid_B,Loam,Tank,489.8,79,1169.2,1,1574.5
+Anuradhapura,1.741,Hybrid_A,Loam,Tank,831.2,132.3,1584.1,2,2006.2
+Anuradhapura,4.957,Hybrid_A,Sandy,Rainfed,743.4,205.5,2156.7,0,1805.7
+Anuradhapura,1.169,Hybrid_B,Loam,Tank,861.9,132.8,1307.7,2,1536.6
+Anuradhapura,0.336,Hybrid_B,Clay,Rainfed,320.2,129,1564.7,2,784.5
+Anuradhapura,2.34,OPV_Local,Loam,Tank,448.2,81.5,1121.6,2,939.6
+Anuradhapura,1.838,Hybrid_A,Loam,Tank,750.1,62.7,1645.3,1,1841.1
+Anuradhapura,1.594,Hybrid_A,Loam,Tank,751.1,156.5,2253.4,2,1901.3
+Anuradhapura,0.48,Hybrid_A,Clay,Rainfed,334.8,121.2,2025,2,918.3
+Anuradhapura,1.3,Hybrid_B,Clay,Tank,919.1,123.3,1451.4,2,1277.9
+Anuradhapura,1.861,OPV_Local,Clay,Rainfed,855.9,200,0,3,593.3
+Anuradhapura,1.88,OPV_Local,Sandy,Tank,898.1,102.4,0,2,797.2
+Anuradhapura,1.468,Hybrid_B,Loam,Tank,857.1,109.2,1755.5,2,1787.1
+Anuradhapura,1.991,OPV_Local,Clay,Tank,540.8,70.4,645.4,1,923.2
+Anuradhapura,0.456,OPV_Local,Sandy,Tank,760.8,160.1,701.1,0,951.8
+Anuradhapura,0.817,Hybrid_B,Loam,Tank,420.1,79.5,0,1,1357.2
+Anuradhapura,4.392,OPV_Local,Sandy,Rainfed,794.3,113.7,581.4,2,760.4
+Anuradhapura,1.188,Hybrid_B,Sandy,Tank,333.3,178,1387.9,2,966.4
+Anuradhapura,1.292,OPV_Local,Loam,Rainfed,343.7,149,1004.5,2,534.9
+Anuradhapura,1.624,Hybrid_B,Loam,Rainfed,891,173,1878,1,1840.8
+Anuradhapura,4.466,OPV_Local,Loam,Tube well,390.7,144.3,928.9,1,946.6
+Anuradhapura,0.331,OPV_Local,Loam,Rainfed,314.3,131.6,859.5,0,627.2
+Anuradhapura,0.729,OPV_Local,Loam,Rainfed,833.5,120.9,0,1,869.1
+Anuradhapura,1.026,Hybrid_A,Loam,Rainfed,849.2,43.6,0,2,1144.2
+Anuradhapura,1.329,Hybrid_A,Loam,Tank,894.7,131.5,2094.9,3,1364.8
+Anuradhapura,1.448,OPV_Local,Sandy,Tank,772.3,215.2,787.3,2,835.1
+Anuradhapura,0.303,OPV_Local,Clay,Tank,497.6,145.2,801.4,3,671.7
+Anuradhapura,3.598,OPV_Local,Loam,Rainfed,470.1,112.8,642.5,2,685.3
+Anuradhapura,0.663,Hybrid_B,Loam,Canal,797.9,120.5,2212.1,3,1402.8
+Anuradhapura,1.675,OPV_Local,Loam,Tank,348.9,87.8,746.3,0,1007.6
+Anuradhapura,0.932,OPV_Local,Clay,Tube well,357.9,47.3,1151.9,1,724
+Anuradhapura,1.976,OPV_Local,Loam,Tube well,976.9,180.7,1174.2,0,1382.1
+Anuradhapura,3.183,Hybrid_A,Sandy,Canal,953.2,211.9,1682.1,1,1877.9
+Anuradhapura,0.485,Hybrid_B,Loam,Tank,355.3,169.3,0,3,1052.8
+Anuradhapura,0.565,Hybrid_B,Loam,Tube well,811.5,145.2,1357.5,2,1477.9
+Anuradhapura,1.962,Hybrid_B,Loam,Tank,907.8,118.8,1419,2,1585.3
+Anuradhapura,2.265,Hybrid_B,Sandy,Rainfed,551.2,122.5,1511.4,0,1188.3
+Anuradhapura,1.534,Hybrid_A,Sandy,Canal,948.1,122.8,1989.6,2,1800.1
+Anuradhapura,1.983,Hybrid_B,Loam,Tube well,368.9,63.7,1217.6,1,1184.3
+Anuradhapura,1.286,Hybrid_A,Loam,Tube well,919.2,160.9,2080.3,1,2119
+Anuradhapura,1.118,Hybrid_B,Sandy,Tank,415.6,47.3,1390.4,3,654.2
+Anuradhapura,0.777,Hybrid_B,Sandy,Rainfed,331.6,98.1,1955.7,1,850.6
+Anuradhapura,8.414,Hybrid_B,Sandy,Tank,879.5,186.9,0,2,1416.4
+Anuradhapura,0.935,OPV_Local,Loam,Tube well,337.8,108.7,997.2,0,789.1
+Anuradhapura,0.432,Hybrid_B,Sandy,Rainfed,838.6,148.2,1646.8,0,1537.1
+Anuradhapura,1.749,Hybrid_A,Clay,Tank,392.3,198.3,0,2,1185.9
+Anuradhapura,0.997,OPV_Local,Clay,Tube well,378.6,198.3,1336.4,3,573.9
+Anuradhapura,1.875,Hybrid_A,Loam,Canal,854.3,175.9,1991.7,2,2289.3
+Anuradhapura,1.03,Hybrid_A,Sandy,Rainfed,461.1,43.6,1651.8,2,939.8
+Anuradhapura,1.727,OPV_Local,Sandy,Rainfed,444.8,155.8,778.7,2,587.5
+Anuradhapura,1.928,Hybrid_A,Clay,Canal,678.1,137.7,0,2,1474.9
+Anuradhapura,1.468,Hybrid_A,Loam,Canal,347,42,1707,2,1227.1
+Anuradhapura,0.789,OPV_Local,Loam,Rainfed,423.2,124.2,1165.5,0,818.2
+Anuradhapura,1.78,Hybrid_A,Sandy,Rainfed,869.4,200,0,2,1169.6
+Anuradhapura,0.788,Hybrid_A,Loam,Tank,894,99.1,1854.7,1,2061.4
+Anuradhapura,8.392,OPV_Local,Clay,Rainfed,889.3,185.6,798.2,3,723.4
+Anuradhapura,1.218,Hybrid_A,Clay,Canal,334.8,47.1,1750.3,2,1086.9
+Anuradhapura,1.802,Hybrid_A,Clay,Tank,449,49,1934,0,1442.5
+Anuradhapura,1.913,OPV_Local,Loam,Tank,689.3,92.6,1371.5,1,1190.2
+Anuradhapura,3.978,Hybrid_A,Loam,Rainfed,940.4,127.8,2060.8,1,2243.7
+Anuradhapura,1.659,OPV_Local,Clay,Tank,857.1,110,921.9,2,1046.6
+Anuradhapura,1.434,OPV_Local,Loam,Canal,1012.5,131.5,1424.5,1,1287.7
+Anuradhapura,3.365,Hybrid_A,Sandy,Tube well,888.6,152.3,2232.8,1,2098.8
+Anuradhapura,0.851,OPV_Local,Clay,Rainfed,858.8,82.6,901.6,2,607.9
+Anuradhapura,1.715,OPV_Local,Sandy,Rainfed,395.6,189.4,899.2,3,400.8
+Anuradhapura,1.074,Hybrid_A,Loam,Tank,351.4,90.4,1807.1,3,1184.6
+Anuradhapura,0.768,Hybrid_B,Sandy,Canal,876.9,76.6,1982.9,3,1088.5
+Anuradhapura,3.111,Hybrid_B,Sandy,Tube well,445.3,151.2,1650.5,2,1036.8
+Anuradhapura,2.243,Hybrid_A,Clay,Rainfed,806.2,192.5,2006.8,3,1211.4
+Anuradhapura,1.491,OPV_Local,Sandy,Tube well,787,102.3,1311.7,2,878.2
+Anuradhapura,1.44,Hybrid_A,Loam,Tube well,929.7,105.8,1847.7,2,1919.7
+Anuradhapura,4.426,Hybrid_B,Loam,Rainfed,347.8,71,1266.8,3,786.8
+Anuradhapura,3.562,Hybrid_B,Loam,Tube well,911.7,74.9,1561.1,2,1560.3
+Anuradhapura,3.934,OPV_Local,Loam,Rainfed,824.1,83.6,803.5,1,946
+Anuradhapura,1.097,Hybrid_B,Sandy,Tank,331.9,79.5,1686.1,1,1075.8
+Anuradhapura,0.519,Hybrid_B,Loam,Rainfed,368.3,210.4,1361.2,2,1062.2
+Anuradhapura,0.778,Hybrid_A,Loam,Rainfed,946.7,116.1,1956.6,2,1645.8
+Anuradhapura,1.902,Hybrid_A,Loam,Rainfed,852.3,139.4,1084.6,2,1603.1
+Anuradhapura,1.722,OPV_Local,Clay,Tank,365.2,67.5,360.2,1,715.2
+Anuradhapura,1.146,OPV_Local,Sandy,Rainfed,377.8,121.2,1063.1,2,526.3
+Anuradhapura,9.372,OPV_Local,Clay,Tank,922.5,109.9,0,2,804.2
+Anuradhapura,1.278,OPV_Local,Clay,Rainfed,315.6,185.4,0,3,420.6
+Anuradhapura,1.493,OPV_Local,Clay,Rainfed,381,154,871,2,614.1
+Anuradhapura,0.71,Hybrid_B,Sandy,Rainfed,405.9,122.4,1379.9,0,1059.6
+Anuradhapura,1.555,OPV_Local,Clay,Tank,844.3,53.9,792.1,3,453.4
+Anuradhapura,1.787,OPV_Local,Loam,Tank,752.6,169.8,0,0,1302.4
+Anuradhapura,2.55,Hybrid_B,Clay,Tank,931.4,155.5,0,2,1379.4
+Anuradhapura,1.157,OPV_Local,Clay,Tank,815.8,69,579.1,3,522.4
+Anuradhapura,1.214,OPV_Local,Loam,Rainfed,942.4,148.2,1592.4,2,1115.2
+Anuradhapura,3.026,Hybrid_A,Clay,Tube well,837.8,213.4,2163.7,2,1927.7
+Anuradhapura,1.606,Hybrid_A,Clay,Rainfed,903.5,74.5,2012.3,3,1112.5
+Anuradhapura,2.616,OPV_Local,Loam,Rainfed,869.4,142.8,1111.1,3,803.4
+Anuradhapura,0.423,Hybrid_A,Clay,Tube well,359.5,141,2045,1,1550.7
+Anuradhapura,1.281,Hybrid_A,Loam,Tube well,910.5,65.2,1877.4,2,1649
+Anuradhapura,4.114,Hybrid_B,Loam,Rainfed,1067.4,45.5,2164.4,1,1536.1
+Anuradhapura,0.372,Hybrid_A,Loam,Tank,966.4,110.3,1851.5,3,1303.6
+Anuradhapura,0.428,Hybrid_A,Clay,Tank,747.9,47.2,2066.9,2,1331.1
+Anuradhapura,0.728,OPV_Local,Loam,Tank,462.1,109.5,1399.1,2,841.1
+Anuradhapura,0.486,Hybrid_B,Sandy,Tank,842.2,52.5,0,2,1118.4
+Anuradhapura,1.565,OPV_Local,Clay,Tank,387.4,71.1,1053.5,0,770.5
+Anuradhapura,3.151,Hybrid_B,Loam,Tube well,781.1,161.9,1362.7,2,1823.1
+Anuradhapura,1.431,OPV_Local,Loam,Canal,893.5,75.8,845.6,2,774.1
+Anuradhapura,0.299,OPV_Local,Loam,Tank,397.8,114.7,0,3,604.7
+Anuradhapura,1.384,OPV_Local,Loam,Tube well,937.8,114.6,1158.5,2,1028.5
+Anuradhapura,1.279,Hybrid_B,Loam,Rainfed,695.8,153.1,1745.5,1,1711.7
+Anuradhapura,1.013,OPV_Local,Clay,Rainfed,343.5,113.8,1304.1,2,569.1
+Anuradhapura,2.284,OPV_Local,Loam,Rainfed,961.2,77.1,992.8,0,1262.1
+Anuradhapura,1.344,Hybrid_B,Loam,Canal,345.3,127.8,2113.2,1,1576.4
+Anuradhapura,1.325,Hybrid_A,Sandy,Tube well,923.1,122.7,2646.9,3,1197
+Anuradhapura,2.193,OPV_Local,Loam,Tank,950.1,120.5,1369.9,1,1113.2
+Anuradhapura,1.013,OPV_Local,Loam,Tank,914.4,81.4,1128.2,2,1014.8
+Anuradhapura,2.252,Hybrid_A,Loam,Canal,432.6,189.2,2424.6,0,2338.9
+Anuradhapura,3.566,Hybrid_B,Loam,Tank,1005.3,45.6,1431.7,2,1419.2
+Anuradhapura,0.99,Hybrid_B,Clay,Rainfed,898,117.3,0,2,1193.9
+Anuradhapura,1.445,Hybrid_B,Loam,Tank,1082.4,156.4,2112.5,1,1772.9
+Anuradhapura,1.63,OPV_Local,Loam,Tube well,452.2,199.7,756,3,683.8
+Anuradhapura,6.278,OPV_Local,Loam,Tube well,365.3,153.7,0,2,834.5
+Anuradhapura,4.821,Hybrid_A,Clay,Tube well,454.4,92.4,1548.4,3,1031.6
+Anuradhapura,3.36,OPV_Local,Clay,Canal,357.3,132.1,0,3,531.6
+Anuradhapura,1.154,OPV_Local,Sandy,Rainfed,911.5,112,1247,0,844.6
+Anuradhapura,2.596,OPV_Local,Loam,Tank,305.1,74.4,1254.6,3,718.8
+Anuradhapura,1.477,Hybrid_A,Clay,Tube well,337.6,153.5,1641.9,3,1031.4
+Anuradhapura,0.457,Hybrid_B,Clay,Rainfed,405.9,154.4,1817.9,2,1066.9
+Anuradhapura,0.965,Hybrid_B,Loam,Tube well,331.6,177,0,2,1232.6
+Anuradhapura,1.498,OPV_Local,Clay,Tank,371.7,56.2,1011.2,2,576.1
+Anuradhapura,2.137,Hybrid_A,Loam,Rainfed,1125.3,218,1346.5,2,1567.9
+Anuradhapura,0.805,Hybrid_B,Loam,Tube well,808.9,155.1,1487.1,3,1301.9
+Anuradhapura,2.791,Hybrid_A,Loam,Tube well,378.1,83.8,1215.1,2,1396
+Anuradhapura,0.705,OPV_Local,Sandy,Rainfed,321,47.4,551.5,1,303.2
+Anuradhapura,1.769,OPV_Local,Loam,Tank,310.4,212,1032.5,1,1021
+Anuradhapura,4.031,Hybrid_B,Clay,Tank,978.2,119.1,1535,0,2014.4
+Anuradhapura,1.922,OPV_Local,Loam,Tank,398,81.5,851.9,2,983.6
+Anuradhapura,0.816,OPV_Local,Clay,Rainfed,365.2,104.8,0,0,515
+Anuradhapura,1.614,Hybrid_B,Loam,Rainfed,443.5,165.4,1607,3,897.6
+Anuradhapura,1.107,Hybrid_B,Clay,Rainfed,427.9,73.3,1218.2,3,622.4
+Anuradhapura,1.451,OPV_Local,Sandy,Tank,940.3,57.1,577.4,2,630.1
+Anuradhapura,0.767,Hybrid_B,Clay,Tank,858.5,85.1,0,3,1013.5
+Anuradhapura,1.408,Hybrid_A,Loam,Rainfed,338.3,44.1,1804.3,2,939.5
+Anuradhapura,2.562,Hybrid_A,Clay,Rainfed,741.3,108.6,2024.7,3,1114.1
+Anuradhapura,8.009,OPV_Local,Loam,Tank,911.1,138.4,1123.2,3,648.4
+Anuradhapura,9.295,Hybrid_B,Sandy,Tank,854.9,45.6,1746.7,0,1269
+Anuradhapura,1.48,Hybrid_B,Sandy,Canal,838.4,91.5,1917.8,1,1438.1
+Anuradhapura,4.211,OPV_Local,Loam,Tank,387.2,139.9,1011.9,3,630.5
+Anuradhapura,0.803,Hybrid_B,Loam,Tank,332.1,140,0,2,1125
+Anuradhapura,0.852,Hybrid_B,Loam,Tube well,811.7,91.5,1724.3,1,1921.3
+Anuradhapura,1.536,OPV_Local,Sandy,Rainfed,973.5,157.2,1178,3,510.8
+Anuradhapura,6.518,OPV_Local,Sandy,Rainfed,819.2,97.1,1054.9,2,782.8
+Anuradhapura,0.642,Hybrid_A,Clay,Tube well,812.4,61.5,1748.9,2,1547.9
+Anuradhapura,1.05,Hybrid_B,Loam,Tank,923.3,139.4,1708.8,3,1237.3
+Anuradhapura,0.761,OPV_Local,Clay,Rainfed,769.4,151,513.1,3,616.5
+Anuradhapura,3.024,Hybrid_B,Loam,Canal,945.9,143.8,1849,1,2167.4
+Anuradhapura,1.053,OPV_Local,Loam,Canal,784.9,80.1,1078.6,2,934.1
+Anuradhapura,1.579,Hybrid_A,Clay,Tube well,879.4,158.7,1492,1,1881.4
+Anuradhapura,1.55,OPV_Local,Sandy,Tank,915.2,137.7,1242.8,2,819.5
+Anuradhapura,4.345,OPV_Local,Loam,Rainfed,834.8,135.6,1082.6,2,1085.7
+Anuradhapura,1.575,OPV_Local,Sandy,Rainfed,392.5,44.6,1527.2,2,473.8
+Anuradhapura,0.334,OPV_Local,Sandy,Tube well,833.3,58.6,1178.7,2,713.3
+Anuradhapura,0.863,OPV_Local,Clay,Tube well,771.5,197.7,1103.1,2,757
+Anuradhapura,4.485,OPV_Local,Loam,Rainfed,744.1,181.7,0,0,1466.5
+Anuradhapura,1.02,Hybrid_B,Loam,Tank,777.4,108.5,1408.9,2,1339.2
+Anuradhapura,1.556,OPV_Local,Loam,Rainfed,444.4,167.1,1340.2,1,831.7
+Anuradhapura,1.635,OPV_Local,Loam,Rainfed,920.3,159.4,0,1,1074
+Anuradhapura,3.253,OPV_Local,Clay,Rainfed,369.9,98.6,410,1,548.9
+Anuradhapura,2.976,OPV_Local,Sandy,Canal,769.8,121.5,842.4,2,804.6
+Anuradhapura,1.643,OPV_Local,Clay,Tube well,439.8,150.6,857,2,746.7
+Anuradhapura,1.888,OPV_Local,Sandy,Rainfed,848.6,63.8,1523.7,3,557.3
+Anuradhapura,1.015,OPV_Local,Loam,Canal,473.8,93.1,1166.7,3,675.2
+Anuradhapura,1.325,Hybrid_A,Loam,Rainfed,914.4,55.3,2002.7,2,1380.3
+Anuradhapura,1.113,Hybrid_B,Loam,Tank,413.6,50.1,1488.7,3,887.9
+Anuradhapura,0.681,Hybrid_B,Loam,Tank,907.4,176.1,1656.1,3,1225.1
+Anuradhapura,1.845,OPV_Local,Loam,Tube well,890.8,206.9,1335.4,2,1114.2
+Anuradhapura,1.356,OPV_Local,Loam,Tube well,804.7,148.8,908.7,2,1005.9
+Anuradhapura,1.925,Hybrid_B,Loam,Rainfed,754.4,109.6,1486.3,2,1374.8
+Anuradhapura,1.381,Hybrid_B,Loam,Tube well,1020.1,132,0,0,1677
+Anuradhapura,1.706,OPV_Local,Loam,Tube well,385.8,135.4,628.3,0,927.5
+Anuradhapura,0.638,OPV_Local,Clay,Tank,885.7,63.1,0,3,464.4
+Anuradhapura,0.741,Hybrid_B,Loam,Tank,1069.1,106.4,1545.1,2,1555.8
+Anuradhapura,1.239,Hybrid_B,Clay,Tank,1027.5,136.2,0,2,1413.3
+Anuradhapura,0.693,Hybrid_B,Sandy,Rainfed,881.8,159.4,1408.2,2,1081.7
+Anuradhapura,1.578,OPV_Local,Clay,Rainfed,201.6,74,1402.4,2,429.9
+Anuradhapura,0.38,Hybrid_B,Loam,Rainfed,972.1,76.9,1792.1,3,1057.8
+Anuradhapura,0.846,OPV_Local,Loam,Tank,309.6,107.5,0,1,731.8
+Anuradhapura,0.308,OPV_Local,Sandy,Tank,472.3,130.5,1063.4,0,924.6
+Anuradhapura,0.418,Hybrid_B,Loam,Tank,1015,129.1,1643,1,1942.4
+Anuradhapura,0.824,Hybrid_B,Sandy,Tube well,372.6,155.6,1922.3,3,953.7
+Anuradhapura,1.645,Hybrid_A,Sandy,Tank,935.4,140.7,0,2,1571
+Anuradhapura,1.276,OPV_Local,Sandy,Rainfed,385.4,114,832.7,2,577.5
+Anuradhapura,1.968,OPV_Local,Clay,Tank,930.4,113.9,1624.5,2,956.9
+Anuradhapura,0.653,OPV_Local,Sandy,Tank,717.7,51,1149.9,0,923.1
+Anuradhapura,0.759,OPV_Local,Loam,Canal,979.5,95.2,1832.8,0,1133.4
+Anuradhapura,1.725,Hybrid_A,Loam,Rainfed,977.8,128.8,1584.8,1,2135.8
+Anuradhapura,9.988,Hybrid_B,Sandy,Rainfed,364.9,199.7,1809.2,3,698.3
+Anuradhapura,1.328,Hybrid_A,Clay,Canal,807.2,158.4,2101.2,1,1922.4
+Anuradhapura,1.411,Hybrid_B,Loam,Canal,473.9,172.6,0,0,1499.4
+Anuradhapura,3.484,OPV_Local,Loam,Tank,861.9,116.2,450.5,2,1092.8
+Anuradhapura,3.122,Hybrid_A,Loam,Tube well,857.6,152.2,1983.5,2,1955
+Anuradhapura,0.919,OPV_Local,Loam,Tank,898.6,118.6,1043.9,3,881.3
+Anuradhapura,0.601,OPV_Local,Loam,Tank,399.3,165.9,878.3,0,1170.1
+Anuradhapura,0.774,Hybrid_B,Sandy,Tube well,296.6,141.8,1663.1,3,696.1
+Anuradhapura,3.423,OPV_Local,Loam,Tank,424.1,59.9,1113.2,1,735.3
+Anuradhapura,0.906,OPV_Local,Loam,Rainfed,314.2,104.7,1497.5,2,751
+Anuradhapura,0.291,OPV_Local,Loam,Tank,386.7,144.5,1153,2,845.5
+Anuradhapura,0.58,OPV_Local,Sandy,Tank,364.2,172.3,0,2,571.6
+Anuradhapura,6.419,OPV_Local,Loam,Rainfed,1004.8,103.1,1091.7,0,1140.1
+Anuradhapura,1.921,Hybrid_A,Loam,Rainfed,350.3,66.8,1993.2,2,1090.8
+Anuradhapura,0.5,Hybrid_B,Sandy,Tank,454.1,137.9,0,1,1159.9
+Anuradhapura,3.369,OPV_Local,Clay,Tube well,966.7,141.6,939.8,1,916.6
+Anuradhapura,0.939,Hybrid_A,Loam,Tube well,308.7,153.8,1939.2,1,1834.2
+Anuradhapura,1.992,Hybrid_B,Clay,Tank,463.4,64.7,0,3,924.7
+Anuradhapura,4.567,Hybrid_B,Loam,Rainfed,835.9,142.5,1627.5,2,1595.8
+Anuradhapura,4.525,OPV_Local,Loam,Canal,973.2,87.5,1157.3,1,1312.5
+Anuradhapura,1.431,Hybrid_B,Loam,Tank,881.5,57.9,1150.4,1,1338.7
+Anuradhapura,4.786,OPV_Local,Sandy,Canal,340.2,40.2,1163.4,3,450.7
+Anuradhapura,0.542,Hybrid_B,Clay,Rainfed,839,207.8,1415.1,3,1043.5
+Anuradhapura,0.803,OPV_Local,Loam,Rainfed,912.3,57.8,943,1,840.3
+Anuradhapura,1.983,OPV_Local,Sandy,Tank,885,158.8,1249.2,1,1274.2
+Anuradhapura,1.74,OPV_Local,Clay,Tank,470.9,134.5,920.3,3,612.7
+Anuradhapura,1.541,OPV_Local,Loam,Tank,640.9,70.8,532.3,3,628.3
+Anuradhapura,0.737,Hybrid_B,Loam,Rainfed,1068.3,156.2,1760.4,2,1450.2
+Anuradhapura,0.685,OPV_Local,Sandy,Rainfed,916.2,67,779.3,3,446.2
+Anuradhapura,0.411,Hybrid_B,Loam,Tank,893.4,71.7,1516.6,1,1553.1
+Anuradhapura,1.362,Hybrid_A,Loam,Canal,858.1,52.4,1678.7,1,1824.8
+Anuradhapura,0.917,OPV_Local,Loam,Rainfed,723.4,147.4,983.7,3,662.1
+Anuradhapura,1.071,OPV_Local,Loam,Canal,773.6,132.4,1074.7,0,1379.2
+Anuradhapura,0.965,OPV_Local,Sandy,Tank,528.2,124.3,0,2,668.4
+Anuradhapura,1.455,OPV_Local,Loam,Tank,828,203.3,600.2,2,793.3
+Anuradhapura,1.442,Hybrid_A,Clay,Tank,335.5,135.2,1308.3,1,1333.1
+Anuradhapura,0.99,OPV_Local,Sandy,Tube well,858.1,153.1,995.4,2,956.9
+Anuradhapura,3.033,Hybrid_B,Loam,Tank,362.3,96.2,0,2,1112.3
+Anuradhapura,2.512,Hybrid_B,Loam,Tube well,402.8,126.7,1601.1,2,1309
+Anuradhapura,3.226,Hybrid_A,Clay,Tank,388.2,78,1996.2,1,1303.9
+Anuradhapura,1.566,Hybrid_A,Loam,Tank,804.6,137.1,0,1,2078.4
+Anuradhapura,0.84,Hybrid_A,Loam,Rainfed,292,205.7,1466.1,3,922.9
+Anuradhapura,1.472,OPV_Local,Sandy,Tank,869.4,113.1,1125.1,1,864.7
+Anuradhapura,0.579,Hybrid_B,Sandy,Canal,761.6,136.1,2129.6,2,1491.1
+Anuradhapura,0.999,Hybrid_A,Clay,Rainfed,878.9,118,2701.1,2,1558.7
+Anuradhapura,0.474,OPV_Local,Loam,Rainfed,717.2,130,857.8,3,702.3
+Anuradhapura,0.407,Hybrid_A,Loam,Rainfed,343.1,50.6,1862.2,3,724.9
+Anuradhapura,1.519,OPV_Local,Loam,Rainfed,786.1,167.4,0,1,907
+Anuradhapura,1.748,OPV_Local,Sandy,Tank,311.7,116.7,1333,2,690.1
+Anuradhapura,0.253,Hybrid_A,Loam,Canal,379,149.7,0,3,1069.8
+Anuradhapura,0.942,OPV_Local,Loam,Tank,354.2,126.4,837.4,2,852.4
+Anuradhapura,0.791,Hybrid_B,Loam,Tank,809.8,146.1,2326.9,2,1952.9
+Anuradhapura,1.532,OPV_Local,Loam,Canal,771.1,180,969.8,3,865.4
+Anuradhapura,1.436,Hybrid_B,Loam,Tube well,351.8,219.5,1614.5,2,1161.2
+Anuradhapura,4.549,OPV_Local,Loam,Tube well,857.2,77.6,827,2,985.3
+Anuradhapura,1.437,Hybrid_B,Loam,Rainfed,450.4,90.6,2041.1,2,1174.3
+Anuradhapura,1.947,OPV_Local,Loam,Tube well,946.4,89,935,2,989.9
+Anuradhapura,4.595,OPV_Local,Clay,Tank,974.1,145.7,931.1,2,1066.6
+Anuradhapura,1.554,Hybrid_A,Loam,Tank,903.7,68.6,2044.8,2,1780
+Anuradhapura,1.223,OPV_Local,Loam,Rainfed,329.5,102.9,1132.3,3,392.5
+Anuradhapura,0.565,OPV_Local,Sandy,Rainfed,370.6,213.9,1048,1,594
+Anuradhapura,0.99,Hybrid_A,Sandy,Tube well,914.3,190.4,2153.7,2,1660.1
+Anuradhapura,1.192,OPV_Local,Sandy,Tank,833.9,126.6,1451.3,3,750.7
+Anuradhapura,0.38,Hybrid_B,Clay,Tube well,418.6,58,1122,1,1118.3
+Anuradhapura,0.587,Hybrid_B,Loam,Tank,892,76.6,1294.2,3,979.2
+Anuradhapura,1.21,Hybrid_A,Clay,Tank,812.5,95.4,0,1,1655.6
+Anuradhapura,2.527,Hybrid_B,Loam,Tube well,957.4,182.7,1618.1,1,2003.7
+Anuradhapura,0.854,Hybrid_B,Loam,Canal,302.2,170.2,1469.4,3,1071.2
+Anuradhapura,2.159,OPV_Local,Clay,Tank,977.9,46.3,1021.5,2,833.8
+Anuradhapura,4.644,Hybrid_A,Sandy,Canal,1030.5,109.3,1853.7,2,1740.3
+Anuradhapura,3.662,OPV_Local,Loam,Rainfed,997.8,169.9,1232.5,0,1348.4
+Anuradhapura,1.844,Hybrid_B,Loam,Canal,554.7,201.9,1500.6,2,1516.1
+Anuradhapura,8.373,OPV_Local,Loam,Canal,435,132.6,446.3,2,826.7
+Anuradhapura,1.193,Hybrid_A,Clay,Tank,328.2,97.9,2036.7,3,1029.7
+Anuradhapura,1.06,Hybrid_B,Loam,Canal,885.6,198.6,1850.5,3,1314.5
+Anuradhapura,1.15,OPV_Local,Loam,Tank,914.6,97.1,877.4,2,1074.8
+Anuradhapura,1.719,Hybrid_A,Sandy,Rainfed,841,80.6,2202.2,1,1549.9
+Anuradhapura,1.089,Hybrid_B,Clay,Rainfed,957.3,153.1,1675.2,1,1572.6
+Anuradhapura,0.442,OPV_Local,Sandy,Canal,886.8,154.6,0,3,513.7
+Anuradhapura,0.757,OPV_Local,Sandy,Rainfed,384.6,158.4,1015.5,2,529.2
+Anuradhapura,4.43,Hybrid_A,Sandy,Tube well,438.7,81,1710.3,1,1506.3
+Anuradhapura,0.409,OPV_Local,Loam,Rainfed,864.4,215.7,0,2,799
+Anuradhapura,0.982,OPV_Local,Loam,Rainfed,740.9,108.8,973.3,1,1049.3
+Anuradhapura,0.42,Hybrid_A,Sandy,Rainfed,904.8,87.4,0,2,1103.9
+Anuradhapura,0.922,Hybrid_B,Sandy,Tank,341.8,116,1937.2,2,1159.1
+Anuradhapura,1.519,OPV_Local,Sandy,Rainfed,434.7,164.5,1142.3,2,732
+Anuradhapura,1.505,OPV_Local,Loam,Tube well,390.6,218.5,1284.8,3,743.1
+Anuradhapura,1.546,Hybrid_A,Sandy,Tank,825.4,68.3,1658.1,3,986.4
+Anuradhapura,1.469,OPV_Local,Loam,Canal,860.4,49.2,1083.6,1,893
+Anuradhapura,0.509,Hybrid_B,Loam,Canal,764,42.3,1813.8,1,1560.6
+Anuradhapura,1.485,Hybrid_A,Clay,Tank,745.1,132.4,1846.4,2,1548.9
+Anuradhapura,1.963,Hybrid_A,Clay,Canal,818.6,170.6,1927.1,3,1422.4
+Anuradhapura,1.664,OPV_Local,Clay,Tank,781.7,173.2,1121.7,1,1168.9
+Anuradhapura,3.943,OPV_Local,Loam,Rainfed,784.6,171.3,0,2,978.2
+Anuradhapura,4.424,Hybrid_B,Sandy,Rainfed,875.9,166,2256.7,2,1357.3
+Anuradhapura,9.788,OPV_Local,Sandy,Tank,870.4,71.4,0,0,963.8
+Anuradhapura,0.348,OPV_Local,Loam,Tank,788.5,101.4,893,1,1055
+Anuradhapura,1.397,Hybrid_B,Loam,Canal,832.6,161.4,1814.3,2,1837.9
+Anuradhapura,1.866,Hybrid_A,Loam,Rainfed,758.7,181.4,2223.8,2,1807.2
+Anuradhapura,1.853,OPV_Local,Sandy,Rainfed,446.4,147.2,1499.4,1,702.4
+Anuradhapura,3.435,Hybrid_A,Clay,Rainfed,356.8,117.3,0,2,828.1
+Anuradhapura,3,Hybrid_B,Loam,Tube well,810.8,138.5,1774,2,1610.1
+Anuradhapura,1.559,Hybrid_B,Loam,Tank,908.5,119.5,1333.6,2,1621.9
+Anuradhapura,2.884,OPV_Local,Loam,Tank,398.5,149.4,0,3,686.9
+Anuradhapura,0.296,OPV_Local,Loam,Canal,678.4,88.1,677.1,2,1025.2
+Anuradhapura,2.449,OPV_Local,Clay,Rainfed,839.9,43.9,979.8,2,541
+Anuradhapura,1.564,Hybrid_B,Loam,Canal,332,47.8,2166,3,862.4
+Anuradhapura,7.608,OPV_Local,Clay,Tube well,703.7,119.7,1146.3,1,1101.7
+Anuradhapura,1.698,Hybrid_A,Sandy,Tank,351.3,188.1,2042.3,1,1408.1
+Anuradhapura,1.574,Hybrid_A,Sandy,Canal,910.5,67.1,1494.5,0,1787.4
+Anuradhapura,0.874,OPV_Local,Sandy,Tank,389.6,55.7,841.6,3,441.2
+Anuradhapura,1.278,OPV_Local,Sandy,Rainfed,725.3,97.1,497.8,3,459.1
+Anuradhapura,2.483,Hybrid_B,Clay,Rainfed,413.3,208.4,1117.9,2,897.4
+Anuradhapura,3.163,Hybrid_B,Sandy,Rainfed,700.9,185.9,1508.9,3,975.1
+Anuradhapura,0.415,Hybrid_B,Clay,Rainfed,449,157.8,1763,3,780.5
+Anuradhapura,0.496,Hybrid_A,Loam,Canal,954,107.9,0,3,1375.9
+Anuradhapura,1.135,OPV_Local,Loam,Tube well,419.5,217.1,1207.8,2,916.7
+Anuradhapura,0.378,OPV_Local,Sandy,Canal,874.9,177.4,965.8,1,961.1
+Anuradhapura,0.825,Hybrid_B,Sandy,Tube well,995.3,215.3,1849.9,3,1100.3
+Anuradhapura,0.915,OPV_Local,Loam,Rainfed,926.6,112.4,1280.5,0,1126.4
+Anuradhapura,0.772,Hybrid_B,Loam,Tube well,360.7,95.9,1382.4,0,1509.9
+Anuradhapura,1.082,OPV_Local,Loam,Canal,937.1,101.5,841,1,1327.4
+Anuradhapura,1.976,Hybrid_B,Sandy,Tank,895,73.4,1204.2,2,1093.1
+Anuradhapura,1.038,Hybrid_B,Loam,Tank,899.1,184.4,1489.1,2,1767.6
+Anuradhapura,9.859,OPV_Local,Loam,Rainfed,313.9,58.9,1181.3,1,712.3
+Anuradhapura,1.166,Hybrid_A,Clay,Tank,352.8,118.7,1487.8,2,1318.8
+Anuradhapura,1.869,Hybrid_B,Loam,Tank,742.1,120.6,1992.4,1,2156.2
+Anuradhapura,0.307,Hybrid_A,Sandy,Tank,719.8,166,1911.3,2,1528.1
+Anuradhapura,4.223,Hybrid_B,Loam,Rainfed,1037.3,184.8,0,3,1263.6
+Anuradhapura,3.244,Hybrid_B,Clay,Rainfed,410.3,119,0,1,1142.5
+Anuradhapura,1.7,OPV_Local,Clay,Tank,1143.6,88.7,760.7,1,903.1
+Anuradhapura,1.622,OPV_Local,Clay,Rainfed,316,80.1,965.1,2,450.2
+Anuradhapura,2.236,OPV_Local,Clay,Rainfed,752.9,91.9,1161.8,2,790.4
+Anuradhapura,4.311,Hybrid_B,Sandy,Tank,930.5,107.2,1449.3,3,1110.6
+Anuradhapura,1.115,OPV_Local,Sandy,Tank,752.8,54.1,1102.6,3,542.9
+Anuradhapura,2.539,Hybrid_B,Loam,Rainfed,461.2,112,0,3,934.5
+Anuradhapura,1.548,OPV_Local,Loam,Tube well,450,133,1025.8,2,961.1
+Anuradhapura,2.803,Hybrid_A,Clay,Rainfed,885.5,105.4,2165.8,2,1464.9
+Anuradhapura,2.843,OPV_Local,Loam,Tank,846.1,48.6,557.4,2,701.3
+Anuradhapura,1.001,OPV_Local,Loam,Tube well,1018.2,147.1,701.7,2,1098.9
+Anuradhapura,0.302,Hybrid_A,Loam,Tank,891.4,198.7,1666,3,1529.2
+Anuradhapura,1.642,OPV_Local,Loam,Canal,897.2,90.8,725.8,1,1083.5
+Anuradhapura,1.573,Hybrid_A,Loam,Tank,336.2,164.5,1815.2,3,1271.2
+Anuradhapura,1.376,OPV_Local,Loam,Rainfed,770,116.8,1659,2,938.5
+Anuradhapura,4.17,Hybrid_B,Clay,Tube well,1038.8,94.9,1607,0,1622.8
+Anuradhapura,1.331,OPV_Local,Loam,Tank,842.9,218,0,1,1148.1
+Anuradhapura,9.671,Hybrid_A,Loam,Tank,898.2,182.1,2071.4,3,1717
+Anuradhapura,0.471,Hybrid_A,Clay,Rainfed,745,48.5,1542.9,1,1191.9
+Anuradhapura,2.677,OPV_Local,Loam,Tank,753.6,158.3,932,1,1243.7
+Anuradhapura,1.682,OPV_Local,Clay,Tank,386.6,163.6,1116.3,0,1057.4
+Anuradhapura,0.886,OPV_Local,Loam,Tube well,355,65.2,1305.5,3,571.9
+Anuradhapura,2.722,OPV_Local,Loam,Rainfed,806.1,100.3,1567.2,3,774.4
+Anuradhapura,0.727,OPV_Local,Loam,Rainfed,435.1,65.1,0,2,593.2
+Anuradhapura,1.381,Hybrid_B,Loam,Tank,752.6,124.6,1618.8,2,1697.8
+Anuradhapura,4.639,Hybrid_A,Loam,Rainfed,390.5,117.4,2044.7,1,1586.7
+Anuradhapura,2.716,OPV_Local,Sandy,Rainfed,930.7,123.4,1175.1,1,935.1
+Anuradhapura,3.782,Hybrid_A,Loam,Rainfed,840.7,43.8,1599.1,2,1307.5
+Anuradhapura,0.783,OPV_Local,Sandy,Tube well,408.9,101.7,532.7,1,763.8
+Anuradhapura,4.707,Hybrid_B,Loam,Rainfed,865.6,152.4,1946.6,3,1315.1
+Anuradhapura,6.797,OPV_Local,Clay,Tank,851.8,107.1,1258,2,1077.7
+Anuradhapura,1.804,OPV_Local,Sandy,Tube well,691.3,191.6,300,1,1068.9
+Anuradhapura,1.947,OPV_Local,Loam,Tank,894.3,157.8,867.5,3,790.7
+Anuradhapura,1.288,OPV_Local,Sandy,Rainfed,1060.1,91.1,0,0,847.3
+Anuradhapura,0.724,OPV_Local,Loam,Rainfed,833,143.8,1580.9,1,1258.2
+Anuradhapura,0.779,Hybrid_A,Loam,Tank,918.4,157.7,1504.6,0,2164
+Anuradhapura,1.205,Hybrid_B,Sandy,Tank,945.3,96,1887.2,2,1317.9
+Anuradhapura,1.228,Hybrid_A,Loam,Rainfed,364.3,119.4,1572,2,1091.7
+Anuradhapura,0.955,OPV_Local,Loam,Rainfed,948.5,110.5,0,3,746.3
+Anuradhapura,1.093,Hybrid_B,Loam,Rainfed,265.6,113.3,2057.2,0,1095.8
+Anuradhapura,2.903,Hybrid_A,Loam,Rainfed,292.5,105.6,1934.1,2,992.8
+Anuradhapura,3.331,Hybrid_A,Loam,Tank,883,50.2,0,2,1618.3
+Anuradhapura,0.573,OPV_Local,Clay,Canal,929.3,197,591.6,2,856.8
+Anuradhapura,0.438,OPV_Local,Loam,Tank,757.3,136.7,341,2,911.1
+Anuradhapura,7.34,Hybrid_B,Sandy,Rainfed,753.4,93,1098.3,3,953.3
+Anuradhapura,3.018,Hybrid_B,Clay,Tank,845.7,72.8,1312.6,2,1249.8
+Anuradhapura,4.326,OPV_Local,Loam,Tank,344.3,136.1,769.4,2,889.3
+Anuradhapura,3.429,OPV_Local,Loam,Tank,1039,44.8,1163.4,1,1127.6
+Anuradhapura,1.732,OPV_Local,Loam,Tube well,987.9,94.5,0,2,843.8
+Anuradhapura,0.692,OPV_Local,Clay,Rainfed,298.3,159.2,954.8,2,565.9
+Anuradhapura,3.079,OPV_Local,Loam,Tank,473.7,104.2,889,3,696.1
+Anuradhapura,1.228,OPV_Local,Sandy,Tank,469.2,123.2,0,2,778.4
+Anuradhapura,1.896,Hybrid_B,Loam,Rainfed,371,70.1,1743.4,1,1147.3
+Anuradhapura,1.471,Hybrid_A,Clay,Tube well,713.1,190,0,2,1385.7
+Anuradhapura,1.534,Hybrid_B,Loam,Rainfed,906.4,143.5,1281.1,1,1534.9
+Anuradhapura,1.322,OPV_Local,Clay,Canal,403.3,89.1,0,3,400.9
+Anuradhapura,0.347,Hybrid_B,Loam,Rainfed,813.9,149.5,1341.7,3,1065.6
+Anuradhapura,1.016,OPV_Local,Sandy,Canal,1015.2,120.1,1164.5,2,960.5
+Anuradhapura,1.984,Hybrid_A,Loam,Rainfed,815.2,152.2,0,3,1284
+Anuradhapura,1.311,Hybrid_A,Loam,Rainfed,708.2,135.9,1986.2,1,2013.8
+Anuradhapura,2.878,Hybrid_B,Sandy,Tank,455.2,75.7,1366.6,3,790.2
+Anuradhapura,6.153,Hybrid_A,Clay,Canal,312.8,50.2,1970.7,1,1387.4
+Anuradhapura,0.922,OPV_Local,Sandy,Tank,824.5,64.9,1209.3,0,921
+Anuradhapura,1.198,OPV_Local,Loam,Rainfed,803,61.6,1405.5,0,1116.3
+Anuradhapura,1.526,OPV_Local,Clay,Tank,295.6,148,1135.1,2,695.5
+Anuradhapura,0.917,OPV_Local,Clay,Tube well,963,129.8,1142,2,943.2
+Anuradhapura,1.404,OPV_Local,Loam,Rainfed,885.4,117.6,1151.8,2,842
+Anuradhapura,1.728,Hybrid_B,Loam,Rainfed,952.1,122.7,2261.7,3,1260.6
+Anuradhapura,0.507,Hybrid_B,Loam,Rainfed,461.2,83.5,1740.8,1,1353.3
+Anuradhapura,1.437,OPV_Local,Sandy,Rainfed,401.8,75.7,711.3,1,594.2
+Anuradhapura,1.373,Hybrid_A,Loam,Tank,820.7,116,2066,3,1538
+Anuradhapura,4.736,Hybrid_B,Sandy,Tank,327.4,101.2,0,0,1078.3
+Anuradhapura,1.996,OPV_Local,Sandy,Tank,835.1,162,0,2,975.9
+Anuradhapura,0.34,Hybrid_A,Loam,Tank,968.4,141.3,1580.2,3,1391.6
+Anuradhapura,0.672,Hybrid_B,Loam,Rainfed,493.3,121.9,1807.6,2,1158.8
+Anuradhapura,1.191,OPV_Local,Sandy,Tank,955.6,129.9,667.4,3,670.9
+Anuradhapura,4.7,Hybrid_B,Loam,Rainfed,923.3,194.6,1751.5,2,1571.7
+Anuradhapura,1.767,OPV_Local,Sandy,Rainfed,984.1,138.3,1231.4,3,565.2
+Anuradhapura,1.543,OPV_Local,Loam,Tube well,424.1,133.2,708.1,3,621.8
+Anuradhapura,1.817,Hybrid_B,Loam,Rainfed,923,154.1,1302.9,3,1189.5
+Anuradhapura,3.739,OPV_Local,Sandy,Tube well,936.5,57.1,762.7,2,693.9
+Anuradhapura,0.424,Hybrid_A,Clay,Canal,414.2,66,2076.4,2,1188.4
+Anuradhapura,1.718,Hybrid_B,Clay,Tube well,426.8,200,2237.8,1,1613.2
+Anuradhapura,3.563,OPV_Local,Loam,Canal,842,87.1,959.7,2,1062.8
+Anuradhapura,0.388,Hybrid_B,Loam,Rainfed,268.5,203.9,1562.1,1,893.3
+Anuradhapura,4.383,OPV_Local,Loam,Canal,377.9,154.7,1239.8,2,871.6
+Anuradhapura,1.674,OPV_Local,Loam,Rainfed,853.1,200.4,959.4,1,1237.5
+Anuradhapura,0.71,OPV_Local,Sandy,Rainfed,714.6,104.6,630.5,1,687.4
+Anuradhapura,1.092,Hybrid_A,Loam,Rainfed,883,145.8,0,2,1903.4
+Anuradhapura,1.483,OPV_Local,Loam,Tube well,846.6,112.3,873.1,1,926.7
+Anuradhapura,0.806,Hybrid_B,Loam,Rainfed,681.2,94.3,1570.4,3,1021.8
+Anuradhapura,1.344,OPV_Local,Loam,Canal,902.3,130.1,765.8,1,1091.5
+Anuradhapura,1.158,OPV_Local,Loam,Canal,459,206,1251.7,2,1019
+Anuradhapura,0.285,OPV_Local,Clay,Rainfed,425.6,76.7,856.7,3,450.8
+Anuradhapura,0.48,Hybrid_B,Loam,Rainfed,879.5,46.2,1376.1,3,857.8
+Anuradhapura,2.583,Hybrid_A,Sandy,Canal,1038.8,100.6,1952.3,2,1664.3
+Anuradhapura,7.805,OPV_Local,Loam,Rainfed,858.2,110.4,1436.5,0,1321.8
+Anuradhapura,0.656,Hybrid_A,Loam,Tank,791.1,51.2,2170.6,3,1116
+Anuradhapura,1.079,Hybrid_B,Clay,Tube well,957.5,107.5,2124.6,1,1574
+Anuradhapura,1.571,OPV_Local,Loam,Rainfed,916.3,118.5,1214.3,0,1094.9
+Anuradhapura,1.575,OPV_Local,Loam,Canal,1048.2,45.3,300,2,795
+Anuradhapura,0.769,Hybrid_B,Clay,Rainfed,947.5,142.4,2075.2,2,1421.9
+Anuradhapura,3.558,OPV_Local,Loam,Tank,840.8,104.3,865.8,2,801.5
+Anuradhapura,1.96,OPV_Local,Sandy,Tube well,702.7,60.8,913.9,1,901.2
+Anuradhapura,2.824,OPV_Local,Loam,Rainfed,916.4,105.8,1231.9,2,981.2
+Anuradhapura,0.71,Hybrid_B,Sandy,Tank,742.3,47.6,0,2,999.6
+Anuradhapura,1.078,OPV_Local,Loam,Canal,755.4,80.4,1187.7,3,596.8
+Anuradhapura,1.413,Hybrid_A,Loam,Tube well,958.1,163.1,1750.1,2,1844.7
+Anuradhapura,9.727,Hybrid_B,Loam,Rainfed,837.7,151.8,1461.9,3,1030.3
+Anuradhapura,1.423,OPV_Local,Sandy,Tank,831.3,91.8,1086.7,2,983.6
+Anuradhapura,0.415,Hybrid_B,Loam,Canal,867.2,126.8,1584,0,2296.7
+Anuradhapura,4.59,Hybrid_B,Loam,Rainfed,370.3,71.3,2024.3,3,729.1
+Anuradhapura,4.613,OPV_Local,Sandy,Canal,876.2,84.7,0,1,801.2
+Anuradhapura,4.545,Hybrid_A,Sandy,Rainfed,622.1,70.7,1665.1,0,1324.3
+Anuradhapura,1.526,OPV_Local,Clay,Tank,286.1,94.5,0,3,529.3
+Anuradhapura,0.848,Hybrid_A,Loam,Rainfed,396.8,160.2,1771.6,1,1355.8
+Anuradhapura,0.905,Hybrid_A,Sandy,Rainfed,880.3,206,0,3,999.9
+Anuradhapura,0.802,OPV_Local,Sandy,Tube well,871.8,75.3,840,1,955.3
+Anuradhapura,1.706,Hybrid_A,Loam,Tank,751.9,134.9,0,2,1934.3
+Anuradhapura,1.132,OPV_Local,Loam,Canal,793.4,207.8,1036,1,1213.5
+Anuradhapura,0.911,Hybrid_B,Loam,Rainfed,334.1,47,2055.8,2,765.5
+Anuradhapura,0.576,Hybrid_A,Loam,Rainfed,292,85.7,0,1,1061.4
+Anuradhapura,9.387,OPV_Local,Loam,Tank,379.1,137.5,1289.9,1,1109.7
+Anuradhapura,2.595,Hybrid_B,Sandy,Tube well,976.1,213.2,1664.1,3,1032.1
+Anuradhapura,1.795,Hybrid_B,Clay,Tube well,886.1,101.6,1063.2,0,1751.3
+Anuradhapura,1.473,Hybrid_A,Loam,Rainfed,412.9,114.1,1660.4,2,1099.5
+Anuradhapura,3.274,OPV_Local,Sandy,Rainfed,873.9,152.9,839.9,3,667.7
+Anuradhapura,4.744,OPV_Local,Sandy,Rainfed,386.4,147.6,713.9,2,585.7
+Anuradhapura,7.109,Hybrid_A,Loam,Rainfed,336.1,147.5,2010.6,0,1372.9
+Anuradhapura,1.046,Hybrid_B,Loam,Tank,975.4,56,1188.4,2,1350.4
+Anuradhapura,1.186,OPV_Local,Loam,Rainfed,294.1,116.1,672.5,2,500
+Anuradhapura,3.365,OPV_Local,Loam,Tank,760.7,103.8,0,3,917.6
+Anuradhapura,3.628,Hybrid_B,Loam,Tube well,409.9,56.9,1564.9,1,1279.9
+Anuradhapura,3.899,OPV_Local,Loam,Rainfed,456.1,44.2,876.1,0,898.4
+Anuradhapura,1.959,OPV_Local,Clay,Canal,807.6,95.4,1217.1,2,923.2
+Anuradhapura,4.511,OPV_Local,Sandy,Tank,865.5,175.4,1145.6,2,951.8
+Anuradhapura,1.557,OPV_Local,Clay,Rainfed,430.9,123.1,924.8,3,514.7
+Anuradhapura,1.958,OPV_Local,Loam,Tank,749.4,99.1,1010.3,1,1182.5
+Anuradhapura,2.038,Hybrid_B,Sandy,Canal,899.1,113,1414.9,2,1362
+Anuradhapura,1.232,Hybrid_A,Sandy,Tank,905.1,82.6,2128.9,3,1262.8
+Anuradhapura,5.117,Hybrid_B,Sandy,Rainfed,416.5,57.6,1273.2,2,749
+Anuradhapura,0.528,Hybrid_A,Sandy,Canal,1071.9,89.6,1870.4,2,1396.1
+Anuradhapura,2.953,Hybrid_B,Sandy,Rainfed,951.6,84.2,1137.3,3,862.7
+Anuradhapura,0.551,OPV_Local,Loam,Tube well,873.3,66.6,675.5,1,1085.3
+Anuradhapura,2.975,OPV_Local,Sandy,Rainfed,370.1,196,692.6,2,515.5
+Anuradhapura,1.781,OPV_Local,Clay,Tank,916.8,211,1624.5,1,1037.2
+Anuradhapura,7.501,OPV_Local,Loam,Tank,937.3,159.3,0,3,742.2
+Anuradhapura,2.211,OPV_Local,Loam,Tank,395.4,150.7,1003.3,3,723.4
+Anuradhapura,4.306,Hybrid_A,Sandy,Tank,971.9,110.5,1951,2,1511.2
+Anuradhapura,0.845,OPV_Local,Loam,Rainfed,856.8,97.8,1558.6,1,1080.6
+Anuradhapura,4.099,Hybrid_A,Sandy,Rainfed,335.1,54.8,1911.9,2,714
+Anuradhapura,1.02,Hybrid_A,Loam,Rainfed,821.4,169.5,2089,2,1666
+Anuradhapura,4.236,Hybrid_A,Loam,Tank,420.7,130.9,1936.2,1,1892.9
+Anuradhapura,0.557,Hybrid_A,Loam,Rainfed,357.2,189.1,2167.2,1,1586.2
+Anuradhapura,4.719,Hybrid_B,Loam,Rainfed,897.8,115,1078.8,2,1422.5
+Anuradhapura,1.547,OPV_Local,Loam,Rainfed,358,94.7,1081.5,2,647.8
+Anuradhapura,1.316,OPV_Local,Loam,Rainfed,347.8,74.5,595.7,2,558.1
+Anuradhapura,1.617,OPV_Local,Loam,Tube well,930,130.7,1080.5,2,984.7
+Anuradhapura,1.801,Hybrid_A,Loam,Rainfed,892.7,130.7,2238.4,3,1538.5
+Anuradhapura,6.498,OPV_Local,Loam,Rainfed,323.8,65.4,792.2,2,539.3
+Anuradhapura,0.365,OPV_Local,Loam,Tank,445.4,158.2,883.9,2,869
+Anuradhapura,0.43,Hybrid_B,Sandy,Tank,897.5,65.1,1099.4,1,1106.4
+Anuradhapura,1.63,Hybrid_A,Loam,Canal,429.4,87.8,1570.5,3,1350.5
+Anuradhapura,0.98,Hybrid_B,Clay,Rainfed,827.8,121.5,1842.5,2,1213.7
+Anuradhapura,0.813,Hybrid_B,Clay,Tube well,473,75.8,1657.2,1,1303.3
+Anuradhapura,1.949,Hybrid_A,Loam,Tank,415.1,123.6,0,2,1547.5
+Anuradhapura,0.897,OPV_Local,Loam,Rainfed,302.9,97.1,1123.5,2,578.9
+Anuradhapura,1.252,OPV_Local,Loam,Rainfed,790.3,50,975.2,0,1015.4
+Anuradhapura,1.798,OPV_Local,Loam,Canal,392.2,149.7,673.1,3,680
+Anuradhapura,0.334,OPV_Local,Loam,Canal,987.4,60.5,1307.1,2,904
+Anuradhapura,3.696,Hybrid_A,Loam,Canal,386.5,130.2,1970.6,2,1634.3
+Anuradhapura,1.04,Hybrid_A,Clay,Tank,269.3,143.7,1869.8,2,1211.2
+Anuradhapura,1.699,Hybrid_B,Loam,Tank,418.4,91.5,0,2,1351.6
+Anuradhapura,4.602,Hybrid_B,Loam,Tank,741.5,130.2,1716.5,2,1690.9
+Anuradhapura,0.615,Hybrid_A,Loam,Tank,393.8,179.6,1532.5,1,1752.8
+Anuradhapura,4.22,OPV_Local,Loam,Tank,948,182.5,808.4,2,983.6
+Anuradhapura,1.106,Hybrid_A,Loam,Canal,960.2,98.5,2491.3,3,1516
+Anuradhapura,1.751,Hybrid_A,Clay,Canal,868.5,90.5,2046.1,3,1447.7
+Anuradhapura,1.383,Hybrid_B,Clay,Rainfed,454.3,123,1818.1,3,839.1
+Anuradhapura,0.976,OPV_Local,Loam,Rainfed,381.6,212,893.7,2,776.1
+Anuradhapura,1.841,OPV_Local,Sandy,Canal,901.4,64.9,900.5,1,869.4
+Anuradhapura,0.276,Hybrid_B,Clay,Rainfed,395.9,131.9,1552.2,2,1094
+Anuradhapura,1.83,Hybrid_A,Loam,Tube well,348.6,134.6,0,1,1628.3
+Anuradhapura,1.899,OPV_Local,Sandy,Tank,332.4,171.8,1116.4,1,759.2
+Anuradhapura,1.26,Hybrid_A,Loam,Rainfed,451.2,158.2,1909.9,2,1292.3
+Anuradhapura,0.5,OPV_Local,Clay,Rainfed,421.5,93.4,0,1,640.3
+Anuradhapura,1.205,Hybrid_B,Sandy,Tank,755.5,121.6,0,1,1304.6
+Anuradhapura,1.419,OPV_Local,Loam,Tube well,1021.4,189.2,892.4,2,964.9
+Anuradhapura,2.921,OPV_Local,Loam,Rainfed,966.6,67.5,1124.3,1,983.6
+Anuradhapura,3.062,Hybrid_B,Clay,Tube well,790.8,173.3,1944.2,0,1933.2
+Anuradhapura,1.332,Hybrid_B,Loam,Tube well,844.7,97,1601.2,1,1800.9
+Anuradhapura,3.404,OPV_Local,Loam,Tube well,350.8,85,0,3,566.2
+Anuradhapura,4.294,Hybrid_B,Sandy,Rainfed,264.9,60.5,1104.8,1,700.3
+Anuradhapura,1.544,OPV_Local,Sandy,Tank,887.4,176.6,901,3,737.6
+Anuradhapura,0.469,OPV_Local,Sandy,Rainfed,854.3,123,1129.4,2,706.3
+Anuradhapura,1.783,OPV_Local,Clay,Rainfed,958,166.8,977.8,2,829.5
+Anuradhapura,7.108,Hybrid_A,Loam,Tube well,333.7,199.9,1734,3,1188.8
+Anuradhapura,2.728,OPV_Local,Loam,Rainfed,720.1,165,1276.1,1,997.6
+Anuradhapura,1.283,Hybrid_A,Sandy,Canal,915.6,154.8,1651.6,2,1732.5
+Anuradhapura,4.557,Hybrid_A,Sandy,Tank,431.7,142.1,1721.5,1,1387.4
+Anuradhapura,4.406,OPV_Local,Sandy,Canal,456.6,87.3,1062.3,0,967
+Anuradhapura,2.628,OPV_Local,Loam,Tube well,843.4,159.4,1031.2,1,1126.6
+Anuradhapura,1.7,Hybrid_B,Loam,Canal,413.6,141.8,0,3,1047.4
+Anuradhapura,4.687,Hybrid_B,Loam,Rainfed,743.4,75.4,1856.3,2,1444.4
+Anuradhapura,0.408,OPV_Local,Sandy,Tank,431.1,117.9,1218.6,2,647.8
+Anuradhapura,1.248,OPV_Local,Loam,Tube well,1012.3,208.9,0,3,839.2
+Anuradhapura,0.628,Hybrid_A,Loam,Tank,699.8,174.7,0,1,2158.6
+Anuradhapura,1.348,OPV_Local,Clay,Tank,888.4,118.9,1493,3,700.5
+Anuradhapura,5.672,OPV_Local,Loam,Tank,216.3,179.2,1225.1,2,768.3
+Anuradhapura,4.153,OPV_Local,Sandy,Tank,858.7,146.5,300,2,704.8
+Anuradhapura,0.351,Hybrid_A,Sandy,Tank,895.5,170.3,2014.3,2,1523.4
+Anuradhapura,4.959,OPV_Local,Sandy,Tube well,359.9,124.4,643.7,2,656.4
+Anuradhapura,1.317,OPV_Local,Clay,Tube well,798.2,137.7,904.7,1,1104.4
+Anuradhapura,1.386,OPV_Local,Sandy,Canal,852.4,143.1,1094.8,1,1118.3
+Anuradhapura,1.488,OPV_Local,Loam,Tank,354,57.2,808.4,0,796.2
+Anuradhapura,5.296,OPV_Local,Sandy,Rainfed,405,91.4,1378.3,2,698.9
+Anuradhapura,0.568,Hybrid_B,Loam,Tube well,868.4,217.3,1257.2,1,2046.5
+Anuradhapura,0.318,OPV_Local,Clay,Canal,337.6,47.4,1688.5,3,449.5
+Anuradhapura,9.6,Hybrid_B,Loam,Rainfed,797.2,189.9,1940.7,2,1507
+Anuradhapura,0.877,Hybrid_A,Sandy,Rainfed,933.1,80.9,2381.7,1,1537.3
+Anuradhapura,0.94,OPV_Local,Loam,Tank,329.4,126.9,1080,2,834.7
+Anuradhapura,0.785,OPV_Local,Loam,Tank,889.2,45.2,1066.9,2,675.1
+Anuradhapura,3.603,Hybrid_A,Clay,Rainfed,765.4,192.6,0,2,1518
+Anuradhapura,2.296,OPV_Local,Loam,Canal,374.7,58.5,635.4,2,762.2
+Anuradhapura,0.671,Hybrid_A,Loam,Rainfed,514.9,74.5,1966.3,3,985.6
+Anuradhapura,1.248,OPV_Local,Clay,Tank,411.9,73.4,1046,3,488.6
+Anuradhapura,1.3,OPV_Local,Sandy,Rainfed,326.5,85.1,1156.3,3,332.6
+Anuradhapura,2.769,Hybrid_B,Sandy,Rainfed,476.9,102.8,2028.7,1,1197.6
+Anuradhapura,0.472,OPV_Local,Loam,Tank,992.5,217,1380.6,2,1010.2
+Anuradhapura,0.322,Hybrid_A,Clay,Rainfed,395.5,120.7,1690.7,1,1164.5
+Anuradhapura,0.935,Hybrid_A,Loam,Tank,300.1,181,2517.5,1,1783.2
+Anuradhapura,1.937,Hybrid_A,Loam,Tank,893.6,66.4,0,2,1571.3
+Anuradhapura,0.917,OPV_Local,Sandy,Rainfed,323.5,100,1200,1,483.9
+Anuradhapura,1.328,OPV_Local,Sandy,Rainfed,409.2,216.2,994.5,2,466.2
+Anuradhapura,0.555,OPV_Local,Loam,Tube well,816.2,115.2,1620.1,1,1218.8
+Anuradhapura,3.059,OPV_Local,Loam,Tank,389.1,105.9,725.5,2,838
+Anuradhapura,0.591,Hybrid_B,Loam,Rainfed,773,104.4,1375.2,1,1546.7
+Anuradhapura,1.708,OPV_Local,Loam,Tank,803.5,45.4,930.8,2,813.9
+Anuradhapura,0.728,Hybrid_A,Loam,Tank,981.6,138.6,1739,2,1774.9
+Anuradhapura,3.837,Hybrid_A,Loam,Tank,440.5,86.6,2220.4,1,1778.2
+Anuradhapura,0.623,Hybrid_A,Clay,Rainfed,355.3,153.1,1471.8,1,1194
+Anuradhapura,1.182,Hybrid_B,Sandy,Rainfed,785.4,153.1,1807.3,1,1334
+Anuradhapura,0.917,OPV_Local,Clay,Tube well,412.6,62.2,1028.9,3,480.9
+Anuradhapura,4.963,OPV_Local,Sandy,Rainfed,277.5,216.8,1146.6,2,487.5
+Anuradhapura,2.249,Hybrid_A,Clay,Canal,437.1,179.2,1916.4,2,1633.4
+Anuradhapura,2.156,Hybrid_A,Clay,Rainfed,810.8,154.1,1785.9,2,1638.2
+Anuradhapura,1.536,OPV_Local,Sandy,Tank,880.6,99.1,0,3,537.1
+Anuradhapura,1.9,Hybrid_B,Loam,Tank,324.6,207,2064.5,2,1261.4
+Anuradhapura,2.321,Hybrid_B,Clay,Tube well,830.4,97.9,0,3,967.9
+Anuradhapura,0.523,OPV_Local,Sandy,Tube well,907.2,80.3,1230.3,3,584.4
+Anuradhapura,5.019,Hybrid_A,Loam,Canal,757.1,95.7,1910.2,0,2661.7
+Anuradhapura,1.764,OPV_Local,Loam,Rainfed,405.2,103,0,1,751.4
+Anuradhapura,1.986,Hybrid_A,Loam,Rainfed,1007.6,95.3,1820.6,1,1768.5
+Anuradhapura,1.57,OPV_Local,Loam,Rainfed,936.2,135.8,0,3,610
+Anuradhapura,2.265,OPV_Local,Sandy,Canal,901.8,140.1,1245.8,0,1104.3
+Anuradhapura,2.94,Hybrid_A,Loam,Canal,747,123.6,2046.3,2,2288.2
+Anuradhapura,0.499,Hybrid_B,Loam,Tube well,394.8,187.8,1541.6,3,1028.2
+Anuradhapura,0.572,OPV_Local,Sandy,Tank,930.3,136.3,0,1,890
+Anuradhapura,1.908,Hybrid_B,Loam,Tank,979.2,64.3,1494.8,2,1446.4
+Anuradhapura,0.789,OPV_Local,Loam,Rainfed,853.9,208.2,1213,2,822.4
+Anuradhapura,1.032,Hybrid_B,Loam,Rainfed,844.2,182.2,1062.6,3,1147.5
+Anuradhapura,0.472,Hybrid_A,Clay,Rainfed,483.9,130.4,1809.4,1,1157.5
+Anuradhapura,3.871,Hybrid_A,Sandy,Rainfed,312.6,65.5,0,0,893.2
+Anuradhapura,1.734,OPV_Local,Clay,Rainfed,877,145.4,0,1,981.1
+Anuradhapura,3.938,Hybrid_B,Clay,Tank,858.7,196.3,1860.8,2,1483.4
+Anuradhapura,0.502,OPV_Local,Sandy,Rainfed,358.5,147.3,0,0,714.8
+Anuradhapura,2.323,Hybrid_A,Loam,Tube well,745.6,128.9,1823.8,2,2020.7
+Anuradhapura,3.65,Hybrid_A,Clay,Rainfed,390.3,115.8,1717.5,1,1159.6
+Anuradhapura,0.362,Hybrid_A,Loam,Tank,1021.7,163.4,0,2,1972
+Anuradhapura,1.373,OPV_Local,Loam,Canal,347.4,124.5,1263.2,2,1012.7
+Anuradhapura,2.677,OPV_Local,Loam,Rainfed,377,129,0,0,867.9
+Anuradhapura,3.477,Hybrid_A,Clay,Tank,934.3,136.9,1776.3,0,2135
+Anuradhapura,0.622,Hybrid_A,Sandy,Rainfed,400,115.8,2326.7,3,766.2
+Anuradhapura,0.749,OPV_Local,Loam,Rainfed,455,112.9,0,1,662.7
+Anuradhapura,4.499,OPV_Local,Loam,Rainfed,919.9,172,534.4,2,1007.1
+Anuradhapura,0.834,Hybrid_B,Loam,Tank,921.3,111.7,1448,1,1665
+Anuradhapura,0.438,Hybrid_B,Loam,Canal,299.8,136.7,0,3,950.6
+Anuradhapura,1.38,Hybrid_A,Loam,Rainfed,875.6,157.3,1885.2,0,2066.2
+Anuradhapura,2.361,Hybrid_B,Loam,Rainfed,998.7,155.3,2108.7,3,1297.8
+Anuradhapura,1.236,Hybrid_A,Loam,Canal,727.4,201.7,0,1,2145.2
+Anuradhapura,9.382,Hybrid_B,Loam,Rainfed,815.5,84.9,1639.8,2,1385.1
+Anuradhapura,3.677,Hybrid_B,Sandy,Tube well,809.3,162.6,1091.8,2,1270.2
+Anuradhapura,0.811,OPV_Local,Loam,Rainfed,918.5,153.1,660.3,2,817.3
+Anuradhapura,0.693,Hybrid_B,Clay,Canal,781.8,118.5,0,3,1022.7
+Anuradhapura,0.848,Hybrid_B,Loam,Tank,340.6,154.3,1580.9,3,814.5
+Anuradhapura,1.257,OPV_Local,Clay,Tank,306.3,219.4,319.2,2,580.4
+Anuradhapura,2.657,OPV_Local,Loam,Rainfed,289.1,155.6,580.7,2,636.3
+Anuradhapura,0.503,Hybrid_B,Clay,Tube well,949.8,79.7,0,2,1271.6
+Anuradhapura,2.214,Hybrid_B,Clay,Tank,877.7,46.1,1539.9,1,1389.6
+Anuradhapura,0.323,Hybrid_B,Loam,Tank,823.1,131.3,1733,2,1682
+Anuradhapura,7.452,Hybrid_A,Sandy,Tube well,830.3,133.4,0,2,1596.3
+Anuradhapura,1.561,OPV_Local,Loam,Tank,895,140.1,1078.9,3,811.7
+Anuradhapura,3.333,OPV_Local,Loam,Tank,1015.1,83.1,548.7,3,682.2
+Anuradhapura,0.758,OPV_Local,Loam,Tank,468.2,153.2,1134.3,1,1128.9
+Anuradhapura,0.845,Hybrid_B,Loam,Canal,345.9,206.3,1722.1,0,1566.3
+Anuradhapura,1.473,OPV_Local,Loam,Rainfed,411.8,193.8,0,2,550.3
+Anuradhapura,0.952,OPV_Local,Loam,Tank,781.8,53.1,889.3,3,704
+Anuradhapura,2.557,Hybrid_A,Loam,Tank,189.6,108.4,2235.3,0,1592.8
+Anuradhapura,1.791,Hybrid_A,Loam,Canal,1017.4,73.3,0,2,1956.3
+Anuradhapura,1.657,OPV_Local,Loam,Tank,784.7,59.4,0,2,953
+Anuradhapura,0.709,OPV_Local,Loam,Tank,338.6,148.8,0,2,696.1
+Anuradhapura,2.382,OPV_Local,Loam,Tank,430.4,132.5,1158.1,3,554.8
+Anuradhapura,1.81,Hybrid_A,Sandy,Rainfed,300,92.2,0,0,954.7
+Anuradhapura,0.926,Hybrid_B,Loam,Canal,355.5,111.6,1950.6,3,970.8
+Anuradhapura,0.69,OPV_Local,Sandy,Tank,831.4,114,1025.1,2,838.2
+Anuradhapura,0.712,OPV_Local,Loam,Tube well,329.2,147.8,888.1,2,668.4
+Anuradhapura,0.553,OPV_Local,Loam,Canal,837.2,112.5,737.7,3,829.2
+Anuradhapura,1.19,Hybrid_A,Sandy,Canal,806.6,64.2,0,1,1420.4
+Anuradhapura,1.984,OPV_Local,Clay,Tube well,827.6,86.7,934.2,3,739.7
+Anuradhapura,1.652,Hybrid_B,Clay,Tank,897.6,98.4,0,1,1564.6
+Anuradhapura,1.343,OPV_Local,Loam,Canal,364.3,194,812.7,0,1008.4
+Anuradhapura,4.475,OPV_Local,Sandy,Rainfed,897.9,112.2,855.1,1,662.7
+Anuradhapura,0.554,Hybrid_A,Sandy,Tube well,829.8,173.3,1911.6,2,1646.6
+Anuradhapura,3.153,Hybrid_B,Sandy,Tank,879.4,75.6,1734.3,2,1224.6
+Anuradhapura,0.903,Hybrid_B,Clay,Tank,327.7,133.1,1560.4,3,767.7
+Anuradhapura,0.292,Hybrid_B,Sandy,Rainfed,813.7,51.5,1727.4,2,999.5
+Anuradhapura,0.65,Hybrid_B,Clay,Tank,793.3,153.6,1837.1,0,1987.2
+Anuradhapura,1.853,Hybrid_A,Clay,Tank,934.2,181.9,0,3,1166.4
+Anuradhapura,0.795,Hybrid_A,Clay,Tank,842.8,176.7,1915,3,1441.4
+Anuradhapura,1.664,OPV_Local,Clay,Tube well,912.2,155.9,973.9,3,740.1
+Anuradhapura,0.265,Hybrid_A,Loam,Tank,445.9,100.7,1936.9,3,1175.9
+Anuradhapura,0.739,Hybrid_A,Loam,Rainfed,883.8,83.1,1965.6,3,1259.3
+Anuradhapura,1.198,OPV_Local,Loam,Tank,998.7,145.9,300,2,958.4
+Anuradhapura,1.658,OPV_Local,Sandy,Canal,360.4,118.5,767.5,2,637.9
+Anuradhapura,0.508,Hybrid_B,Loam,Tank,986.9,40.8,1725.7,2,1143.4
+Anuradhapura,3.39,Hybrid_A,Loam,Rainfed,808.5,122.6,2591.2,2,2039.8
+Anuradhapura,1.147,Hybrid_B,Loam,Tank,747.2,120.3,2153.2,2,1559
+Anuradhapura,0.633,Hybrid_A,Clay,Rainfed,387.2,75.6,2201.4,1,1172.1
+Anuradhapura,2.108,OPV_Local,Loam,Rainfed,774.7,61.9,948.2,2,762.9
+Anuradhapura,2.28,OPV_Local,Loam,Tank,966.9,108.7,930.9,1,1151
+Anuradhapura,2.002,Hybrid_A,Sandy,Tank,520.5,67.4,0,1,1396.4
+Anuradhapura,1.964,Hybrid_B,Loam,Tank,442.3,63,1440.8,3,964.8
+Anuradhapura,1.661,OPV_Local,Clay,Canal,813.9,148.5,684.2,2,1026.4
+Anuradhapura,1.692,Hybrid_B,Loam,Tube well,1143.2,69.6,1442.6,3,1077.2
+Anuradhapura,0.534,OPV_Local,Loam,Rainfed,787.5,119.4,925.3,1,1050.3
+Anuradhapura,1.788,Hybrid_B,Clay,Tank,418.5,86.9,1879.8,1,1447.4
+Anuradhapura,1.643,Hybrid_B,Clay,Rainfed,398,116.4,0,0,1121.5
+Anuradhapura,1.971,Hybrid_A,Clay,Canal,362.5,160.1,1679.1,1,1500.3
+Anuradhapura,2.577,Hybrid_A,Clay,Rainfed,961.6,159.2,1163.3,2,1736.5
+Anuradhapura,1.475,OPV_Local,Loam,Canal,945.5,70.3,0,1,870.7
+Anuradhapura,1.662,Hybrid_A,Clay,Tank,400.9,110.6,1637.2,2,1424.1
+Anuradhapura,0.379,Hybrid_B,Loam,Rainfed,975.2,45.4,1791.2,2,1046.9
+Anuradhapura,0.309,OPV_Local,Loam,Rainfed,451.2,155.6,865.8,1,837.4
+Anuradhapura,0.822,Hybrid_A,Clay,Rainfed,738.1,139.6,1906.6,1,1704.5
+Anuradhapura,1.797,OPV_Local,Sandy,Tank,916.3,124.1,300,3,451.9
+Anuradhapura,1.693,OPV_Local,Sandy,Tank,315.9,182.4,652.1,0,839.4
+Anuradhapura,4.401,OPV_Local,Sandy,Tank,1090,132.9,390,2,756.6
+Anuradhapura,4.742,OPV_Local,Sandy,Rainfed,764.4,123.2,1231.7,3,648.5
+Anuradhapura,0.321,OPV_Local,Loam,Rainfed,422,175.2,1052.2,1,739.8
+Anuradhapura,3.92,Hybrid_B,Clay,Canal,914.6,125.1,1253.2,3,1134.2
+Anuradhapura,0.6,OPV_Local,Loam,Tank,919.2,193.6,1146.1,1,1399.4
+Anuradhapura,0.537,OPV_Local,Loam,Rainfed,375.5,119.1,0,3,566.6
+Anuradhapura,1.613,OPV_Local,Loam,Rainfed,358.5,211.2,1730.3,0,826.9
+Anuradhapura,1.631,Hybrid_A,Sandy,Canal,934.4,73.4,1751.9,1,1854.5
+Anuradhapura,1.457,OPV_Local,Sandy,Tube well,347.3,169.7,1504.1,1,791.4
+Anuradhapura,1.604,Hybrid_B,Sandy,Rainfed,936,172.7,2463.1,1,1668.8
+Anuradhapura,0.257,OPV_Local,Loam,Canal,1000.3,103.9,1697.2,0,1308.2
+Anuradhapura,0.488,OPV_Local,Clay,Tube well,795,195.7,1482.5,2,898.7
+Anuradhapura,0.775,Hybrid_A,Clay,Rainfed,976.1,177.6,2051.3,3,1219.7
+Anuradhapura,1.967,Hybrid_B,Loam,Rainfed,905.6,55.4,1456.1,1,1312.1
+Anuradhapura,1.651,OPV_Local,Loam,Rainfed,818.9,152.2,904.5,1,1228.1
+Anuradhapura,1.817,OPV_Local,Clay,Tank,835.1,110.8,1650.4,2,985.6
+Anuradhapura,0.882,Hybrid_B,Loam,Rainfed,422.3,97.5,1564.1,2,1063.8
+Anuradhapura,1.489,Hybrid_A,Loam,Tank,810,197.9,2477.6,0,2169.3
+Anuradhapura,0.619,Hybrid_A,Loam,Rainfed,369,103.1,2030,2,1210.5
+Anuradhapura,1.121,OPV_Local,Clay,Rainfed,946,167.5,838,2,835.3
+Anuradhapura,4.194,Hybrid_A,Sandy,Rainfed,411.4,42,2041.2,3,721
+Anuradhapura,4.357,OPV_Local,Sandy,Canal,840.3,50.3,859.6,1,879.3
+Anuradhapura,1.107,Hybrid_B,Loam,Tank,755.5,150.9,1388.8,3,1258.6
+Anuradhapura,0.56,OPV_Local,Clay,Canal,891.5,45.5,498.4,1,858.7
+Anuradhapura,1.017,Hybrid_B,Loam,Rainfed,406.3,217.8,0,1,1146.6
+Anuradhapura,3.549,Hybrid_B,Clay,Tank,409.1,107.8,1786.8,0,1508.2
+Anuradhapura,4.765,OPV_Local,Loam,Tube well,878.1,211.4,1754,2,1160.9
+Anuradhapura,2.754,OPV_Local,Loam,Tank,865.6,45.4,993.3,1,823
+Anuradhapura,1.578,OPV_Local,Clay,Tank,778.2,179.5,1287.6,3,694.6
+Anuradhapura,1.442,OPV_Local,Sandy,Rainfed,394.1,60.6,1598,3,365.8
+Anuradhapura,2.28,OPV_Local,Loam,Rainfed,950.4,198.6,848.7,3,692.1
+Anuradhapura,4.779,Hybrid_B,Sandy,Canal,383.8,48.4,1940.6,3,829.2
+Anuradhapura,0.538,OPV_Local,Loam,Tank,868.9,155.4,998.1,3,907
+Anuradhapura,1.037,OPV_Local,Loam,Canal,924.3,171.9,1052.9,1,1488.5
+Anuradhapura,0.55,OPV_Local,Loam,Canal,412.4,148.4,0,1,939
+Anuradhapura,1.499,Hybrid_B,Loam,Rainfed,1024.3,120.4,1875.1,2,1469.9
+Anuradhapura,1.036,OPV_Local,Sandy,Rainfed,799.8,195.7,1168.7,2,692.8
+Anuradhapura,1.267,OPV_Local,Sandy,Canal,982.6,78.6,1069.8,2,821.4
+Anuradhapura,1.783,OPV_Local,Sandy,Tank,306.1,147.2,1005.8,0,877.6
+Anuradhapura,2.132,Hybrid_A,Loam,Rainfed,782.4,53.1,1986.3,2,1430.2
+Anuradhapura,1.442,Hybrid_A,Loam,Tank,735,95.6,1859.2,3,1445.7
+Anuradhapura,0.395,OPV_Local,Loam,Canal,871.5,143,1130.6,3,834.3
+Anuradhapura,1.641,Hybrid_B,Sandy,Canal,307,159.2,1538.2,1,1377.1
+Anuradhapura,2.867,Hybrid_A,Sandy,Tank,965.2,143.8,2182.7,1,2018.5
+Anuradhapura,1.153,Hybrid_A,Sandy,Rainfed,894.1,57.3,1580.5,1,1344.9
+Anuradhapura,0.323,Hybrid_B,Loam,Rainfed,414,147.5,1530,3,831
+Anuradhapura,4.774,OPV_Local,Sandy,Tank,439.5,71.2,1217.7,2,714.3
+Anuradhapura,1.75,Hybrid_B,Clay,Rainfed,883.4,90.3,1934.1,2,1325.2
+Anuradhapura,1.333,Hybrid_B,Sandy,Tank,824.4,47.7,1786.3,0,1378.2
+Anuradhapura,0.624,Hybrid_B,Loam,Rainfed,742.5,115.8,1622,2,1472.9
+Anuradhapura,0.956,Hybrid_B,Clay,Tank,750.6,143,1477,3,1049
+Anuradhapura,1.257,OPV_Local,Clay,Rainfed,801.4,118.8,329.3,1,848.6
+Anuradhapura,1.706,Hybrid_B,Sandy,Tank,725.6,179.9,0,3,1018.9
+Anuradhapura,0.801,OPV_Local,Loam,Tube well,923.3,114.9,897.1,3,725.2
+Anuradhapura,1.288,Hybrid_A,Loam,Rainfed,728.1,128.1,1821.4,2,1754.7
+Anuradhapura,1.577,Hybrid_B,Loam,Rainfed,438.9,215.1,1219.6,2,1113.7
+Anuradhapura,0.437,OPV_Local,Loam,Tank,386.8,81,972.4,3,602.6
+Anuradhapura,1.518,OPV_Local,Clay,Rainfed,731.9,54.2,1081,3,600.2
+Anuradhapura,2.861,Hybrid_A,Loam,Canal,942.6,46.2,1992.2,2,1732.6
+Anuradhapura,0.379,Hybrid_B,Clay,Tank,349.4,155.9,1701,2,1141.3
+Anuradhapura,1.612,Hybrid_A,Clay,Tank,360.2,142.3,2249.5,3,1059
+Anuradhapura,1.983,Hybrid_B,Sandy,Rainfed,403.4,91.3,1705.3,0,1149.4
+Anuradhapura,0.633,OPV_Local,Loam,Tube well,926.3,142.2,1272.5,0,1255.5
+Anuradhapura,9.157,OPV_Local,Loam,Tank,924.4,153.2,741.9,2,1106.2
+Anuradhapura,3.586,Hybrid_B,Sandy,Canal,390.4,83.1,1330.2,3,888.5
+Anuradhapura,0.363,OPV_Local,Loam,Rainfed,863.8,190.4,946.6,3,533.2
+Anuradhapura,1.664,OPV_Local,Loam,Rainfed,313.6,156,1232.1,2,544.1
+Anuradhapura,3.738,OPV_Local,Sandy,Canal,388.2,66.1,412.7,1,638.4
+Anuradhapura,1.719,OPV_Local,Loam,Canal,283.6,217.2,775.1,3,679.5
+Anuradhapura,1.05,OPV_Local,Loam,Tank,458.8,67.9,1141.2,1,963.5
+Anuradhapura,1.822,Hybrid_A,Loam,Tank,391.2,136.4,2306,3,1198.8
+Anuradhapura,1.01,Hybrid_A,Clay,Rainfed,818.4,158.7,0,3,1229.4
+Anuradhapura,0.853,Hybrid_B,Sandy,Tank,721.6,96.5,1785.9,2,1187.8
+Anuradhapura,2.361,Hybrid_A,Clay,Tube well,338.7,178.8,1951.5,1,1537
+Anuradhapura,2.003,OPV_Local,Clay,Rainfed,444.3,210,595.2,1,726.6
+Anuradhapura,1.691,OPV_Local,Loam,Tube well,820.9,44.1,1714.1,1,1043.3
+Anuradhapura,1.352,OPV_Local,Loam,Tank,891.6,93.8,717.9,2,873.3
+Anuradhapura,1.5,OPV_Local,Loam,Rainfed,896.6,121,1194.7,1,1224.1
+Anuradhapura,4.769,OPV_Local,Loam,Tank,768.2,203.5,361.5,3,750
+Anuradhapura,0.482,Hybrid_A,Clay,Tank,933.6,171.9,1465.4,2,1813.9
+Anuradhapura,0.388,Hybrid_B,Loam,Tube well,1061.4,89.8,1446.4,3,1081.1
+Anuradhapura,1.81,OPV_Local,Loam,Tank,949.2,182.6,858.8,1,1353.8
+Anuradhapura,0.343,OPV_Local,Loam,Tube well,815.9,80.9,765.4,2,691.8
+Anuradhapura,3.917,OPV_Local,Clay,Canal,936.3,154.1,1315,0,1225
+Anuradhapura,3.819,Hybrid_A,Loam,Tube well,833,141.4,1398.2,2,2033.3
+Anuradhapura,4.879,OPV_Local,Clay,Rainfed,327.1,92,0,1,569.1
+Anuradhapura,1.615,OPV_Local,Loam,Tank,290.8,155.7,0,1,939.3
+Anuradhapura,1.986,Hybrid_A,Loam,Rainfed,324.8,71.5,1872.1,1,1085.2
+Anuradhapura,1.249,OPV_Local,Sandy,Tank,1102.3,72.6,734.4,3,580.3
+Anuradhapura,0.527,OPV_Local,Sandy,Rainfed,855.8,110.2,1261.4,2,808.9
+Anuradhapura,0.477,OPV_Local,Sandy,Tank,397.3,138.4,743.8,2,691.1
+Anuradhapura,1.022,OPV_Local,Loam,Tank,860.3,146.7,1274.8,3,951.2
+Anuradhapura,5.317,Hybrid_A,Sandy,Tank,921.9,109.2,2245.7,3,1209.8
+Anuradhapura,1.259,Hybrid_A,Sandy,Tube well,852.2,100.8,1899.2,3,981.3
+Anuradhapura,1.769,Hybrid_A,Sandy,Tank,361.8,138.7,1526.9,3,999.8
+Anuradhapura,0.569,Hybrid_A,Sandy,Rainfed,437.7,77.3,1608.8,3,788.8
+Anuradhapura,4.491,OPV_Local,Loam,Rainfed,466.7,141.8,1351.2,3,643.2
+Anuradhapura,4.796,Hybrid_A,Loam,Rainfed,334.6,171.2,2180.2,3,976.4
+Anuradhapura,4.819,OPV_Local,Loam,Tank,859.2,138.1,0,1,1118.2
+Anuradhapura,1.694,Hybrid_A,Sandy,Tank,452.9,56,1780.5,2,1223.8
+Anuradhapura,1.483,Hybrid_A,Sandy,Tank,909.5,123.9,1834.3,0,1938.8
+Anuradhapura,1.801,OPV_Local,Loam,Rainfed,793.3,97.5,1076.6,2,762.5
+Anuradhapura,0.441,OPV_Local,Loam,Tank,525.9,82.3,1215.8,2,858.6
+Anuradhapura,1.087,Hybrid_B,Loam,Tank,437.8,94.2,1878.6,2,1541.1
+Anuradhapura,0.818,OPV_Local,Clay,Rainfed,922.6,208.6,1203.8,2,698.2
+Anuradhapura,0.844,Hybrid_B,Loam,Rainfed,788.4,141.9,1612.5,2,1585.9
+Anuradhapura,0.832,Hybrid_B,Sandy,Tank,1026.3,218.1,0,3,1153.4
+Anuradhapura,1.785,Hybrid_A,Clay,Tank,720,106.2,2150.3,3,1239.5
+Anuradhapura,0.781,Hybrid_A,Loam,Rainfed,844.9,128.9,1608.7,1,1686.6
+Anuradhapura,1.912,Hybrid_B,Loam,Tube well,278.9,62.5,1620,2,1004.3
+Anuradhapura,1.201,OPV_Local,Loam,Tank,950.7,191.5,984.1,3,774.4
+Anuradhapura,0.678,Hybrid_A,Clay,Rainfed,893.2,58.9,2155.2,0,1690
+Anuradhapura,0.811,Hybrid_A,Loam,Tank,874.6,145.1,1624.7,3,1492.8
+Anuradhapura,1.824,OPV_Local,Clay,Rainfed,385.9,144.3,961.6,2,534
+Anuradhapura,4.777,Hybrid_B,Loam,Tank,852.6,103.9,2335.3,3,1377.9
+Anuradhapura,4.398,Hybrid_A,Sandy,Tank,356.1,151.7,1530.9,3,966.4
+Anuradhapura,1.223,Hybrid_A,Loam,Tank,455.6,68.9,1597.6,3,1082
+Anuradhapura,1.669,OPV_Local,Loam,Canal,754,194.3,630.9,1,1123.7
+Anuradhapura,1.827,OPV_Local,Clay,Tank,958.7,43.5,653,0,875.2
+Anuradhapura,4.258,OPV_Local,Loam,Tank,937.9,174.6,0,1,1200.4
+Anuradhapura,3.556,OPV_Local,Clay,Tank,922.5,132.5,842.4,3,636.9
+Anuradhapura,4.252,Hybrid_A,Sandy,Canal,812.7,117.6,1882.8,0,2072.1
+Anuradhapura,2.489,Hybrid_B,Loam,Tube well,426.6,97.7,1058.3,0,1433.2
+Anuradhapura,1.086,OPV_Local,Loam,Rainfed,896.6,114.4,522.8,0,1008.9
+Anuradhapura,0.335,OPV_Local,Loam,Rainfed,809.2,96.5,1038.5,3,701.8
+Anuradhapura,0.447,Hybrid_A,Sandy,Canal,740.7,70.3,1992,2,1464
+Anuradhapura,1.527,Hybrid_A,Sandy,Tank,308,155.3,0,1,1166.4
+Anuradhapura,1.588,Hybrid_B,Loam,Tank,828.3,208.7,1798.2,3,1390.6
+Anuradhapura,0.475,OPV_Local,Loam,Rainfed,737.8,158.7,608.8,1,844.2
+Anuradhapura,1.293,OPV_Local,Clay,Rainfed,496.8,146.4,0,1,695.5
+Anuradhapura,1.867,Hybrid_A,Loam,Tube well,854.9,112.9,2211,2,2197.6
+Anuradhapura,0.356,OPV_Local,Sandy,Rainfed,436.9,101.3,866.5,1,714.5
+Anuradhapura,0.707,OPV_Local,Loam,Tube well,876.4,72.5,1154.6,3,711.6
+Anuradhapura,1.85,OPV_Local,Loam,Canal,870.1,153.6,1154.8,2,1075.5
+Anuradhapura,0.436,Hybrid_B,Loam,Tank,437.9,102.1,1596.4,1,1560.1
+Anuradhapura,0.426,Hybrid_A,Sandy,Canal,363.2,85.6,1892.5,3,905.3
+Anuradhapura,4.923,Hybrid_A,Loam,Tank,921.2,100.4,1487,0,2282.5
+Anuradhapura,0.732,Hybrid_A,Loam,Rainfed,874.8,83.5,2021.2,2,1576.8
+Anuradhapura,0.302,OPV_Local,Loam,Tank,761.9,119.8,0,2,934.9
+Anuradhapura,1.016,OPV_Local,Clay,Rainfed,872.1,215.2,1054,2,753.5
+Anuradhapura,0.828,OPV_Local,Sandy,Tank,814,184.2,1017.1,2,747.7
+Anuradhapura,2.204,OPV_Local,Loam,Rainfed,907.5,131,1027.1,2,755
+Anuradhapura,1.664,Hybrid_A,Loam,Tube well,817.7,93,2168.8,2,1801.9
+Anuradhapura,3.147,OPV_Local,Clay,Tank,354.1,69.5,918.3,2,684.6
+Anuradhapura,0.57,Hybrid_A,Loam,Rainfed,897.8,51.7,2337,1,1546.1
+Anuradhapura,1.979,OPV_Local,Clay,Tank,803,153.8,1332.1,1,1079.8
+Anuradhapura,3.883,OPV_Local,Loam,Rainfed,853.7,73.3,0,0,1185.5
+Anuradhapura,0.507,OPV_Local,Sandy,Rainfed,380.5,151.9,0,3,381.7
+Anuradhapura,4.912,OPV_Local,Loam,Tank,356.9,190.5,1201,3,687.7
+Anuradhapura,1.016,Hybrid_B,Clay,Tank,985.7,194.3,0,2,1559.7
+Anuradhapura,0.41,Hybrid_B,Loam,Tank,1013.9,182.8,1920.3,0,2153.9
+Anuradhapura,1.901,OPV_Local,Sandy,Tank,329,169,815.1,2,683.4
+Anuradhapura,1.824,Hybrid_A,Loam,Tank,374.2,119.6,2429.6,2,1707.7
+Anuradhapura,1.372,OPV_Local,Sandy,Tank,839.3,194.9,1099.4,3,546.8
+Anuradhapura,0.797,OPV_Local,Sandy,Rainfed,346.2,70.6,0,0,587.5
+Anuradhapura,0.469,Hybrid_A,Loam,Tube well,878.4,147.8,1426.5,2,1727.8
+Anuradhapura,8.764,OPV_Local,Loam,Tank,453.1,52.9,719.5,2,684.6
+Anuradhapura,3.799,Hybrid_B,Loam,Canal,847.2,140.7,2209.6,2,1877.4
+Anuradhapura,0.415,Hybrid_A,Sandy,Tube well,828,162.6,1930.5,1,1823.8
+Anuradhapura,0.756,Hybrid_B,Loam,Rainfed,1039,55.9,0,0,1326.2
+Anuradhapura,3.891,Hybrid_A,Sandy,Tank,378.4,52.9,1383.9,2,1077
+Anuradhapura,3.868,OPV_Local,Loam,Tank,932.8,159.7,1114.4,3,674
+Anuradhapura,3.143,OPV_Local,Sandy,Tank,381.1,133.3,1816,2,775.1
+Anuradhapura,1.086,Hybrid_B,Loam,Rainfed,443.5,137.6,1865,0,1396.1
+Anuradhapura,2.621,OPV_Local,Loam,Rainfed,856.8,192.3,902.2,3,660.6
+Anuradhapura,0.488,Hybrid_A,Loam,Rainfed,967.4,69.7,2018.8,2,1405.9
+Anuradhapura,1.631,Hybrid_B,Loam,Tank,401.8,120.4,1119.4,2,1449.3
+Anuradhapura,0.636,Hybrid_B,Loam,Tank,312.2,144.8,2135.1,1,1506.6
+Anuradhapura,2.163,Hybrid_A,Clay,Tank,454.6,171.1,1531.1,2,1513.6
+Anuradhapura,3.285,Hybrid_A,Loam,Tank,400.6,54.7,2063,3,983
+Anuradhapura,7.517,Hybrid_B,Sandy,Tank,914.7,97,1713.5,2,1256.8
+Anuradhapura,5.639,Hybrid_B,Loam,Canal,447.8,117.7,1632.1,2,1660.6
+Anuradhapura,1.671,OPV_Local,Loam,Canal,901.3,184.5,0,1,1094.7
+Anuradhapura,0.925,Hybrid_A,Loam,Rainfed,246.3,106,2264,1,1204.1
+Anuradhapura,1.788,Hybrid_B,Loam,Tank,849,67.9,1611.2,3,1040.4
+Anuradhapura,2.334,Hybrid_B,Loam,Tank,406.3,100.2,1868.5,1,1581.2
+Anuradhapura,1.604,OPV_Local,Sandy,Tube well,413.3,147.1,1011.2,0,927.8
+Anuradhapura,1.5,Hybrid_B,Loam,Tube well,754.9,101.9,2139.2,0,2099.6
+Anuradhapura,1.509,Hybrid_A,Loam,Rainfed,343.1,70.4,2157.6,3,876.6
+Anuradhapura,3.189,OPV_Local,Loam,Tube well,495.4,141.8,851.6,2,1127.3
+Anuradhapura,1.186,Hybrid_A,Loam,Tube well,333.9,61.4,2273.1,3,1020
+Anuradhapura,0.507,OPV_Local,Loam,Tank,471.7,200.2,558.7,1,1023
+Anuradhapura,0.357,OPV_Local,Sandy,Tank,765.7,100.9,844.5,3,679
+Anuradhapura,1.558,Hybrid_B,Loam,Rainfed,946.2,44.5,1596.1,2,1304
+Anuradhapura,8.298,OPV_Local,Sandy,Rainfed,774.1,97.2,569.9,3,640.8
+Anuradhapura,1.678,OPV_Local,Loam,Tank,829.7,154.7,0,1,1326.8
+Anuradhapura,1.654,Hybrid_A,Sandy,Tank,1018.5,134.2,2334.2,2,1662.8
+Anuradhapura,1.372,Hybrid_A,Loam,Tank,347.7,67.7,0,3,1073.3
+Anuradhapura,3.766,Hybrid_B,Loam,Canal,378.8,103.6,1619.9,1,1609.1
+Anuradhapura,7.942,Hybrid_A,Clay,Tank,1017,147.1,1953.2,3,1384.8
+Anuradhapura,0.401,OPV_Local,Sandy,Tank,780.7,72.4,0,3,562.3
+Anuradhapura,1.165,Hybrid_A,Loam,Canal,970.2,195.5,0,3,1598.4
+Anuradhapura,1.312,Hybrid_B,Loam,Rainfed,719.5,129.7,1231.9,2,1323.4
+Anuradhapura,1.655,OPV_Local,Loam,Tank,354.1,144.7,623.1,0,1056.4
+Anuradhapura,1.736,Hybrid_A,Sandy,Rainfed,326,84.1,1399.7,3,622.2
+Anuradhapura,1.057,OPV_Local,Sandy,Rainfed,389.5,182.1,703.5,1,712.3
+Anuradhapura,1.711,OPV_Local,Sandy,Rainfed,894.4,144.9,922.2,0,999.1
+Anuradhapura,4.645,Hybrid_B,Loam,Rainfed,302.1,131.1,1556.2,2,1036.3
+Anuradhapura,1.729,OPV_Local,Loam,Rainfed,917.6,179.1,0,3,731.8
+Anuradhapura,7.297,OPV_Local,Sandy,Rainfed,435.8,213.9,1117.4,2,736.1
+Anuradhapura,1.904,Hybrid_B,Loam,Rainfed,802.2,90.4,2022.9,0,2021.7
+Anuradhapura,0.353,OPV_Local,Loam,Rainfed,708.8,207.7,1447.5,2,796.3
+Anuradhapura,0.575,OPV_Local,Loam,Tank,291.1,166.6,0,3,526.9
+Anuradhapura,1.003,Hybrid_A,Clay,Canal,768.4,104,2649.3,0,2288.8
+Anuradhapura,2.423,OPV_Local,Loam,Tank,473.1,112.9,605.6,1,938.3
+Anuradhapura,8.965,Hybrid_B,Loam,Rainfed,326.8,118.9,1814.7,2,1079.5
+Anuradhapura,1.319,Hybrid_A,Clay,Canal,715.4,42.3,2037.4,2,1420.6
+Anuradhapura,1.177,OPV_Local,Sandy,Tank,1099,174.5,945.7,3,764.4
+Anuradhapura,1.943,Hybrid_A,Loam,Tube well,395.4,215.9,1993.8,2,1817.6
+Anuradhapura,0.338,OPV_Local,Loam,Rainfed,748.7,121.2,796,2,775.9
+Anuradhapura,1.113,Hybrid_A,Loam,Canal,938.2,113.3,1846,3,1314.5
+Anuradhapura,0.825,Hybrid_A,Loam,Rainfed,305.9,165.7,2324.7,3,916.8
+Anuradhapura,0.396,Hybrid_A,Loam,Canal,916.6,80.9,2024.6,3,1442.6
+Anuradhapura,4.757,Hybrid_B,Sandy,Tank,428.4,47.9,0,2,944.8
+Anuradhapura,0.744,OPV_Local,Loam,Tube well,328.5,71.7,622.7,2,540.7
+Anuradhapura,1.564,OPV_Local,Clay,Tank,998.1,115.6,0,0,1050.5
+Anuradhapura,0.859,OPV_Local,Sandy,Tube well,383.7,74.5,1229,2,538.6
+Anuradhapura,1.327,OPV_Local,Loam,Tank,376.2,217.3,1274.1,3,655.1
+Anuradhapura,1.261,Hybrid_B,Sandy,Rainfed,802.9,43,1345.9,3,771.7
+Anuradhapura,0.717,Hybrid_A,Loam,Canal,783.7,74.8,1743.8,1,1746.7
+Anuradhapura,1.734,Hybrid_B,Sandy,Tube well,770.4,40.1,1500.9,2,1009.6
+Anuradhapura,0.572,Hybrid_A,Loam,Tank,744.7,171,0,1,2475.1
+Anuradhapura,3.265,OPV_Local,Loam,Canal,891.1,92.2,910.3,0,1305.7
+Anuradhapura,0.488,OPV_Local,Loam,Tube well,872.3,165.3,1171.8,2,1059.2
+Anuradhapura,2.263,OPV_Local,Clay,Tank,456.5,187.1,990.4,3,569.4
+Anuradhapura,1.161,Hybrid_A,Loam,Tube well,781.4,151.9,0,1,1801.4
+Anuradhapura,3.652,Hybrid_A,Sandy,Rainfed,893.8,57.2,1215,1,1445.9
+Anuradhapura,4.059,OPV_Local,Loam,Tank,442.3,126.6,527.6,3,692
+Anuradhapura,1.482,Hybrid_B,Sandy,Rainfed,868.8,142.5,0,2,1121.6
+Anuradhapura,1.9,Hybrid_A,Clay,Rainfed,710.4,105.1,1781.1,2,1291
+Anuradhapura,0.344,OPV_Local,Loam,Tube well,908.2,101.8,1044.4,3,648.4
+Anuradhapura,0.48,OPV_Local,Clay,Rainfed,405.6,64.4,1189.5,1,558.9
+Anuradhapura,0.614,Hybrid_B,Clay,Tank,382.8,71.4,0,0,1307.4
+Anuradhapura,1.506,Hybrid_A,Loam,Canal,816.5,167.6,0,3,1554.2
+Anuradhapura,1.699,Hybrid_A,Loam,Rainfed,914.5,180.7,2329.3,3,1439.6
+Anuradhapura,1.549,Hybrid_A,Loam,Rainfed,922.9,119.1,1925.6,3,1329.8
+Anuradhapura,2.201,OPV_Local,Loam,Canal,985.5,82.1,1358.5,2,1194
+Anuradhapura,4.722,OPV_Local,Loam,Rainfed,783.9,115.8,998,3,672
+Anuradhapura,2.764,Hybrid_B,Sandy,Tube well,780.2,111.2,1577.1,1,1448.2
+Anuradhapura,0.477,OPV_Local,Sandy,Tank,884.8,72.4,1307.6,2,891.5
+Anuradhapura,0.716,Hybrid_A,Loam,Rainfed,828.5,180.6,1986.6,2,1565.6
+Anuradhapura,0.67,OPV_Local,Clay,Tank,1089.8,141.8,936.9,3,700.4
+Anuradhapura,4.922,OPV_Local,Sandy,Rainfed,834.7,88.3,1188.3,3,583.2
+Anuradhapura,3.587,OPV_Local,Loam,Rainfed,935.3,43.9,499.4,3,492.3
+Anuradhapura,4.392,Hybrid_B,Loam,Canal,336.3,121.7,1507.5,2,1278.4
+Anuradhapura,1.13,OPV_Local,Clay,Tank,800,183.6,1246.2,3,787.6
+Anuradhapura,2.919,Hybrid_B,Loam,Rainfed,678.2,154.8,0,3,1047.2
+Anuradhapura,2.719,OPV_Local,Loam,Tube well,997.6,149.1,1161.5,1,1183.3
+Anuradhapura,1.271,OPV_Local,Loam,Tank,450.4,89.9,1570.1,3,602.9
+Anuradhapura,1.932,Hybrid_B,Loam,Canal,800.4,105.4,1968.4,3,1373.8
+Anuradhapura,1.882,OPV_Local,Clay,Tube well,827.7,58.4,1158,2,859.5
+Anuradhapura,0.335,OPV_Local,Loam,Tube well,370.7,82.2,888.2,2,648.9
+Anuradhapura,1.26,Hybrid_A,Loam,Canal,291.5,173.4,1813.2,2,1542.6
+Anuradhapura,2.189,OPV_Local,Sandy,Rainfed,385.8,147.1,707.8,3,458.9
+Anuradhapura,1.904,Hybrid_A,Loam,Tube well,846.9,55.5,0,1,1842.4
+Anuradhapura,2.595,OPV_Local,Sandy,Rainfed,386,96.1,633.1,3,354.9
+Anuradhapura,1.508,Hybrid_A,Sandy,Rainfed,348.9,149.9,1785.8,3,764.6
+Anuradhapura,1.314,OPV_Local,Loam,Rainfed,771.5,139,0,1,841.3
+Anuradhapura,1.951,OPV_Local,Clay,Canal,431.4,51.3,1079.7,2,696.2
+Anuradhapura,0.423,Hybrid_A,Sandy,Canal,865.9,101.1,1976.6,3,1145.8
+Anuradhapura,3.999,OPV_Local,Loam,Tube well,263.2,102.8,568.6,0,899.5
+Anuradhapura,1.459,OPV_Local,Loam,Rainfed,498.5,50.5,1643.6,3,457.2
+Anuradhapura,3.995,OPV_Local,Loam,Tube well,863.3,211.5,1120.2,2,1054.1
+Anuradhapura,1.82,Hybrid_B,Clay,Tank,364.2,72.8,1067.6,3,823.8
+Anuradhapura,1.749,OPV_Local,Loam,Tank,922.9,51.8,1060.6,2,743.7
+Anuradhapura,1.699,OPV_Local,Loam,Tank,883.3,79.2,928.1,2,967.7
+Anuradhapura,1.511,Hybrid_A,Loam,Tank,274.7,199.6,0,2,1184
+Anuradhapura,0.876,Hybrid_B,Loam,Rainfed,460.5,104.8,1860.2,1,1335.2
+Anuradhapura,0.788,Hybrid_A,Loam,Tank,995.1,96.7,1939.2,2,1654.2
+Anuradhapura,1.108,Hybrid_B,Clay,Tank,814.7,126.6,1355.4,1,1751.8
+Anuradhapura,1.203,OPV_Local,Loam,Tank,529.3,157.5,1134.3,2,1009.6
+Anuradhapura,1.919,OPV_Local,Sandy,Tube well,369.3,78.5,1138.5,1,701.7
+Anuradhapura,7.815,Hybrid_A,Loam,Rainfed,1026.8,124,2143,2,1861.8
+Anuradhapura,1.288,OPV_Local,Loam,Tank,808.6,120.5,1157.3,2,1051.6
+Anuradhapura,1.073,OPV_Local,Loam,Rainfed,495.9,60.3,0,2,644.3
+Anuradhapura,1.468,OPV_Local,Sandy,Tube well,626,71.7,1126.5,2,763.1
+Anuradhapura,9.267,Hybrid_A,Loam,Rainfed,790.5,104.4,2261.1,1,1890.4
+Anuradhapura,1.827,Hybrid_B,Loam,Tube well,827.2,110.9,1592.5,1,1764.4
+Anuradhapura,4.573,OPV_Local,Sandy,Tank,403.3,142.7,795.2,1,887.4
+Anuradhapura,0.985,Hybrid_B,Loam,Tank,296.4,100.2,905.5,0,1485.1
+Anuradhapura,1.815,OPV_Local,Sandy,Tank,373.5,52.5,1316.8,1,767.7
+Anuradhapura,1.077,Hybrid_A,Loam,Tube well,938,71.5,1998.5,3,1269.7
+Anuradhapura,2.424,Hybrid_B,Loam,Rainfed,397.8,70.5,1499.8,2,1030.4
+Anuradhapura,1.719,Hybrid_B,Clay,Tube well,966.7,103.3,1300.9,2,1380.6
+Anuradhapura,0.398,OPV_Local,Clay,Rainfed,678.9,53,721.1,1,688.1
+Anuradhapura,0.57,Hybrid_A,Clay,Rainfed,346.7,82.9,1867.5,1,1077.2
+Anuradhapura,1.635,OPV_Local,Loam,Tank,445.3,147.5,725,3,626.1
+Anuradhapura,1.806,Hybrid_B,Sandy,Tube well,799.7,165.4,0,2,1464.8
+Anuradhapura,0.741,Hybrid_B,Clay,Rainfed,916.5,169.8,1052.3,3,1067.8
+Anuradhapura,0.952,OPV_Local,Sandy,Canal,1062.5,106.4,1713.9,1,1201.7
+Anuradhapura,2.032,Hybrid_A,Loam,Rainfed,995.9,119.9,2090.1,2,1889.2
+Anuradhapura,0.654,OPV_Local,Sandy,Rainfed,425.4,93.9,1084.4,3,405.1
+Anuradhapura,4.428,Hybrid_A,Loam,Rainfed,384.9,122.1,1810.5,3,989.1
+Anuradhapura,2.777,Hybrid_B,Loam,Rainfed,347.2,80.7,2197,2,913.7
+Anuradhapura,4.777,Hybrid_A,Clay,Tank,359.9,79.3,0,2,1232.7
+Anuradhapura,0.522,OPV_Local,Clay,Rainfed,437.8,113.8,1129.3,3,422.7
+Anuradhapura,1.04,OPV_Local,Loam,Rainfed,787.8,156.3,1170.9,2,1000.2
+Anuradhapura,4.228,Hybrid_A,Loam,Tube well,897.8,158.8,0,2,2089.3
+Anuradhapura,1.334,Hybrid_A,Clay,Tube well,814.1,195.9,1396.8,2,1607.6
+Anuradhapura,0.568,OPV_Local,Clay,Rainfed,958.2,204.9,0,1,1096.7
+Anuradhapura,9.544,Hybrid_A,Loam,Tank,353.3,84,2273.6,2,1576.5
+Anuradhapura,0.829,Hybrid_B,Loam,Tube well,1101.7,126.3,1779.3,2,1678.9
+Anuradhapura,1.342,Hybrid_B,Loam,Rainfed,316.3,171.4,1259.9,2,999.5
+Anuradhapura,0.878,OPV_Local,Loam,Rainfed,1081.4,188.4,455.5,3,738.9
+Anuradhapura,1.867,OPV_Local,Loam,Tank,900.5,169.1,1024.6,1,1194.2
+Anuradhapura,1.697,OPV_Local,Sandy,Tank,934.1,140.4,617.4,1,772.9
+Anuradhapura,1.396,Hybrid_B,Loam,Tank,395.5,96.8,1831.7,1,1408.9
+Anuradhapura,3.116,OPV_Local,Loam,Canal,832.3,165.7,675.8,3,690.6
+Anuradhapura,0.822,OPV_Local,Loam,Tank,307.6,40.4,1240.9,3,489.2
+Anuradhapura,1.091,OPV_Local,Loam,Canal,915.3,214.9,485.5,2,1038.3
+Anuradhapura,0.566,Hybrid_B,Clay,Canal,358.6,61.8,1529.7,1,1104.5
+Anuradhapura,1.532,Hybrid_A,Loam,Rainfed,898.1,127.2,2237.2,3,1419
+Anuradhapura,1.459,Hybrid_A,Clay,Tank,288.2,132.7,0,3,1019
+Anuradhapura,1.888,Hybrid_A,Loam,Rainfed,369.1,101.8,1929,0,1440.2
+Anuradhapura,4.806,Hybrid_B,Clay,Rainfed,362.5,66.5,1767.2,1,1005.5
+Anuradhapura,4.801,OPV_Local,Loam,Canal,440.7,120.3,1125.6,3,830.7
+Anuradhapura,3.517,OPV_Local,Clay,Tank,322.3,80.7,449.8,2,683.8
+Anuradhapura,5.949,OPV_Local,Sandy,Canal,804.8,157.6,1063.3,1,1092.4
+Anuradhapura,2.19,Hybrid_A,Sandy,Rainfed,631,103.1,1859.4,2,1198.4
+Anuradhapura,0.261,OPV_Local,Loam,Tube well,771.7,134,1286.4,2,972
+Anuradhapura,1.947,OPV_Local,Loam,Canal,316.3,122.2,1066.8,2,872.2
+Anuradhapura,1.918,OPV_Local,Loam,Tank,745.9,169,300,2,974.9
+Anuradhapura,1.304,OPV_Local,Sandy,Rainfed,905.4,152.4,1398.4,1,915.8
+Anuradhapura,1.995,Hybrid_B,Loam,Rainfed,426.9,143.5,0,2,1065.2
+Anuradhapura,1.331,Hybrid_B,Sandy,Tank,917.6,137.6,1501.6,1,1430.9
+Anuradhapura,0.948,OPV_Local,Clay,Rainfed,860.8,62.9,1051.2,3,485.8
+Anuradhapura,2.98,OPV_Local,Loam,Rainfed,450.7,72,1451.7,3,407
+Anuradhapura,0.692,Hybrid_B,Loam,Rainfed,408.2,82,1601.3,1,1193.3
+Anuradhapura,1.079,Hybrid_A,Sandy,Rainfed,788.1,127.9,1894.2,1,1451.8
+Anuradhapura,1.51,Hybrid_A,Loam,Tube well,521.4,162.8,1570.1,1,2195.5
+Anuradhapura,1.017,OPV_Local,Loam,Tube well,781.3,67.9,1513.2,3,505.5
+Anuradhapura,0.311,OPV_Local,Loam,Canal,918.4,63.6,0,2,816.3
+Anuradhapura,1.414,OPV_Local,Loam,Rainfed,328.3,69.8,1747,0,526.7
+Anuradhapura,1.086,OPV_Local,Loam,Rainfed,968.2,85.5,1404.8,2,869.8
+Anuradhapura,1.091,OPV_Local,Loam,Tank,897.5,120.8,1416,0,1130
+Anuradhapura,4.908,Hybrid_B,Sandy,Tank,1007.9,51.3,1918.4,0,1401.5
+Anuradhapura,1.505,Hybrid_A,Clay,Tube well,864.9,156.3,1600,3,1374.3
+Anuradhapura,1.22,OPV_Local,Loam,Rainfed,306.6,57.3,915.3,1,497.8
+Anuradhapura,0.838,OPV_Local,Loam,Canal,664,115.8,0,0,1461
+Anuradhapura,0.497,Hybrid_B,Loam,Tank,847.5,143.5,1113.4,2,1500.9
+Anuradhapura,1.827,OPV_Local,Loam,Tank,826.4,194.3,826.3,1,1279.7
+Anuradhapura,4.941,Hybrid_A,Loam,Rainfed,370.9,106.8,2230.9,2,1246.3
+Anuradhapura,0.803,OPV_Local,Loam,Canal,857.8,90.7,0,3,830.6
+Anuradhapura,0.438,Hybrid_B,Loam,Tank,370.9,190.7,1258.6,1,1378
+Anuradhapura,0.617,OPV_Local,Loam,Canal,831.2,195.3,1123.2,0,1215.4
+Anuradhapura,1.181,OPV_Local,Sandy,Tank,335.3,145.3,1345.4,2,614.5
+Anuradhapura,2.511,OPV_Local,Loam,Tube well,428.3,118.7,1401.2,2,963.9
+Anuradhapura,4.472,OPV_Local,Loam,Canal,333.6,120.7,578.1,2,796.4
+Anuradhapura,3.828,Hybrid_B,Loam,Tube well,390.7,62.1,1518.6,2,1126
+Anuradhapura,0.774,OPV_Local,Loam,Tank,434.9,40.7,819.1,1,844.1
+Anuradhapura,3.915,OPV_Local,Sandy,Rainfed,946.9,126.6,740,0,768.5
+Anuradhapura,1.803,OPV_Local,Loam,Rainfed,974.3,109.3,0,3,683.6
+Anuradhapura,0.509,OPV_Local,Clay,Tank,295.7,186.7,1354.2,2,690.5
+Anuradhapura,4.306,Hybrid_A,Clay,Rainfed,1026.2,142.8,2051.6,2,1844.4
+Anuradhapura,6.537,Hybrid_A,Loam,Tank,888.6,192,1839.3,3,1610.6
+Anuradhapura,1.789,Hybrid_A,Loam,Canal,362.6,203,1855,0,2082.4
+Anuradhapura,1.142,OPV_Local,Sandy,Tank,905,154.1,813.2,0,1014.7
+Anuradhapura,1.922,OPV_Local,Sandy,Tank,463.2,210.5,1010.1,2,899.5
+Anuradhapura,1.438,Hybrid_A,Loam,Rainfed,742,166.1,0,1,2088.8
+Anuradhapura,2.885,Hybrid_A,Loam,Tank,319.7,116.5,1813,0,1826.9
+Anuradhapura,1.187,Hybrid_A,Sandy,Tank,1138.2,156.4,2592.1,2,1692
+Anuradhapura,0.984,Hybrid_B,Clay,Tube well,815,89,1270.1,0,1683.7
+Anuradhapura,1.256,Hybrid_A,Sandy,Tank,753.6,145.6,0,3,1117.9
+Anuradhapura,1.586,OPV_Local,Clay,Tube well,381.4,90.3,750.5,1,723
+Anuradhapura,1.109,OPV_Local,Loam,Canal,432.3,127.6,1047.5,3,752.2
+Anuradhapura,2.105,OPV_Local,Clay,Canal,358.2,209.2,1092.1,3,669
+Anuradhapura,1.582,Hybrid_B,Loam,Tank,376.9,173.3,1663.9,1,1558.8
+Anuradhapura,0.474,OPV_Local,Loam,Tube well,749.9,212.4,0,3,739.3
+Anuradhapura,0.263,Hybrid_A,Loam,Tank,1000.6,140.7,1435.9,2,1844.8
+Anuradhapura,0.354,OPV_Local,Sandy,Canal,821.3,144.7,929.7,3,633.8
+Anuradhapura,9.328,OPV_Local,Loam,Canal,753,123.2,1085.6,2,1182.8
+Anuradhapura,0.439,Hybrid_A,Loam,Rainfed,852.6,198.7,2128.2,1,2038.5
+Anuradhapura,2.454,Hybrid_B,Loam,Tank,819.5,138.6,0,1,1763
+Anuradhapura,0.267,Hybrid_A,Clay,Tank,782.4,103.8,1841.4,3,1238.2
+Anuradhapura,2.104,Hybrid_B,Sandy,Tube well,908.1,133.1,1677.1,0,1666.1
+Anuradhapura,2.949,Hybrid_A,Loam,Tube well,365.2,103,1972.7,0,1795.2
+Anuradhapura,0.344,Hybrid_A,Loam,Canal,167.8,90.4,2130.1,1,1309.8
+Anuradhapura,1.572,OPV_Local,Loam,Rainfed,481.6,57.1,0,1,627.3
+Anuradhapura,1.373,OPV_Local,Sandy,Rainfed,400.1,70.9,675,1,659.2
+Anuradhapura,3.077,Hybrid_B,Loam,Tank,377.5,168,1534.9,3,1095.6
+Anuradhapura,1.576,Hybrid_A,Sandy,Rainfed,248.1,80.3,1743.7,2,685.5
+Anuradhapura,3.501,Hybrid_B,Loam,Tank,469.2,63.2,1545.5,3,958.6
+Anuradhapura,1.015,OPV_Local,Loam,Tank,408.6,54.6,0,3,485
+Anuradhapura,0.595,OPV_Local,Clay,Canal,435.8,70.4,1045.8,2,771.3
+Anuradhapura,1.5,OPV_Local,Loam,Rainfed,865.6,184.6,0,1,1131.3
+Anuradhapura,0.282,OPV_Local,Loam,Tube well,1063.5,50.4,1059.1,1,938.4
+Anuradhapura,0.458,OPV_Local,Loam,Rainfed,978.4,144.5,1011,3,869.9
+Anuradhapura,1.181,OPV_Local,Loam,Canal,394,155.4,851.7,2,812.6
+Anuradhapura,1.09,OPV_Local,Loam,Tank,324.1,216.6,1856.5,3,671.1
+Anuradhapura,5.412,OPV_Local,Clay,Tube well,842.7,44.8,0,3,513.7
+Anuradhapura,1.952,OPV_Local,Sandy,Tank,816.9,143.1,964.3,3,823.6
+Anuradhapura,1.269,Hybrid_B,Loam,Tank,876.5,156,1808.3,2,1647
+Anuradhapura,1.137,Hybrid_A,Loam,Tube well,396,202.4,1693.2,2,1377.9
+Anuradhapura,0.818,OPV_Local,Loam,Tube well,782.5,125.1,0,0,1340.8
+Anuradhapura,1.6,OPV_Local,Loam,Rainfed,414.4,54.7,1976.3,1,649.3
+Anuradhapura,2.343,OPV_Local,Sandy,Tube well,416.8,91.3,0,2,448.2
+Anuradhapura,1.516,Hybrid_A,Loam,Rainfed,882.2,126.6,2286.8,2,2118.7
+Anuradhapura,1.121,OPV_Local,Loam,Tank,975.1,108.5,1001.9,2,961.3
+Anuradhapura,1.02,OPV_Local,Sandy,Rainfed,264,178.3,1151.6,1,496.8
+Anuradhapura,3.475,OPV_Local,Loam,Rainfed,851.9,133.8,0,1,1105.7
+Anuradhapura,6.971,Hybrid_B,Loam,Tank,1010.8,98.8,1414.9,2,1443.2
+Anuradhapura,1.023,OPV_Local,Loam,Tank,352,89.2,1101.3,3,616.5
+Anuradhapura,1.956,OPV_Local,Loam,Tank,933.8,134.7,0,2,828.7
+Anuradhapura,0.984,Hybrid_B,Loam,Rainfed,863.2,208.7,1475.4,1,1725.9
+Anuradhapura,1.947,OPV_Local,Loam,Rainfed,396.4,115,959.6,2,745.2
+Anuradhapura,1.42,Hybrid_A,Sandy,Tank,730.5,127.2,1969.6,2,1693
+Anuradhapura,7.026,OPV_Local,Clay,Canal,767.1,80.1,1577.2,2,1059.2
+Anuradhapura,1.761,Hybrid_A,Loam,Tube well,611.1,109.5,0,3,1303.5
+Anuradhapura,6.013,OPV_Local,Loam,Rainfed,352.4,151.1,0,2,639.2
+Anuradhapura,2.63,Hybrid_B,Clay,Tank,353.2,44.5,1452.4,1,1094.6
+Anuradhapura,0.929,OPV_Local,Sandy,Tank,437.2,144.6,1047.2,1,637.8
+Anuradhapura,2.986,OPV_Local,Loam,Tank,756,149.2,1151.7,2,1115.8
+Anuradhapura,3.568,Hybrid_A,Loam,Canal,962.9,193.5,0,2,2169.4
+Anuradhapura,5.773,OPV_Local,Sandy,Tank,391.2,97.8,1043.7,2,588.6
+Anuradhapura,1.761,OPV_Local,Clay,Rainfed,913.4,105.9,1137,2,957.2
+Anuradhapura,0.763,OPV_Local,Sandy,Canal,762,91,1483.4,2,1063.3
+Anuradhapura,2.779,OPV_Local,Loam,Canal,1146.7,143.4,1224.8,2,1330.8
+Anuradhapura,2.426,OPV_Local,Loam,Tank,383,181.9,1583.9,2,858.8
+Anuradhapura,1.592,OPV_Local,Clay,Tank,926.7,158.5,907.8,3,858.1
+Anuradhapura,1.848,OPV_Local,Sandy,Tank,336.3,190.2,883.6,1,632.9
+Anuradhapura,0.929,OPV_Local,Loam,Rainfed,846.6,115.5,1084.9,3,672.1
+Anuradhapura,1.123,OPV_Local,Clay,Tube well,832.1,147.4,959,3,767.6
+Anuradhapura,1.206,OPV_Local,Sandy,Tank,360.8,142.1,0,3,510.8
+Anuradhapura,1.745,OPV_Local,Loam,Tank,402,96.9,1042.8,2,680.5
+Anuradhapura,1.06,Hybrid_B,Loam,Canal,885.3,159.4,0,3,1297.8
+Anuradhapura,3.443,Hybrid_A,Loam,Canal,764.9,123.6,2314.7,3,1740.7
+Anuradhapura,0.567,Hybrid_B,Loam,Rainfed,713.8,190.2,0,1,1637.2
+Anuradhapura,0.33,OPV_Local,Loam,Tank,359.3,171.2,999.8,2,801.6
+Anuradhapura,7.004,Hybrid_A,Loam,Rainfed,332.2,56.9,2163.4,2,1064.4
+Anuradhapura,3.57,OPV_Local,Clay,Tank,978.2,92.1,919.8,1,930.7
+Anuradhapura,1.261,OPV_Local,Loam,Rainfed,723,148.4,1257.5,3,751.4
+Anuradhapura,1.793,Hybrid_B,Loam,Rainfed,329.5,121.5,1478,2,984.3
+Anuradhapura,1.715,OPV_Local,Loam,Canal,884,49,1028.6,1,1103.1
+Anuradhapura,1.945,Hybrid_A,Loam,Canal,508.7,199.1,0,2,2023
+Anuradhapura,0.993,Hybrid_A,Clay,Tank,917.7,92.3,1639.4,1,1999.7
+Anuradhapura,1.438,Hybrid_A,Loam,Rainfed,983.2,96.7,1805.8,3,1256
+Anuradhapura,1.612,OPV_Local,Clay,Tank,388.1,164.8,324.3,3,460.8
+Anuradhapura,2.48,Hybrid_B,Loam,Rainfed,434.3,105.7,2211.6,1,1219.5
+Anuradhapura,1.322,OPV_Local,Loam,Rainfed,861.9,94.3,496.7,3,616.3
+Anuradhapura,0.928,Hybrid_A,Sandy,Rainfed,449.9,96.1,1880.9,3,955.8
+Anuradhapura,0.782,OPV_Local,Loam,Rainfed,791,102,1145.3,3,645
+Anuradhapura,8.768,OPV_Local,Sandy,Rainfed,304.6,90.2,986.6,2,482.9
+Anuradhapura,4.833,Hybrid_A,Sandy,Rainfed,425.1,78.6,1565.6,3,777.9
+Anuradhapura,0.876,Hybrid_B,Sandy,Rainfed,937,50.3,0,0,1132.5
+Anuradhapura,1.506,OPV_Local,Loam,Tube well,687.9,173.6,1045.8,1,1269.1
+Anuradhapura,3.182,OPV_Local,Sandy,Rainfed,866.9,103.5,967.6,1,823.8
+Anuradhapura,1.789,OPV_Local,Loam,Tank,850.7,207.3,0,3,762.2
+Anuradhapura,0.791,Hybrid_B,Clay,Tank,408.7,64.8,1554.8,1,1335.7
+Anuradhapura,0.942,Hybrid_B,Sandy,Tube well,261.8,159,0,0,1106.5
+Anuradhapura,1.856,Hybrid_A,Loam,Tube well,448.2,55.9,2420.4,2,1480.9
+Anuradhapura,0.72,Hybrid_B,Loam,Canal,689.6,101.1,1574.9,2,1694.7
+Anuradhapura,0.434,OPV_Local,Clay,Tank,838.9,76,1196.6,1,772.5
+Anuradhapura,0.413,Hybrid_B,Loam,Tank,428.1,141.9,1540.3,3,1010.7
+Anuradhapura,1.005,OPV_Local,Sandy,Tank,329.5,178.2,1095.5,2,636.8
+Anuradhapura,1.504,Hybrid_A,Sandy,Tank,933.6,133.2,2133,0,2082.4
+Anuradhapura,1.015,OPV_Local,Sandy,Canal,815.8,192.5,1349.8,3,850.7
+Anuradhapura,4.211,Hybrid_B,Loam,Tank,882.1,105.2,0,3,1175
+Anuradhapura,4.967,Hybrid_A,Loam,Tank,325.3,155.4,1841.9,2,1520.1
+Anuradhapura,1.29,OPV_Local,Clay,Tank,1020.5,53.7,822.1,1,705.9
+Anuradhapura,6.807,Hybrid_B,Clay,Tank,813.6,180.6,1739.3,3,1361.3
+Anuradhapura,0.485,OPV_Local,Loam,Rainfed,867,58.5,874.4,1,803.9
+Anuradhapura,0.95,OPV_Local,Loam,Rainfed,1073.6,64.3,848.7,0,882.2
+Anuradhapura,0.554,Hybrid_A,Clay,Tube well,891.7,160.6,2259.2,2,1963.1
+Anuradhapura,0.745,OPV_Local,Clay,Tank,910.2,90.9,0,3,589.8
+Anuradhapura,1.072,Hybrid_A,Loam,Rainfed,392.9,85.8,1562.3,1,1193.7
+Anuradhapura,1,Hybrid_A,Clay,Rainfed,966.9,71.2,0,0,1588.4
+Anuradhapura,2.861,OPV_Local,Loam,Tube well,297.1,55,1014.6,1,736
+Anuradhapura,1.996,Hybrid_A,Loam,Rainfed,901,117.2,1375,1,1931.2
+Anuradhapura,2.799,Hybrid_B,Loam,Canal,845.6,102.1,1568.2,2,1711.6
+Anuradhapura,1.282,Hybrid_B,Loam,Rainfed,237.1,59.5,0,1,777.6
+Anuradhapura,2.881,Hybrid_A,Loam,Rainfed,756.6,149.3,2251.1,2,1802.2
+Anuradhapura,0.975,Hybrid_B,Loam,Tank,968.2,149.9,1472.5,3,1218.6
+Anuradhapura,1.316,OPV_Local,Clay,Rainfed,455.8,165.2,0,2,715.3
+Anuradhapura,0.758,OPV_Local,Loam,Canal,789.2,135.5,971.1,3,728.3
+Anuradhapura,1.415,Hybrid_A,Clay,Rainfed,859.9,104.8,0,2,1397.6
+Anuradhapura,3.927,OPV_Local,Loam,Tube well,948.9,60.5,612.1,3,535.3
+Anuradhapura,0.976,Hybrid_B,Loam,Canal,405.7,162.8,1779.2,2,1340.9
+Anuradhapura,1.424,OPV_Local,Loam,Tank,266.7,159.6,1364.3,1,1043.6
+Anuradhapura,0.934,OPV_Local,Sandy,Canal,360.4,118.1,1105.7,2,710.5
+Anuradhapura,1.327,OPV_Local,Clay,Rainfed,752.2,194.9,660.1,3,577.6
+Anuradhapura,4.766,Hybrid_A,Sandy,Tube well,405.6,106.3,2013,0,1566.6
+Anuradhapura,1.599,Hybrid_B,Loam,Canal,961.5,136.5,1306.5,3,1544.5
+Anuradhapura,1.684,Hybrid_B,Sandy,Tank,859.4,59,1832,1,1318.9
+Anuradhapura,1.62,OPV_Local,Loam,Tube well,357.7,79.3,1051.9,3,564.3
+Anuradhapura,1.795,Hybrid_B,Clay,Rainfed,351.2,176.3,1931.4,1,1036.9
+Anuradhapura,0.253,OPV_Local,Loam,Canal,366.7,153.1,1022.9,2,862.2

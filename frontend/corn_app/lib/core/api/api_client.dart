@@ -38,6 +38,7 @@ class ApiClient {
   ///
   /// Do NOT hard-code a URL here. Edit [ApiConfig] in api_config.dart instead.
   static String get baseUrl => ApiConfig.baseUrl;
+  static const String yieldBaseUrl = "http://10.0.2.2:8081";
 
   // Timeout for multipart uploads.
   // Render free tier cold-starts can take 50–80 s; 90 s gives a safe margin.
@@ -97,7 +98,9 @@ class ApiClient {
     String path,
     Map<String, dynamic> body,
   ) async {
-    final uri = _uri(path); // debug print happens here
+    final uri = path.startsWith('/yield/')
+        ? Uri.parse('$yieldBaseUrl$path')
+        : _uri(path); // debug print happens here
     return http
         .post(
           uri,

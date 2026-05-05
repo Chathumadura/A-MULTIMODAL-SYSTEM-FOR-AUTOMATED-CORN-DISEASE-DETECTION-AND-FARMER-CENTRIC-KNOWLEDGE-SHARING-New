@@ -32,6 +32,7 @@ const String _physicalDeviceIp = '192.168.1.100'; // e.g. 192.168.1.42
 // ─────────────────────────────────────────────────────────────────────────
 
 const int _localPort = 8000;
+const int _localYieldPort = 8081;
 const String _productionUrl = 'https://corn-ai-backend.onrender.com';
 
 /// The three environments the app can target.
@@ -117,8 +118,24 @@ class ApiConfig {
   /// `POST /pest/predict` — multipart image upload.
   static String get pestPredictUrl => '$baseUrl/pest/predict';
 
+  // Yield service runs on separate backend (port 8081)
+  // Other services continue using main backend
+  static String get yieldBaseUrl {
+    final mode = runMode;
+
+    switch (mode) {
+      case RunMode.emulator:
+        return 'http://10.0.2.2:$_localYieldPort';
+      case RunMode.device:
+        return 'http://$_physicalDeviceIp:$_localYieldPort';
+      case RunMode.production:
+        // Keep production same as main backend
+        return _productionUrl;
+    }
+  }
+
   /// `POST /yield/predict` — JSON body.
-  static String get yieldPredictUrl => '$baseUrl/yield/predict';
+  static String get yieldPredictUrl => '$yieldBaseUrl/yield/predict';
 
   /// `GET /health`
   static String get healthUrl => '$baseUrl/health';

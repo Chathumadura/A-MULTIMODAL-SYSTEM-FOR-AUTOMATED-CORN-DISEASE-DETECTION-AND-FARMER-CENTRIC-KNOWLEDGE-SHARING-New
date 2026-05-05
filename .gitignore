@@ -1,0 +1,30 @@
+# Python
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Virtualenvs in backend-yield and backend
+backend/venv/
+backend/.venv/
+backend-yield/.venv/
+
+# Flutter
+frontend/corn_app/build/
+frontend/corn_app/.dart_tool/
+
+# Env files
+.env
+
+# Model artifacts
+*.h5
+*.keras
+*.pkl
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
