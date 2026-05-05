@@ -154,7 +154,8 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
         break;
       case 'invalid_image':
         titleSinhala = 'වලංගු බඩඉරිඟු පත්‍රයක් නොවේ';
-        messageSinhala = 'කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍රයක රූපයක් upload කරන්න.';
+        messageSinhala =
+            'කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍රයක රූපයක් upload කරන්න.';
         buttonLabel = 'නැවත උත්සාහ කරන්න';
         break;
       case 'uncertain':
@@ -242,10 +243,13 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (!mounted) return;
                           // Handle navigation per final diagnosis type
-                          final typeLocal = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
+                          final typeLocal =
+                              _readString(result, ['final_diagnosis_type']) ??
+                              'uncertain';
                           if (typeLocal == 'nutrient_deficiency') {
                             final nutritionResult = Map<String, dynamic>.from(
-                              _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
+                              _asMap(result['nutrition_result']) ??
+                                  const <String, dynamic>{},
                             );
                             nutritionResult['fertilizer_recommendations'] =
                                 result['fertilizer_recommendations'];
@@ -264,7 +268,8 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const CornDiseaseDetectionScreen(),
+                                builder: (_) =>
+                                    const CornDiseaseDetectionScreen(),
                               ),
                             );
                           } else if (typeLocal == 'healthy') {
