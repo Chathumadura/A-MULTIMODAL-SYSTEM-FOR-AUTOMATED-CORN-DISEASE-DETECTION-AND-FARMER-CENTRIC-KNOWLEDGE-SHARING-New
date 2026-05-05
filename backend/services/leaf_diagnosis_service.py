@@ -225,13 +225,35 @@ def analyze_leaf_diagnosis(file_bytes: bytes) -> dict:
         return _invalid_image_response(nutrition_result, disease_result)
 
     # If the disease model is very confident that the leaf is healthy,
-    # return Healthy directly as the final diagnosis.
+    # do not let that override the nutrition-based final decision.
     if disease_label == "Healthy" and disease_conf >= 0.90:
         logger.info(
-            "[leaf-diagnosis] Returning healthy from disease model confidence (%.4f)",
+            "[leaf-diagnosis] Disease healthy confidence too strong (%.4f); using nutrition result instead",
             disease_conf,
         )
-        return _healthy_response(nutrition_result, disease_result, disease_conf)
+
+        if nutrition_conf < 0.50:
+            return _low_confidence_response(nutrition_result, disease_result, nutrition_conf)
+
+        if nutrition_label == "Healthy":
+            return _healthy_response(nutrition_result, disease_result, nutrition_conf)
+
+        fertilizer_recommendations = get_fertilizer_recommendations(nutrition_label)
+        return {
+            "final_diagnosis_type": "nutrient_deficiency",
+            "final_prediction": nutrition_label,
+            "confidence": round(nutrition_conf, 4),
+            "message": f"The nutrient deficiency model showed the higher confidence ({nutrition_conf:.1%}), "
+                       f"so this image is classified as a nutrient deficiency.",
+            "secondary_possibility": "disease",
+            "nutrition_result": nutrition_result,
+            "disease_result": disease_result,
+            "fertilizer_recommendations": fertilizer_recommendations,
+            "model_versions": {
+                "nutrition": nutrition_result.get("model_version"),
+                "disease": disease_result.get("model_version"),
+            },
+        }
 
     selected_confidence = max(nutrition_conf, disease_conf)
     if selected_confidence < 0.50:
