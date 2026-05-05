@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/api/api_client.dart';
+import '../../../../core/services/rainfall_preload_service.dart';
+import '../../../../core/services/rainfall_service.dart';
 
 // API base URL is managed centrally in [ApiClient] → [Env.baseUrl].
 // Local dev override: flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
@@ -29,9 +31,12 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
   late Animation<Offset> _slideAnimation;
 
   final _farmSizeController = TextEditingController(text: "10");
-  final _rainfallController = TextEditingController(text: "852");
+  final _rainfallController = TextEditingController(text: "0");
   final _fertilizerController = TextEditingController(text: "85");
   final _prevYieldController = TextEditingController(text: "2589");
+
+  double? _apiRainfallValue;
+  bool _isRainfallLoading = true;
 
   final List<String> _varieties = ["Hybrid_A", "Hybrid_B", "OPV_Local"];
 
@@ -76,6 +81,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
             curve: Curves.easeOutCubic,
           ),
         );
+    _loadRainfall();
   }
 
   @override
@@ -129,7 +135,8 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
       "variety": _variety!,
       "soil_type": _soilType!,
       "irrigation_type": _irrigationType!,
-      "seasonal_rainfall_mm": double.parse(_rainfallController.text),
+      "seasonal_rainfall_mm":
+          double.tryParse(_rainfallController.text) ?? 800,
       "fertilizer_kg_per_acre": double.parse(_fertilizerController.text),
       "previous_yield_kg_per_acre": _prevYieldController.text.trim().isEmpty
           ? 0.0
@@ -219,13 +226,59 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
 
   void _reset() {
     _farmSizeController.text = "";
-    _rainfallController.text = "";
+    _resetRainfall();
     _fertilizerController.text = "";
     _prevYieldController.text = "";
     setState(() {
       _result = null;
       _error = null;
     });
+  }
+
+  Future<void> _loadRainfall() async {
+    try {
+      setState(() {
+        _isRainfallLoading = true;
+      });
+
+      final cached = RainfallPreloadService.getCached();
+
+      if (cached != null) {
+        await Future.delayed(const Duration(seconds: 2));
+
+        setState(() {
+          _apiRainfallValue = cached;
+          _rainfallController.text = cached.toStringAsFixed(0);
+          _isRainfallLoading = false;
+        });
+
+        RainfallPreloadService.preload("Anuradhapura");
+        return;
+      }
+
+      final rainfall =
+          await RainfallService.getSeasonalRainfall("Anuradhapura");
+
+      await Future.delayed(const Duration(seconds: 2));
+
+      setState(() {
+        _apiRainfallValue = rainfall;
+        _rainfallController.text = rainfall.toStringAsFixed(0);
+        _isRainfallLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _apiRainfallValue = 800;
+        _rainfallController.text = "800";
+        _isRainfallLoading = false;
+      });
+    }
+  }
+
+  void _resetRainfall() {
+    if (_apiRainfallValue != null) {
+      _rainfallController.text = _apiRainfallValue!.toStringAsFixed(0);
+    }
   }
 
   @override
@@ -935,7 +988,24 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _rainfallController,
-                    decoration: _fieldDecoration(loc.mm, "0"),
+                    decoration: _fieldDecoration(loc.mm, "0").copyWith(
+                      suffixIcon: _isRainfallLoading
+                          ? const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 8,
+                                width: 8,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.refresh),
+                              tooltip: "Reset rainfall",
+                              onPressed: _resetRainfall,
+                            ),
+                    ),
                     keyboardType: TextInputType.number,
                     validator: (v) => _numberValidator(v, loc),
                   ),
@@ -943,6 +1013,11 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          "Auto-estimated seasonal rainfall based on current season and recent weather data.",
+          style: TextStyle(fontSize: 12, color: Colors.grey),
         ),
         const SizedBox(height: 16),
         Row(
