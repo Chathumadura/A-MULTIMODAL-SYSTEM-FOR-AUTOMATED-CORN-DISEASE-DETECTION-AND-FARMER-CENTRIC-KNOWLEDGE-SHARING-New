@@ -55,6 +55,47 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
   String? _errorMessage;
   Map<String, dynamic>? _result;
 
+  double _normalizeConfidenceValue(dynamic value) {
+    if (value is num) {
+      final number = value.toDouble();
+      return number > 1 ? number / 100.0 : number;
+    }
+    final parsed = double.tryParse(value?.toString() ?? '') ?? 0.0;
+    return parsed > 1 ? parsed / 100.0 : parsed;
+  }
+
+  Map<String, dynamic> _buildNutritionResultForRedirect(
+    Map<String, dynamic> result,
+  ) {
+    final nutritionResult = Map<String, dynamic>.from(
+      _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
+    );
+
+    final predictedClass =
+        _readString(nutritionResult, ['predicted_class', 'final_prediction']) ??
+        _readString(result, ['predicted_class', 'final_prediction']);
+    final confidence = _normalizeConfidenceValue(
+      nutritionResult['confidence'] ?? result['confidence'] ?? 1.0,
+    );
+
+    if (predictedClass != null) {
+      nutritionResult['predicted_class'] = predictedClass;
+    }
+    nutritionResult['confidence'] = confidence;
+
+    final existingProbabilities = _asMap(nutritionResult['all_probabilities']);
+    if (existingProbabilities != null && existingProbabilities.isNotEmpty) {
+      nutritionResult['all_probabilities'] = existingProbabilities;
+    } else if (predictedClass != null) {
+      nutritionResult['all_probabilities'] = {predictedClass: confidence};
+    }
+
+    nutritionResult['fertilizer_recommendations'] =
+        result['fertilizer_recommendations'];
+
+    return nutritionResult;
+  }
+
   Future<void> _pickImage(ImageSource source) async {
     if (_isPicking || _isAnalyzing) return;
 
@@ -124,10 +165,32 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     }
   }
 
+  String? _getSecondaryCautionMessage(
+    String type,
+    String? secondaryPossibility,
+  ) {
+    if (secondaryPossibility == null) return null;
+
+    if (type == 'nutrient_deficiency' && secondaryPossibility == 'disease') {
+      return 'අමතර සැලකිල්ල: ඉදිරියේදී රෝග තත්ත්වයක ලක්ෂණද පෙන්විය හැකිය. පත්‍රයේ ලප, වියළීම, හෝ පැතිරීම වැඩි වුවහොත් රෝග පරීක්ෂාව නැවත කරන්න. සැලකිල්ලෙන් ඉන්න.';
+    }
+
+    if (type == 'disease' && secondaryPossibility == 'nutrient_deficiency') {
+      return 'අමතර සැලකිල්ල: ඉදිරියේදී පෝෂක ඌනතාවයක ලක්ෂණද පෙන්විය හැකිය. පත්‍රයේ කහවීම, වර්ධනය අඩුවීම, හෝ පෝෂක ඌනතාවයට සමාන ලක්ෂණ වැඩි වුවහොත් Nutrient Prediction section එකෙන් නැවත පරීක්ෂා කරන්න. සැලකිල්ලෙන් ඉන්න.';
+    }
+
+    return null;
+  }
+
   Future<void> _showDiagnosisPopup(Map<String, dynamic> result) async {
     if (!mounted) return;
     final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
     final accentColor = _colorForType(type);
+    final secondaryPossibility = _readString(result, ['secondary_possibility']);
+    final secondaryCautionMessage = _getSecondaryCautionMessage(
+      type,
+      secondaryPossibility,
+    );
 
     String titleSinhala;
     String messageSinhala;
@@ -135,21 +198,21 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
 
     switch (type) {
       case 'nutrient_deficiency':
-        titleSinhala = 'පෝෂක ඌනතාවයක් හඳුනාගෙන ඇත';
+        titleSinhala = 'ප්‍රධාන ගැටලුව: පෝෂක ඌනතාවයක්';
         messageSinhala =
-            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ පෝෂක ඌනතාවයකට අදාල විය හැකිය. වැඩිදුර විස්තර, probability values සහ පොහොර නිර්දේශ ලබා ගැනීමට Nutrient Prediction section එකට යන්න.';
-        buttonLabel = 'Nutrient විස්තර බලන්න';
+            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ පෝෂක ඌනතාවයකට වැඩි වශයෙන් අදාල වේ. වැඩිදුර විස්තර සහ පොහොර නිර්දේශ ලබා ගැනීමට Nutrient Prediction section එකට යන්න.';
+        buttonLabel = 'පොහොර නිර්දේශ බලන්න';
         break;
       case 'disease':
-        titleSinhala = 'රෝග ලක්ෂණයක් හඳුනාගෙන ඇත';
+        titleSinhala = 'ප්‍රධාන ගැටලුව: රෝග තත්ත්වයක්';
         messageSinhala =
-            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ රෝග තත්ත්වයකට අදාල විය හැකිය. වැඩිදුර විස්තර සහ රෝගයට අදාල උපදෙස් ලබා ගැනීමට Disease Detection section එකට යන්න.';
-        buttonLabel = 'Disease විස්තර බලන්න';
+            'මෙම පත්‍රයේ පෙනෙන ලක්ෂණ රෝග තත්ත්වයකට වැඩි වශයෙන් අදාල වේ. වැඩිදුර විස්තර සහ රෝගයට අදාල උපදෙස් ලබා ගැනීමට Disease Detection section එකට යන්න.';
+        buttonLabel = 'රෝග විස්තර බලන්න';
         break;
       case 'healthy':
-        titleSinhala = 'පත්‍රය සෞඛ්‍ය සම්පන්න ලෙස පෙනේ';
+        titleSinhala = 'ප්‍රධාන ගැටලුවක් හඳුනාගෙන නොමැත';
         messageSinhala =
-            'මෙම රූපයෙන් ප්‍රබල පෝෂක ඌනතාවයක් හෝ රෝග ලක්ෂණයක් හඳුනාගැනීමට නොහැකි විය.';
+            'මෙම රූපයෙන් ප්‍රබල පෝෂක ඌනතාවයක් හෝ රෝග තත්ත්වයක් පෙන්වන්නේ නැත.';
         buttonLabel = 'හරි';
         break;
       case 'invalid_image':
@@ -162,7 +225,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
       default:
         titleSinhala = 'ප්‍රතිඵලය නිශ්චිත නැත';
         messageSinhala =
-            'මෙම රූපයෙන් පෝෂක ඌනතාවයක්ද රෝග තත්ත්වයක්ද යන්න නිශ්චිතව තීරණය කළ නොහැක. කරුණාකර වැඩි ආලෝකයක් සහිත පැහැදිලි පත්‍ර රූපයක් නැවත upload කරන්න.';
+            'මෙම රූපයෙන් පෝෂක ඌනතාවයක්ද රෝග තත්ත්වයක්ද යන්න නිශ්චිතව තීරණය කළ නොහැක. කරුණාකර පැහැදිලි පත්‍ර රූපයක් නැවත upload කරන්න.';
         buttonLabel = 'නැවත උත්සාහ කරන්න';
         break;
     }
@@ -172,132 +235,161 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: 20 + MediaQuery.of(sheetContext).padding.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 48,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                titleSinhala,
-                textAlign: TextAlign.left,
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: accentColor,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                messageSinhala,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 18),
-              Row(
+        return SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(sheetContext).size.height * 0.85,
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(sheetContext).pop(),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black54,
-                        side: const BorderSide(color: Color(0xFFDDD8D8)),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'ආපසු',
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                      ),
+                  // Title
+                  Text(
+                    titleSinhala,
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: accentColor,
+                      height: 1.3,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(sheetContext).pop();
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (!mounted) return;
-                          // Handle navigation per final diagnosis type
-                          final typeLocal =
-                              _readString(result, ['final_diagnosis_type']) ??
-                              'uncertain';
-                          if (typeLocal == 'nutrient_deficiency') {
-                            final nutritionResult = Map<String, dynamic>.from(
-                              _asMap(result['nutrition_result']) ??
-                                  const <String, dynamic>{},
-                            );
-                            nutritionResult['fertilizer_recommendations'] =
-                                result['fertilizer_recommendations'];
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => NutrientPredictionPage(
-                                  imageFile: _selectedImage,
-                                  precomputedResult: nutritionResult,
-                                  skipApiCall: true,
-                                ),
-                              ),
-                            );
-                          } else if (typeLocal == 'disease') {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    const CornDiseaseDetectionScreen(),
-                              ),
-                            );
-                          } else if (typeLocal == 'healthy') {
-                            // nothing else needed; simple OK button already closed
-                          } else {
-                            // invalid_image or uncertain: clear feedback so user can retry
-                            _clearFeedback();
-                          }
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accentColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 16),
+                  // Main message
+                  Text(
+                    messageSinhala,
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      height: 1.6,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  // Secondary caution card (if applicable)
+                  if (secondaryCautionMessage != null) ...[
+                    const SizedBox(height: 18),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.amber.withOpacity(0.35),
+                          width: 1.2,
                         ),
                       ),
                       child: Text(
-                        buttonLabel,
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                        secondaryCautionMessage,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          height: 1.6,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
+                  ],
+                  const SizedBox(height: 24),
+                  // Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(sheetContext).pop(),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.black54,
+                            side: const BorderSide(
+                              color: Color(0xFFDDD8D8),
+                              width: 1.2,
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: Text(
+                            'ආපසු',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(sheetContext).pop();
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (!mounted) return;
+                              // Handle navigation per final diagnosis type
+                              final typeLocal =
+                                  _readString(result, [
+                                    'final_diagnosis_type',
+                                  ]) ??
+                                  'uncertain';
+                              if (typeLocal == 'nutrient_deficiency') {
+                                final nutritionResult =
+                                    _buildNutritionResultForRedirect(result);
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => NutrientPredictionPage(
+                                      imageFile: _selectedImage,
+                                      precomputedResult: nutritionResult,
+                                      skipApiCall: true,
+                                      showAutoResultSheet: true,
+                                    ),
+                                  ),
+                                );
+                              } else if (typeLocal == 'disease') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => CornDiseaseDetectionScreen(
+                                      initialImageFile: _selectedImage,
+                                    ),
+                                  ),
+                                );
+                              } else if (typeLocal == 'healthy') {
+                                // nothing else needed; simple OK button already closed
+                              } else {
+                                // invalid_image or uncertain: clear feedback so user can retry
+                                _clearFeedback();
+                              }
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: Text(
+                            buttonLabel,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-            ],
+            ),
           ),
         );
       },
@@ -504,11 +596,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     final type = _readString(result, ['final_diagnosis_type']) ?? 'uncertain';
 
     if (type == 'nutrient_deficiency') {
-      final nutritionResult = Map<String, dynamic>.from(
-        _asMap(result['nutrition_result']) ?? const <String, dynamic>{},
-      );
-      nutritionResult['fertilizer_recommendations'] =
-          result['fertilizer_recommendations'];
+      final nutritionResult = _buildNutritionResultForRedirect(result);
 
       if (!mounted) return;
       Navigator.push(
@@ -518,6 +606,7 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
             imageFile: _selectedImage,
             precomputedResult: nutritionResult,
             skipApiCall: true,
+            showAutoResultSheet: true,
           ),
         ),
       );
@@ -535,20 +624,24 @@ class _LeafDiagnosisPageState extends State<LeafDiagnosisPage> {
     final raw = error.toString();
 
     // Network/connection errors
-    if (raw.contains('SocketException') || raw.contains('Failed host lookup')) {
-      return 'Cannot connect to backend. Please check internet connection or backend server URL.';
+    if (raw.contains('SocketException') ||
+        raw.contains('Failed host lookup') ||
+        raw.toLowerCase().contains('connection refused')) {
+      return 'Backend server එකට සම්බන්ධ වීමට නොහැකි විය. Internet connection එක සහ server URL එක පරීක්ෂා කරන්න.';
     }
+
+    if (raw.contains('503') ||
+        raw.toLowerCase().contains('service unavailable')) {
+      return 'Backend service එක දැනට ලබාගත නොහැක. කරුණාකර ටික වේලාවකින් නැවත උත්සාහ කරන්න.';
+    }
+
     if (raw.contains('TimeoutException') ||
         raw.toLowerCase().contains('timeout')) {
       return 'Request timed out. The server may be waking up, so please try again.';
     }
-    if (raw.contains('Connection refused') ||
-        raw.contains('connection refused')) {
-      return 'Cannot connect to backend. Backend server may be offline.';
-    }
 
-    // HTTP and other errors
-    return raw.startsWith('Exception: ') ? raw.substring(11) : raw;
+    // Generic fallback
+    return 'විශ්ලේෂණය අසාර්ථක විය. කරුණාකර පැහැදිලි බඩඉරිඟු පත්‍ර රූපයක් නැවත upload කරන්න.';
   }
 
   Color _colorForType(String type) {

@@ -8,7 +8,16 @@ import 'nutrient_prediction_page.dart';
 import '../../../../core/localization/app_localizations.dart';
 
 class CaptureLeafPage extends StatefulWidget {
-  const CaptureLeafPage({super.key});
+  final File? initialImageFile;
+  final Map<String, dynamic>? precomputedResult;
+  final bool skipApiCall;
+
+  const CaptureLeafPage({
+    super.key,
+    this.initialImageFile,
+    this.precomputedResult,
+    this.skipApiCall = false,
+  });
 
   @override
   State<CaptureLeafPage> createState() => _CaptureLeafPageState();
@@ -29,6 +38,10 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
   @override
   void initState() {
     super.initState();
+    // Initialize with image from Leaf Diagnosis if provided
+    if (widget.initialImageFile != null) {
+      _image = widget.initialImageFile;
+    }
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
@@ -65,7 +78,13 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => NutrientPredictionPage(initialImagePath: _image!.path),
+        builder: (_) => NutrientPredictionPage(
+          initialImagePath: _image!.path,
+          imageFile: _image,
+          precomputedResult: widget.precomputedResult,
+          skipApiCall: widget.skipApiCall,
+          showAutoResultSheet: false,
+        ),
       ),
     );
   }
@@ -459,10 +478,7 @@ class _CaptureLeafPageState extends State<CaptureLeafPage>
                   const SizedBox(height: 10),
                   Text(
                     loc.translate('capture_tips'),
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ],
               ),

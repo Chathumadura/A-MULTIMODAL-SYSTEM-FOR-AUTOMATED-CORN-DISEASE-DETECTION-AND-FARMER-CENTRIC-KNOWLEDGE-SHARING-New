@@ -10,9 +10,13 @@ import 'disease_classifier.dart';
 import 'disease_prediction.dart';
 
 class CornDiseaseDetectionScreen extends StatefulWidget {
-  const CornDiseaseDetectionScreen({super.key, DiseaseClassifier? classifier})
-    : _classifier = classifier;
+  const CornDiseaseDetectionScreen({
+    super.key,
+    this.initialImageFile,
+    DiseaseClassifier? classifier,
+  }) : _classifier = classifier;
 
+  final File? initialImageFile;
   final DiseaseClassifier? _classifier;
 
   @override
@@ -41,6 +45,10 @@ class _CornDiseaseDetectionScreenState extends State<CornDiseaseDetectionScreen>
   void initState() {
     super.initState();
     _classifier = widget._classifier ?? ApiDiseaseClassifier();
+    // If an initial image was provided (e.g., from Leaf Diagnosis), use it
+    if (widget.initialImageFile != null) {
+      _image = widget.initialImageFile;
+    }
     _resultRevealController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),

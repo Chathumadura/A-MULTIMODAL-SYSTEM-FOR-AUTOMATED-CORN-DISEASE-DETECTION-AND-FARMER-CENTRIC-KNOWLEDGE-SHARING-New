@@ -11,6 +11,7 @@ class NutrientPredictionPage extends StatefulWidget {
   final File? imageFile;
   final Map<String, dynamic>? precomputedResult;
   final bool skipApiCall;
+  final bool showAutoResultSheet;
 
   const NutrientPredictionPage({
     super.key,
@@ -18,6 +19,7 @@ class NutrientPredictionPage extends StatefulWidget {
     this.imageFile,
     this.precomputedResult,
     this.skipApiCall = false,
+    this.showAutoResultSheet = true,
   });
 
   @override
@@ -54,6 +56,12 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
       // Apply precomputed result from Leaf Diagnosis
       _applyPrecomputedResult(widget.precomputedResult!);
       _animationController.forward(from: 0.0);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.showAutoResultSheet && _predictedClass != null) {
+          _showResultSheet(_predictedClass!, _confidence ?? 0);
+        }
+      });
     } else if (widget.initialImagePath != null && !widget.skipApiCall) {
       // auto-run analysis when arriving from capture screen
       _analyzeImage();
@@ -173,7 +181,7 @@ class _NutrientPredictionPageState extends State<NutrientPredictionPage>
         return;
       }
 
-      if (mounted && _predictedClass != null) {
+      if (mounted && _predictedClass != null && widget.showAutoResultSheet) {
         _showResultSheet(_predictedClass!, _confidence ?? 0);
       }
       _animationController.forward(from: 0.0);
