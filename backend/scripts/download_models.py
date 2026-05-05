@@ -155,7 +155,7 @@ def main() -> int:
         ),
         (
             "DISEASE_MODEL_URL",
-            _resolve_path("DISEASE_MODEL_PATH", "models/disease_model.tflite"),
+            _resolve_path("DISEASE_MODEL_PATH", "models/corn_resnet50_model.keras"),
             "Disease detection model (.tflite)",
             MIN_VALID,
         ),

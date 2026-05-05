@@ -1,5 +1,5 @@
 """
-Disease detection model utilities (disease_model.tflite).
+Disease detection model utilities (corn_resnet50_model.keras).
 
 The TFLite interpreter is loaded lazily on the very first prediction request so
 that the app starts quickly and stays within Render free-tier memory limits.
