@@ -1,9 +1,11 @@
 """
-Yield prediction model utilities.
+CORNXPERT UTILITY LAYER - MACHINE LEARNING MODEL MANAGEMENT
 
-The sklearn pipeline is loaded lazily so the full app can start (and serve
-disease-detection requests) even when .pkl is absent.
-When the model file is missing, yield endpoints return HTTP 503.
+This module handles the technical details of the scikit-learn model:
+1. Persistence: Loads the pre-trained .pkl file lazily.
+2. Structure: Deconstructs the pipeline into its preprocessor and estimator components.
+3. Feature Engineering: Reconstructs post-transformation feature names for SHAP.
+4. Data Prep: Maps mobile app inputs to the precise DataFrame format expected by the model.
 """
 
 from __future__ import annotations
@@ -30,18 +32,25 @@ MODEL_PATH = os.path.join(BASE_DIR, "corn_yield_model.pkl")
 # Model state container
 # ---------------------------------------------------------------------------
 class YieldModelState(NamedTuple):
-    pipeline: object                  # full sklearn Pipeline
-    preprocessor: object              # ColumnTransformer step
-    model: object                     # underlying estimator (trees)
-    explainer: shap.TreeExplainer
-    all_feature_names: list[str]      # post-transform feature names
+    """
+    Container for the loaded machine learning artifacts.
+    Storing them together ensures consistency between prediction and explanation.
+    """
+    pipeline: object                  # Full scikit-learn Pipeline
+    preprocessor: object              # The ColumnTransformer part of the pipeline
+    model: object                     # The actual tree-based estimator (e.g., XGBoost)
+    explainer: shap.TreeExplainer     # Pre-initialized SHAP explainer
+    all_feature_names: list[str]      # Names of the features after one-hot encoding
 
 
 _state: YieldModelState | None = None
 
 
 def _load() -> YieldModelState | None:
-    """Load the sklearn pipeline and build the SHAP explainer."""
+    """
+    Technical implementation of the model loader.
+    Accesses the filesystem to read the serialized pipeline.
+    """
     logger.info("Python version: %s", sys.version.replace("\n", " "))
     logger.info("scikit-learn version: %s", sklearn.__version__)
     logger.info("numpy version: %s", np.__version__)
@@ -59,8 +68,8 @@ def _load() -> YieldModelState | None:
         preprocessor = pipeline.named_steps["preprocessor"]
         model = pipeline.named_steps["model"]
 
-        # Derive post-transform feature names
-        # Transformer order depends on how the model was trained
+        # Reconstruct feature names after transformation
+        # This is critical for mapping SHAP values back to human-readable factors.
         cat_idx = 0 if preprocessor.transformers_[0][0] == "cat" else 1
         num_idx = 1 - cat_idx
         categorical_features: list[str] = list(preprocessor.transformers_[cat_idx][2])
@@ -132,9 +141,11 @@ _PEST_MAP = {0: "None", 1: "Low", 2: "Medium", 3: "High"}
 # ---------------------------------------------------------------------------
 def build_full_row(data: dict) -> pd.DataFrame:
     """
-    Build a single-row DataFrame matching the retrained model's 9 features.
-    The form sends pest_disease_incidence as int 0-3; this maps it to the
-    string pest_disease_level the model expects.
+    Translates mobile app inputs into a structured Pandas DataFrame.
+    
+    Important: The model expects 9 specific features. We must also map
+    the pest_disease_incidence (integer) to the categorical labels (string)
+    used during the model's training phase.
     """
     row = {
         "district": data["district"],

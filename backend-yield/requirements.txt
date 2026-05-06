@@ -1,11 +1,15 @@
+# CORE WEB FRAMEWORK
+# FastAPI for the API layer and Uvicorn as the production server
 fastapi==0.115.0
-    uvicorn[standard]==0.30.6
-    python-multipart==0.0.9
-    starlette>=0.37.0,<0.42.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+starlette>=0.37.0,<0.42.0
 
-    numpy==2.0.2
-    pandas==2.2.2
-    joblib==1.5.3
-    scikit-learn==1.7.2
-    xgboost==3.2.0
-    shap==0.46.0
+# DATA PROCESSING & ML LIBRARIES
+# Precisely pinned versions to ensure model binary compatibility
+numpy==2.0.2
+pandas==2.2.2
+joblib==1.5.3
+scikit-learn==1.7.2
+xgboost==3.2.0
+shap==0.46.0

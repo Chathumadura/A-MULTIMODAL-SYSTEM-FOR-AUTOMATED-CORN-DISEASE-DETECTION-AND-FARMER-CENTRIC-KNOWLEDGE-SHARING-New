@@ -1,3 +1,15 @@
+/// CORNXPERT FRONTEND - ENHANCED YIELD PREDICTION PAGE
+///
+/// This is the primary user interface for the Corn Yield Prediction feature.
+/// It provides a sophisticated form for farmers to input their field conditions
+/// and management practices.
+///
+/// Key Technical Components:
+/// 1. Form Validation: Enforces data types and logical constraints for agricultural inputs.
+/// 2. Automated Rainfall Fetching: Integrates with [RainfallService] to auto-populate rainfall data.
+/// 3. API Integration: Communicates with the FastAPI backend for inference and SHAP explainability.
+/// 4. Dynamic Visualization: Uses [fl_chart] and animations to display prediction results and factors.
+/// 5. Localization: Supports English, Sinhala, and Tamil for rural accessibility.
 import 'dart:convert';
 import 'dart:math';
 
@@ -129,6 +141,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
       _error = null;
     });
 
+    // Construct the payload matching the backend's YieldRequest schema
     final payload = {
       "district": _district,
       "farm_size_acres": double.parse(_farmSizeController.text),
@@ -164,6 +177,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
         }
 
         setState(() {
+          // Parse the complex backend response (yield + SHAP list)
           _result = YieldResult.fromJson(data);
         });
 
@@ -227,6 +241,9 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
     });
   }
 
+  /// Orchestrates the fetching of rainfall data for the selected district.
+  /// First checks the [RainfallPreloadService] for cached data (6-hour TTL).
+  /// If cache is empty, it queries the [RainfallService] live API.
   Future<void> _loadRainfall() async {
     try {
       setState(() {
@@ -236,6 +253,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
       final cached = RainfallPreloadService.getCached();
 
       if (cached != null) {
+        // Short artificial delay to provide a smooth loading transition
         await Future.delayed(const Duration(seconds: 2));
 
         setState(() {
@@ -244,10 +262,12 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
           _isRainfallLoading = false;
         });
 
+        // Trigger a background update to keep the cache fresh
         RainfallPreloadService.preload("Anuradhapura");
         return;
       }
 
+      // No cache found, perform live API lookup
       final rainfall =
           await RainfallService.getSeasonalRainfall("Anuradhapura");
 
@@ -259,6 +279,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
         _isRainfallLoading = false;
       });
     } catch (e) {
+      // Fallback to regional average if weather services are unreachable
       setState(() {
         _apiRainfallValue = 800;
         _rainfallController.text = "800";

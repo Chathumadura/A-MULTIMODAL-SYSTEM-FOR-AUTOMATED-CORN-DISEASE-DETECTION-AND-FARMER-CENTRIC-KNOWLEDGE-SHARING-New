@@ -1,3 +1,13 @@
+/// CORNXPERT FRONTEND - RAINFALL SERVICE
+///
+/// This service provides historical weather data and estimates seasonal rainfall.
+/// It interacts with the WeatherAPI to fetch historical precipitation data and 
+/// uses agricultural domain logic to project total rainfall for a cropping season.
+///
+/// Key Calculations:
+/// 1. Historical Sum: Fetches daily precipitation for the last 30 or 60 days.
+/// 2. Season Determination: Identifies if the current month falls in 'Yala' or 'Maha'.
+/// 3. Projection: Applies a growth factor to recent rainfall to estimate the season total.
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -13,6 +23,9 @@ class RainfallService {
     return _getRainfallForDays(location, 30);
   }
 
+  /// Loops through the last N days to calculate the cumulative rainfall (mm).
+  /// Note: This performs multiple serial HTTP requests and should be used with 
+  /// caution on slow networks. Ideally, the result should be cached.
   static Future<double> _getRainfallForDays(
     String location,
     int days,
@@ -43,6 +56,9 @@ class RainfallService {
     return totalRainfall;
   }
 
+  /// Identifies the current agro-ecological season in Sri Lanka.
+  /// Yala: April to September.
+  /// Maha: October to March (the 'wet' season).
   static String getCurrentSeason() {
     final month = DateTime.now().month;
 
@@ -57,6 +73,10 @@ class RainfallService {
     return 1100;
   }
 
+  /// Estimates total seasonal rainfall based on the last 30 days of data.
+  /// Uses a base seasonal constant plus a multiplier (factor) to project 
+  /// the remaining rainfall based on recent observations.
+  /// The result is clamped between 300mm and 1700mm to stay within realistic bounds.
   static double estimateSeasonalRainfall(double recentRain, String season) {
     final base = getSeasonBase(season);
     final factor = (season == "Yala") ? 2.5 : 3.5;

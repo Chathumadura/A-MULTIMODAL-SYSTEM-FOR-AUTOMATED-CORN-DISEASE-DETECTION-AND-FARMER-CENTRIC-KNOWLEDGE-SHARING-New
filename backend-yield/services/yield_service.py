@@ -1,6 +1,12 @@
 """
-Yield prediction service – orchestrates the sklearn pipeline and SHAP explainer.
-All business logic lives here; the route layer only handles HTTP concerns.
+CORNXPERT SERVICE LAYER - YIELD LOGIC
+
+This module orchestrates the end-to-end inference flow for yield prediction.
+Key responsibilities:
+1. Coordination: Bridges the API routes with the underlying ML model utilities.
+2. Data Transformation: Aggregates one-hot encoded SHAP values back into base features.
+3. Post-Model Logic: Applies domain-specific adjustments (like pest penalties).
+4. Explainability: Ranks and normalizes factor impacts for user-friendly visualization.
 """
 
 from __future__ import annotations
@@ -18,7 +24,10 @@ logger = logging.getLogger(__name__)
 # Internal helpers
 # ---------------------------------------------------------------------------
 def _ensure_model():
-    """Return the loaded YieldModelState, or raise RuntimeError if unavailable."""
+    """
+    Dependency check: Ensures the machine learning model is loaded before processing.
+    Raises RuntimeError if the model is unavailable (e.g., file missing).
+    """
     state = get_yield_state()
     if state is None:
         raise RuntimeError("Yield model is not available.")
@@ -47,7 +56,12 @@ def _group_shap_values(
     shap_instance: np.ndarray,
     feature_names: list[str],
 ) -> dict[str, float]:
-    """Group one-hot encoded SHAP values into allowed base features."""
+    """
+    Aggregates SHAP values for one-hot encoded categories.
+    
+    The model sees 'variety_Hybrid_A' and 'variety_Hybrid_B' as separate inputs.
+    This function sums their impacts so the UI can show a single 'Variety' factor.
+    """
     grouped: dict[str, float] = {}
     for i, name in enumerate(feature_names):
         base_name = name
@@ -76,20 +90,18 @@ def _group_shap_values(
 # ---------------------------------------------------------------------------
 def predict_yield(data: dict) -> dict:
     """
-    Predict corn yield (kg/acre) without SHAP explanation.
-
-    Args:
-        data: Dict matching SimpleYieldRequest fields.
-
-    Returns:
-        {"predicted_yield_kg_per_acre": float}
-
-    Raises:
-        RuntimeError: when the model is not loaded.
+    Core prediction function. Calculates the harvest estimate in kg/acre.
     """
     state = _ensure_model()
+    
+    # 1. Convert raw input dictionary into a formatted Pandas DataFrame
     df = build_full_row(data)
+    
+    # 2. Run the scikit-learn pipeline (preprocessing + XGBoost/RF)
     predicted_yield = round(float(state.pipeline.predict(df)[0]), 2)
+    
+    # 3. Post-model adjustment: Apply manual penalties based on pest incidence
+    # This logic compensates for risks not fully captured by the training data.
     pest_level = int(data.get("pest_disease_incidence", 0))
     if pest_level == 0:
         penalty = 0
@@ -99,6 +111,7 @@ def predict_yield(data: dict) -> dict:
         penalty = -150
     else:
         penalty = -300
+        
     predicted_yield = round(predicted_yield + penalty, 2)
     logger.info("Yield predicted: %.2f kg/acre", predicted_yield)
     return {"predicted_yield_kg_per_acre": predicted_yield}
@@ -124,6 +137,7 @@ def explain_yield(data: dict, top_n: int = 5) -> dict:
     state = _ensure_model()
     df = build_full_row(data)
 
+    # 1. Generate prediction with pest adjustments
     predicted_yield = round(float(state.pipeline.predict(df)[0]), 2)
     pest_level = int(data.get("pest_disease_incidence", 0))
     if pest_level == 0:
@@ -136,6 +150,7 @@ def explain_yield(data: dict, top_n: int = 5) -> dict:
         penalty = -300
     predicted_yield = round(predicted_yield + penalty, 2)
 
+    # 2. Extract SHAP values (model explanations)
     # SHAP values are computed on the preprocessed (transformed) feature matrix
     x_transformed = state.preprocessor.transform(df)
     shap_values = state.explainer.shap_values(x_transformed)
