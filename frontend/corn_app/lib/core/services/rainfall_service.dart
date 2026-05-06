@@ -23,7 +23,7 @@ class RainfallService {
     return _getRainfallForDays(location, 30);
   }
 
-  /// Loops through the last N days to calculate the cumulative rainfall (mm).
+  /// Loops through the last 30/60 days to calculate the cumulative rainfall (mm).
   /// Note: This performs multiple serial HTTP requests and should be used with 
   /// caution on slow networks. Ideally, the result should be cached.
   static Future<double> _getRainfallForDays(
