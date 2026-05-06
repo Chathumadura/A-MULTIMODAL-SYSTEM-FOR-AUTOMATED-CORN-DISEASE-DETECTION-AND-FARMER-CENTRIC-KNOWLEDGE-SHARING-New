@@ -155,6 +155,7 @@ class _CornYieldPageEnhancedState extends State<CornYieldPageEnhanced>
           ? 0.0
           : double.parse(_prevYieldController.text),
       "pest_disease_incidence": _pestDiseaseLevelToIndex(_pestDiseaseLevel!),
+      "language": Localizations.localeOf(context).languageCode,
     };
 
     // Start timer to ensure minimum 1 second of loading
@@ -1472,85 +1473,27 @@ class _ResultCardState extends State<_ResultCard>
   }
 
   String _generateExplanation() {
-    final isEn = widget.loc.locale.languageCode == 'en';
-    final predictedValue = widget.result.predictedYield.toStringAsFixed(0);
+    // 1. Narrative summary
+    String explanation = "${widget.result.summary}\n\n";
 
-    if (widget.result.topFeatures.isEmpty) {
-      return isEn
-          ? "Your predicted corn yield is $predictedValue kg per acre based on the provided farming conditions."
-          : "ඔබගේ පුරෝකථිත බඩඉරිගු අස්වැන්න අක්කර එකකට කිලෝග්‍රෑම් $predictedValue කි.";
+    // 2. Detailed multi-factor analysis (from backend)
+    explanation += "${widget.result.detailedExplanation}\n\n";
+
+    // 3. Actionable recommendations
+    if (widget.result.recommendations.isNotEmpty) {
+      final isEn = widget.loc.locale.languageCode == 'en';
+      final isTa = widget.loc.locale.languageCode == 'ta';
+      final recHeader = isEn ? "Recommendations:" : (isTa ? "பரிந்துரைகள்:" : "නිර්දේශ:");
+      
+      explanation += "$recHeader\n";
+      for (var rec in widget.result.recommendations) {
+        explanation += "• $rec\n";
+      }
+      explanation += "\n";
     }
 
-    final topFeature = widget.result.topFeatures.first;
-    final featureName = topFeature.displayName;
-    final impact = topFeature.impactValue;
-    final isPositive = impact > 0;
-    final percentage = topFeature.impactPercentage.round();
-
-    String explanation;
-    if (isEn) {
-      explanation =
-          "Your predicted corn yield is $predictedValue kg per acre. ";
-
-      if (isPositive) {
-        explanation +=
-            "The main positive factor is $featureName, which contributes $percentage% to increasing your yield. ";
-      } else {
-        explanation +=
-            "The main limiting factor is $featureName, which reduces your potential yield by $percentage%. ";
-      }
-
-      // Add second factor if exists
-      if (widget.result.topFeatures.length > 1) {
-        final secondFeature = widget.result.topFeatures[1];
-        final secondImpact = secondFeature.impactValue;
-        final secondPercentage = secondFeature.impactPercentage.round();
-
-        if (secondImpact > 0) {
-            explanation +=
-              "${secondFeature.displayName} also helps, contributing $secondPercentage%. ";
-        } else {
-          explanation +=
-              "${secondFeature.displayName} also has a negative impact of $secondPercentage%. ";
-        }
-      }
-
-      // Add recommendation
-      if (!isPositive &&
-          widget.result.topFeatures.any((f) => f.impactValue < 0)) {
-        explanation +=
-            "Consider improving the limiting factors to increase your yield.";
-      } else {
-        explanation +=
-            "Your current practices are supporting good yield potential.";
-      }
-    } else {
-      // Sinhala explanation
-      explanation =
-          "ඔබගේ පුරෝකථිත බඩඉරිගු අස්වැන්න අක්කර එකකට කිලෝග්‍රෑම් $predictedValue කි. ";
-
-      if (isPositive) {
-        explanation +=
-            "ප්‍රධාන ධනාත්මක සාධකය $featureName වන අතර, එය ඔබේ අස්වැන්න වැඩි කිරීමට $percentage% දායක වේ. ";
-      } else {
-        explanation +=
-            "ප්‍රධාන සීමා සාධකය $featureName වන අතර, එය ඔබේ අස්වැන්න $percentage% අඩු කරයි. ";
-      }
-
-      if (!isPositive) {
-        explanation +=
-            "වැඩි අස්වැන්නක් ලබා ගැනීමට සීමා සාධක වැඩිදියුණු කිරීම සලකා බලන්න.";
-      } else {
-        explanation += "ඔබේ වර්තමාන ක්‍රම හොඳ අස්වැන්නක් සඳහා සහාය වේ.";
-      }
-    }
-
-    if (widget.result.baseYield != null) {
-      final baseValue = widget.result.baseYield!.toStringAsFixed(0);
-      explanation += isEn
-          ? " Baseline yield for similar conditions is about $baseValue kg per acre."
-          : " සමාන තත්ත්වයන් සඳහා මූලික අස්වැන්න අක්කරයකට කිලෝග්‍රෑම් $baseValue පමණ වේ.";
-    }
+    // 4. Improved what-if scenario
+    explanation += "${widget.result.whatIf}";
 
     return explanation;
   }
@@ -1752,6 +1695,19 @@ class _ResultCardState extends State<_ResultCard>
                         color: Colors.grey.shade600,
                       ),
                     ),
+                    if (f.reason.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          f.reason,
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.shade700,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 12),
                     _ContributionBar(
                       value: f.impactValue,
@@ -2242,13 +2198,18 @@ class _AnimatedImpactValueState extends State<_AnimatedImpactValue>
     return AnimatedBuilder(
       animation: _valueAnimation,
       builder: (context, child) {
-        return Text(
-          'Impact: ${_valueAnimation.value >= 0 ? '+' : ''}${_valueAnimation.value.toStringAsFixed(2)}',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey.shade600,
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Impact: ${_valueAnimation.value >= 0 ? '+' : ''}${_valueAnimation.value.toStringAsFixed(2)}',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
         );
       },
     );
@@ -2308,10 +2269,20 @@ class YieldResult {
     required this.predictedYield,
     required this.topFeatures,
     required this.baseYield,
+    required this.delta,
+    required this.summary,
+    required this.detailedExplanation,
+    required this.recommendations,
+    required this.whatIf,
   });
 
   final double predictedYield;
   final double? baseYield;
+  final double delta;
+  final String summary;
+  final String detailedExplanation;
+  final List<String> recommendations;
+  final String whatIf;
   final List<FeatureContribution> topFeatures;
 
   factory YieldResult.fromJson(Map<String, dynamic> json) {
@@ -2324,6 +2295,13 @@ class YieldResult {
     return YieldResult(
       predictedYield: (json["predicted_yield_kg_per_acre"] as num).toDouble(),
       baseYield: (json["base_yield"] as num?)?.toDouble(),
+      delta: (json["delta"] as num? ?? 0.0).toDouble(),
+      summary: json["summary"] as String? ?? "",
+      detailedExplanation: json["detailed_explanation"] as String? ?? "",
+      recommendations: (json["recommendations"] as List<dynamic>? ?? [])
+          .map((e) => e as String)
+          .toList(),
+      whatIf: json["what_if"] as String? ?? "",
       topFeatures: rawFeatures,
     );
   }
@@ -2336,6 +2314,7 @@ class FeatureContribution {
     required this.impactValue,
     required this.impactPercentage,
     required this.direction,
+    required this.reason,
   });
 
   final String feature;
@@ -2343,6 +2322,7 @@ class FeatureContribution {
   final double impactValue;
   final double impactPercentage;
   final String direction;
+  final String reason;
 
   factory FeatureContribution.fromJson(Map<String, dynamic> json) {
     return FeatureContribution(
@@ -2351,6 +2331,7 @@ class FeatureContribution {
       impactValue: (json["impact_value"] as num).toDouble(),
       impactPercentage: (json["impact_percentage"] as num).toDouble(),
       direction: json["direction"] as String,
+      reason: json["reason"] as String? ?? "",
     );
   }
 }

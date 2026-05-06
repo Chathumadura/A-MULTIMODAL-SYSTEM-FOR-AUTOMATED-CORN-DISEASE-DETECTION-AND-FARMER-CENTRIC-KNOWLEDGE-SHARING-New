@@ -44,6 +44,7 @@ class YieldRequest(BaseModel):
     fertilizer_kg_per_acre: float = Field(..., ge=0)
     previous_yield_kg_per_acre: float = Field(..., ge=0)
     pest_disease_incidence: int = Field(..., ge=0, le=10)  # Input from a 0-10 slider or scale
+    language: str = Field("en", description="Preferred language (en, si, ta)")
 
 
 class FeatureContribution(BaseModel):
@@ -53,13 +54,19 @@ class FeatureContribution(BaseModel):
     impact_value: float      # Absolute SHAP value
     impact_percentage: float # Normalized impact (0-100%)
     direction: str           # "increases" or "reduces" the total yield
+    reason: str              # Context-aware reason (e.g., "Below optimal rainfall")
 
 
 class YieldExplainResponse(BaseModel):
     """Final JSON response structure for the yield analysis UI."""
     predicted_yield_kg_per_acre: float
     base_yield: float        # The starting point (expected value) of the model
+    delta: float             # The difference between base and predicted yield
+    summary: str             # Narrative summary of the prediction
+    detailed_explanation: str # NEW: Detailed multi-factor reasoning
     top_contributing_features: list[FeatureContribution]
+    recommendations: list[str] # Actionable suggestions for the farmer
+    what_if: str             # Hypothetical 'what-if' scenario for yield improvement
 
 
 # ---------------------------------------------------------------------------
